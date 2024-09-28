@@ -1,16 +1,26 @@
-
 import React from 'react';
+import '../components/styles/Home.css'; 
 import FeaturedProducts from './FeaturedProducts';
 
 const Home = () => {
   return (
-    <section className="home">
-      <div className="container">
-        <h1>Bienvenido a ElectroShop</h1>
-        <p>Los mejores productos electrónicos al mejor precio.</p>
-        <FeaturedProducts />
+    <body>
+      <div className="firstContainer">
+        <div className="textIntro">
+          <h1 className="introText__head">
+            Equipate con el <span>mejor</span> hardware <span>&</span> gadgets.
+          </h1>
+          <p className="introText__link">
+                <a href="/catalogo">
+                  Mirá nuestros productos<i className="linkProductos"></i>
+                </a>
+              </p>
+        </div>
       </div>
-    </section>
+      <div>
+        <FeaturedProducts />
+      </div> 
+    </body>
   );
 };
 

@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './components/Home'; // Página de inicio
 import Catalogo from './components/Catalogo'; // Página del catálogo
-import Footer from './components/Footer';
 import Login from './components/Auth/Login'; // Página de login
 import Register from './components/Auth/Register';
 
@@ -21,7 +20,6 @@ const App = () => {
             <Route path= "/register" element={<Register />}/> {/* Ruta al registro */}
           </Routes>
         </main>
-        <Footer />
       </div>
     </Router>
   );

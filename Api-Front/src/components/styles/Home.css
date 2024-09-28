@@ -1,0 +1,70 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Full-screen container */
+  .firstContainer {
+    height: 100vh; 
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    background-image: url(/compupiola.jpg);
+  }
+  
+  /* Text styles */
+  .introText__head {
+    font-size: 3rem; /* Tamaño grande del texto principal */
+    font-weight: bold;
+    color: #ffffff; /* Color principal del texto */
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+    line-height: 1.2;
+  }
+  
+  .introText__head span {
+    font-weight: bold; 
+    color: #ffffff; 
+    font-style: italic;
+  }
+  
+  /* Link style */
+  .introText__link a {
+    font-size: 1.2rem; /* Tamaño del enlace */
+    color: #ffffff; /* Color del enlace */
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 2px solid #ffffff; /* Subrayado */
+    padding-bottom: 0.2rem;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .introText__link a:hover {
+    color: #888; /* Color del enlace al hacer hover */
+    border-bottom-color: #888;
+  }
+  
+  .linkProductos {
+    margin-left: 8px; /* Espacio para el ícono */
+    transition: transform 0.3s;
+  }
+  
+  .linkProductos:hover {
+    transform: translateX(4px); /* Pequeño desplazamiento en hover */
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .introText__head {
+      font-size: 2rem;
+    }
+  
+    .introText__link a {
+      font-size: 1rem;
+    }
+  }
+  
