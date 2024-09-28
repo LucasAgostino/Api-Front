@@ -39,23 +39,25 @@ const Header = () => {
   return (
     <header id="header">
       <div className={navbarClass} id="myTopnav">
-        <a href="#" id="active">
+        <a href="/" id="active">
           <img src="/logo.png" className="logo" alt="logo" />
         </a>
-        <a href="#">HOME</a>
-        <a href="#">CONTACT</a>
-        <div className="dropdown">
-          <button className="dropbtn">
-            HOW IT WORKS
-            <i className="fa fa-caret-down"></i>
-          </button>
-          <div className="dropdown-content animate">
-            <a href="#">Link 1</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
+        <div className="nav-links"> {/* Contenedor para los enlaces */}
+          <a href="#">CONTACT</a>
+          <div className="dropdown">
+            <button className="dropbtn">
+              HOW IT WORKS
+              <i className="fa fa-caret-down"></i>
+            </button>
+            <div className="dropdown-content animate">
+              <a href="#">Link 1</a>
+              <a href="#">Link 2</a>
+              <a href="#">Link 3</a>
+            </div>
           </div>
+          <a href="#about">ABOUT US</a>
+          <a href="/login">INICIA SESION</a>
         </div>
-        <a href="#about">ABOUT US</a>
         <a href="javascript:void(0);" className="icon" onClick={toggleNavbar}>
           &#9776;
         </a>

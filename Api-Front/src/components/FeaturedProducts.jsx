@@ -1,5 +1,6 @@
 // src/components/FeaturedProducts.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 
 const products = [
   { id: 1, name: 'Laptop XYZ', price: '$999', image: '/images/laptop.jpg' },
@@ -8,6 +9,12 @@ const products = [
 ];
 
 const FeaturedProducts = () => {
+  const navigate = useNavigate(); // Crea una instancia de navigate
+
+  const handleViewMore = (id) => {
+    navigate(`/products/${id}`); // Redirige a la página de detalles del producto
+  };
+
   return (
     <section id="products" className="featured-products">
       <div className="container">
@@ -18,7 +25,7 @@ const FeaturedProducts = () => {
               <img src={product.image} alt={product.name} />
               <h3>{product.name}</h3>
               <p>{product.price}</p>
-              <button>Ver más</button>
+              <button onClick={() => handleViewMore(product.id)}>Ver más</button> {/* Agrega el evento onClick */}
             </div>
           ))}
         </div>
