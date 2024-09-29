@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  .product-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px auto;
+    max-width: 95%; /* Ajustamos el margen para más separación */
+    padding: 0 20px;
+  }
+  
+  .product-card {
+    flex: 1 1 30%;
+    padding: 20px;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 600px
+}
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada al hacer hover */
+  }
+  
+  /* Estilo para asegurar que las imágenes tengan un tamaño fijo y centrado */
+  .product-image {
+    border-radius: 4px;
+  }
+  
+  .product-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 15px 0;
+    color: #333;
+  }
+  
+  .product-description {
+    font-size: 20px;
+    flex-grow: 1; /* Esto permite que el texto se expanda hasta llenar el espacio disponible */
+    text-align: justify; /* Para alinear el texto correctamente */
+    margin-bottom: 20px;
+}
+  
+  /* Botón centrado debajo de cada tarjeta */
+  .btn-container {
+    text-align: center;
+}
+
+.btn-view-more {
+    padding: 15px 30px; /* Aumenta el tamaño del padding para hacer el botón más grande */
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem; /* Aumenta el tamaño de la fuente */
+    width: 100%; /* Haz que el botón ocupe todo el ancho del contenedor */
+    max-width: 200px; /* Limita el ancho máximo para que no sea excesivamente grande */
+    margin: 0 auto; /* Centra el botón */
+}
+
+.btn-view-more:hover {
+    background-color: #555;
+}
+
+
+  
+  @media (max-width: 768px) {
+    .product-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .product-card {
+      width: 90%; /* Ocupa casi todo el ancho en pantallas pequeñas */
+      margin-bottom: 20px;
+    }
+  }
+  

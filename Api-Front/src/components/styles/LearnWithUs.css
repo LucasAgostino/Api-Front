@@ -1,0 +1,75 @@
+.learn-with-us-section {
+    display: flex;
+    justify-content: space-around; /* Centra los elementos horizontalmente */
+    align-items: center;
+    padding: 50px 0;
+    background-color: #f5f5f5; /* Fondo suave */
+    margin-top: 50px;
+    font-family: 'Noto Sans Display', sans-serif; /* Fuente coherente con los productos */
+  }
+  
+  .text-container {
+    flex: 1;
+    padding-right: 40px; /* Mayor separación entre el texto y el video */
+
+  }
+  
+  .learn-title {
+    font-size: 3rem; /* Tamaño del título más grande */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center; /* Centramos el título */
+    text-transform: uppercase; /* Título en mayúsculas */
+    letter-spacing: 2px;
+  }
+  
+  .learn-description {
+    font-size: 1.1rem;
+    text-align: justify;
+    line-height: 1.8; /* Mejor separación entre las líneas */
+    color: #666;
+    margin: 0 auto; /* Centra el texto */
+    width: 80%; /* Ajusta el ancho del texto */
+  }
+  
+  .video-container {
+    flex: 1;
+    max-width: 560px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .video-container iframe {
+    margin-right: 70px;
+    border-radius: 0; 
+    width: 100%; 
+    max-width: 560px; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+  }
+  
+  /* Añade un espaciado adicional en pantallas pequeñas */
+  @media (max-width: 768px) {
+    .learn-with-us-section {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .text-container, .video-container {
+      width: 100%;
+      padding-right: 0;
+      margin-bottom: 20px;
+    }
+  
+    .learn-title {
+      text-align: left;
+      font-size: 2.5rem;
+    }
+  
+    .learn-description {
+      text-align: left;
+      width: 100%;
+    }
+  }
+  

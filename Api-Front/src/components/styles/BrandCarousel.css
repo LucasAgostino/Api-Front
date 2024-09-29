@@ -1,0 +1,30 @@
+ul {
+    width: 80%;
+    margin: 50px auto; /* Para centrar el carrusel */
+    padding: 0;
+    display: flex;
+    justify-content: space-between; /* Espacio entre las imágenes */
+    overflow: hidden; /* Para ocultar cualquier desbordamiento */
+  }
+  
+  ul > li {
+    width: 20%; /* Ajusta el tamaño del contenedor de la imagen */
+    list-style-type: none;
+    opacity: 0;
+    transition: 1s opacity;
+    text-align: center;
+    margin: 0 15px; /* Agregar margen entre los elementos */
+  }
+  
+  ul > li.active {
+    opacity: 1;
+  }
+  
+  ul > li img {
+    width: 100%;
+    height: 100px; /* Ajustar la altura fija para todas las imágenes */
+    object-fit: contain; /* Asegura que la imagen se ajuste al contenedor sin perder proporción */
+    max-width: 150px; /* Tamaño máximo de ancho de las imágenes */
+    max-height: 100px; /* Tamaño máximo de altura de las imágenes */
+  }
+  

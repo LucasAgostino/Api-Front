@@ -1,0 +1,56 @@
+.ubicacion-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 50px auto 100px auto; /* Aumenta el margen inferior a 100px */
+    padding: 20px;
+    width: 90%;
+    background-color: transparent; 
+    font-family: 'Noto Sans Display', sans-serif; /* Fuente consistente */
+    
+  }
+  
+  .map-container {
+    width: 50%;
+    margin-right: 20px;
+  }
+  
+  .text-container {
+    width: 45%; /* Un poco más pequeño que el mapa */
+    padding: 20px;
+  }
+  
+  .text-container h2 {
+    font-size: 3rem; /* Tamaño del título más grande */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center; /* Centramos el título */
+    text-transform: uppercase; /* Título en mayúsculas */
+    letter-spacing: 2px;
+  }
+  
+  .text-container p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .ubicacion-container {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .map-container,
+    .text-container {
+      width: 100%;
+      margin: 0;
+    }
+  
+    .text-container {
+      margin-top: 20px;
+    }
+  }
+  

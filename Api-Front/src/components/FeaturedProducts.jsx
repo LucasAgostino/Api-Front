@@ -1,37 +1,48 @@
-// src/components/FeaturedProducts.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
-
-const products = [
-  { id: 1, name: 'Laptop XYZ', price: '$999', image: '/images/laptop.jpg' },
-  { id: 2, name: 'Smartphone ABC', price: '$699', image: '/images/smartphone.jpg' },
-  { id: 3, name: 'Smart TV 4K', price: '$1199', image: '/images/smarttv.jpg' },
-];
+import '../components/styles/FeaturedProducts.css'; // Importar el archivo CSS
 
 const FeaturedProducts = () => {
-  const navigate = useNavigate(); // Crea una instancia de navigate
-
-  const handleViewMore = (id) => {
-    navigate(`/products/${id}`); // Redirige a la página de detalles del producto
-  };
-
   return (
-    <section id="products" className="featured-products">
-      <div className="container">
-        <h2>Productos Destacados</h2>
-        <div className="product-grid">
-          {products.map(product => (
-            <div key={product.id} className="product-card">
-              <img src={product.image} alt={product.name} />
-              <h3>{product.name}</h3>
-              <p>{product.price}</p>
-              <button onClick={() => handleViewMore(product.id)}>Ver más</button> {/* Agrega el evento onClick */}
-            </div>
-          ))}
+    <div className="product-container">
+      <div className="product-card">
+        <img src="/inicio/notebookHome.png" alt="Notebook" className="product-image" style={{ width: '100%', height: '300px', objectFit: 'contain' }}/>
+        <h3 className="product-title">Notebooks</h3>
+        <p className="product-description">
+        Encuentra la mejor selección de notebooks, ideales para estudiantes, profesionales y gamers. Nuestras notebooks combinan potencia y portabilidad, 
+        con procesadores de última generación, pantallas nítidas y un diseño elegante. Perfectas para trabajar, estudiar o disfrutar de tu contenido favorito en cualquier lugar.
+        </p>
+        <div className="btn-container">
+          <button className="btn-view-more">Ver más</button>
         </div>
       </div>
-    </section>
+      <div className="product-card">
+        <img src="/inicio/placadevideoHome.jpeg" alt="Notebook" className="product-image" style={{ width: '100%', height: '300px', objectFit: 'contain' }}/>
+        <h3 className="product-title">Placas de Video</h3>
+        <p className="product-description">
+        Potencia tu experiencia de juego y creatividad con nuestras placas de video de alto rendimiento. 
+        Ya sea que busques jugar a los últimos títulos en máxima resolución o trabajar con edición de video y diseño gráfico, nuestras placas de video están diseñadas
+         para ofrecer gráficos nítidos, fluidez y capacidad multitarea sin igual.
+        </p>
+        <div className="btn-container">
+          <button className="btn-view-more">Ver más</button>
+        </div>
+      </div>
+      <div className="product-card">
+      <img src="/inicio/aurisHome.jpg" alt="Notebook" className="product-image" style={{ width: '100%', height: '300px', objectFit: 'contain' }}/>
+        <h3 className="product-title">Periféricos</h3>
+        <p className="product-description">
+        Complementa tu setup con nuestra variedad de periféricos de alta calidad. Desde teclados mecánicos retroiluminados hasta mouses ergonómicos y audífonos de sonido 
+        envolvente, tenemos todo lo que necesitas para mejorar tu productividad y experiencia de juego. Perfectos para quienes buscan comodidad, precisión y estilo.
+        </p>
+        <div className="btn-container">
+          <button className="btn-view-more">Ver más</button>
+        </div>
+      </div>
+
+    </div>
+    
   );
 };
 
 export default FeaturedProducts;
+

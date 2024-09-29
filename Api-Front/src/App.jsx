@@ -7,6 +7,8 @@ import Catalogo from './components/Catalogo'; // Página del catálogo
 import Login from './components/Auth/Login'; // Página de login
 import Register from './components/Auth/Register';
 import ProductDetail from './components/ProductDetail'; // Página de detalles del producto
+import Footer from './components/Footer';
+
 
 const App = () => {
   return (
@@ -23,6 +25,7 @@ const App = () => {
             <Route path="/products/:id" element={<ProductDetail />} /> {/* Ruta a la página de detalles del producto */}
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );

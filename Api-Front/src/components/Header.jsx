@@ -38,32 +38,30 @@ const Header = () => {
 
   return (
     <header id="header">
-      <div className={navbarClass} id="myTopnav">
+      <div className="topnav" id="myTopnav">
         <a href="/" id="active">
           <img src="/logo.png" className="logo" alt="logo" />
         </a>
-        <div className="nav-links"> {/* Contenedor para los enlaces */}
-          <a href="#">CONTACT</a>
-          <div className="dropdown">
-            <button className="dropbtn">
-              HOW IT WORKS
-              <i className="fa fa-caret-down"></i>
-            </button>
-            <div className="dropdown-content animate">
-              <a href="#">Link 1</a>
-              <a href="#">Link 2</a>
-              <a href="#">Link 3</a>
-            </div>
+        <div className="nav-links">
+          <a href="#">PRODUCTOS</a>
+
+          <div className="search-container">
+            <input type="text" className="search-input" placeholder="Buscar..." />
+            <img src="/buscar.png" alt="Buscar" />
           </div>
-          <a href="#about">ABOUT US</a>
-          <a href="/login">INICIA SESION</a>
+          
+
+          <a href="#">CONTACTANOS</a>
         </div>
-        <a href="javascript:void(0);" className="icon" onClick={toggleNavbar}>
+
+        <a href="/login" className="login-link">INICIA SESIÓN</a>
+        <a href="javascript:void(0);" className="icon" onClick={() => {}}>
           &#9776;
         </a>
       </div>
     </header>
   );
+  
 };
 
 export default Header;

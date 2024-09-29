@@ -1,6 +1,9 @@
 import React from 'react';
 import '../components/styles/Home.css'; 
 import FeaturedProducts from './FeaturedProducts';
+import LearnWithUs from './LearnWithUs';
+import BrandCarousel from './BrandCarousel';
+import Ubicacion from './Ubicacion';
 
 const Home = () => {
   return (
@@ -20,6 +23,16 @@ const Home = () => {
       <div>
         <FeaturedProducts />
       </div> 
+      <div>
+        <LearnWithUs />
+      </div>
+      <div>
+        <Ubicacion />
+      </div>
+      <div>
+        <BrandCarousel />
+      </div>
+      
     </body>
   );
 };
