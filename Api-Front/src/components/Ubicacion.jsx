@@ -19,7 +19,7 @@ const Ubicacion = () => {
             <h2>Dónde nos encontramos</h2>
             <p>
               Estamos ubicados en la Universidad Argentina de la Empresa (UADE),
-              en el centro de Buenos Aires. Visítanos para recibir atención
+              en el centro de Buenos Aires. Visitanos para recibir atención
               personalizada o compra en línea con envío directo.
             </p>
           </div>

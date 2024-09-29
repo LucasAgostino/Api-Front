@@ -3,6 +3,19 @@ body {
     background-color: #f5f5f5;
   }
   
+  .featured-title {
+    font-family: 'Noto Sans Display', sans-serif; 
+    font-size: 3rem; 
+    font-weight: bold; 
+    text-align: center;
+    margin-top: 50px; 
+    margin-bottom: 30px; 
+    color: #333; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+  }
+  
+
   .product-container {
     display: flex;
     justify-content: space-between;
@@ -16,8 +29,7 @@ body {
     padding: 20px;
     margin: 10px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -27,7 +39,7 @@ body {
   
   .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada al hacer hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada al hacer hover */
   }
   
   /* Estilo para asegurar que las imágenes tengan un tamaño fijo y centrado */
