@@ -1,0 +1,93 @@
+/* Contenedor del carrusel */
+.carousel-container {
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    margin-top: 120px; /* Ajuste para poner el carrusel arriba */
+    position: relative;
+}
+  
+.carousel {
+    width: 70%;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+  
+.carousel-item {
+    width: 100%;
+    text-align: center;
+    transition: opacity 0.5s ease-in-out; /* Añadir transición suave */
+}
+  
+.carousel-image {
+    width: 100%; /* Esto asegura que la imagen ocupe el ancho del contenedor */
+    height: 400px; /* Establecemos una altura fija para todas las imágenes */
+    object-fit: cover; /* Esto asegura que la imagen se ajuste sin distorsionarse */
+    max-width: 600px;
+    border-radius: 10px;
+    cursor: pointer; /* Cursor de mano para indicar que es clickeable */
+}
+  
+.carousel-info {
+    margin-top: 10px;
+}
+
+/* Estilos para las letras */
+.product-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.product-description {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Botones del carrusel */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1;
+}
+  
+.prev-btn {
+    left: 10px;
+}
+  
+.next-btn {
+    right: 10px;
+}
+  
+/* Animación de desvanecimiento para cambiar entre productos */
+.fade {
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+  
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

@@ -11,10 +11,10 @@ const BrandCarousel = () => {
     const moveCarousel = () => {
       items.forEach(item => item.classList.remove('active'));
 
-      items[i].style.transitionDelay = '0.25s';
-      items[i + 1].style.transitionDelay = '0.5s';
-      items[i + 2].style.transitionDelay = '0.75s';
-      items[i + 3].style.transitionDelay = '1s';
+      items[i].style.transitionDelay = '0s';
+      items[i + 1].style.transitionDelay = '0.25s';
+      items[i + 2].style.transitionDelay = '0.5s';
+      items[i + 3].style.transitionDelay = '0.75s';
 
       if (i < max - 4) {
         i += 4;

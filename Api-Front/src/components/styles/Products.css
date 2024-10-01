@@ -1,0 +1,103 @@
+/* Contenedor principal que engloba todo */
+.body{
+    font-family: 'Noto Sans Display', sans-serif; 
+    background-color: #f5f5f5;
+}
+.main-container {
+    width: 100%;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/* Wrapper que engloba sidebar y productos */
+.content-wrapper {
+    display: flex;
+    width: 70%; /* Ocupa el 70% de la página */
+    justify-content: space-between; /* Sidebar pegada a productos */
+    align-items: flex-start;
+    margin: 0 auto; /* Añade márgenes automáticos para centrar el contenido */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 25%; /* Sidebar ocupa el 25% del 70% total */
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    min-height: 100vh; /* Asegura que la sidebar tenga suficiente altura */
+    overflow-y: auto; /* Asegura que el contenido sea visible */
+}
+
+.sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #333; /* Asegura que el texto sea visible */
+    display: block; /* Asegura que los elementos se vean como bloques */
+}
+
+/* Contenedor de productos */
+.products-content {
+    width: 75%; /* Productos ocupan el 75% del 70% total */
+    display: flex;
+    justify-content: center;
+}
+
+/* Grid de productos */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres productos por fila */
+    gap: 20px;
+    width: 100%;
+}
+
+/* Tarjeta de producto */
+.product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.product-card h3 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.product-card p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.view-more-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.view-more-btn:hover {
+    background-color: #0056b3;
+}

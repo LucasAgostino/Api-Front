@@ -14,7 +14,7 @@ const Home = () => {
             Equipate con el <span>mejor</span> hardware <span>&</span> gadgets.
           </h1>
           <p className="introText__link">
-                <a href="/catalogo">
+                <a href="/products">
                   Mirá nuestros productos<i className="linkProductos"></i>
                 </a>
               </p>

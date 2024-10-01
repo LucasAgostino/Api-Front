@@ -43,7 +43,7 @@ const Header = () => {
           <img src="/logo.png" className="logo" alt="logo" />
         </a>
         <div className="nav-links">
-          <a href="#">PRODUCTOS</a>
+          <a href="/products">PRODUCTOS</a>
 
           <div className="search-container">
             <input type="text" className="search-input" placeholder="Buscar..." />
