@@ -1,19 +1,30 @@
-// components/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Login.css'; 
+import { authenticateUser } from '../../api/Auth'; // Importar la función de autenticación
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState(''); // Cambiado a username
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Aquí deberías enviar las credenciales al backend para autenticar al usuario
-    console.log({ email, password });
-    // Si la autenticación es exitosa, redirigir al usuario
-    navigate('/');
+    try {
+      const authData = { username, password }; // Utilizando username
+      const response = await authenticateUser(authData);
+      
+      // Aquí puedes manejar el token o la respuesta recibida, por ejemplo, guardarlo en localStorage
+      localStorage.setItem('token', response.token); // Si la respuesta tiene un token JWT
+      console.log('Autenticación exitosa:', response);
+
+      // Redirigir al usuario después de una autenticación exitosa
+      navigate('/');
+    } catch (error) {
+      setErrorMessage('Error al iniciar sesión. Verifica tus credenciales.');
+      console.error('Error en la autenticación:', error);
+    }
   };
 
   return (
@@ -23,11 +34,11 @@ const Login = () => {
         <p>Inicia sesión</p>
         <form onSubmit={handleLogin}>
           <div>
-            <label>Email</label>
+            <label>Nombre de Usuario</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text" // Cambiado a text
+              value={username}
+              onChange={(e) => setUsername(e.target.value)} // Cambiado a setUsername
               required
             />
           </div>
@@ -40,13 +51,12 @@ const Login = () => {
               required
             />
           </div>
-          <div className="remember-me">
-          </div>
           <button type="submit">Iniciar Sesión</button>
         </form>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <p>
-          ¿Todavía no tenes cuenta?{' '}
-          <Link to="/register">Registrate acá</Link>
+          ¿Todavía no tienes cuenta?{' '}
+          <Link to="/register">Regístrate acá</Link>
         </p>
       </div>
       <img className="login-image" src="/login.png" alt="Login Banner" />
