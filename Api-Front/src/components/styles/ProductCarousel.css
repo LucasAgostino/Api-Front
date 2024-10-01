@@ -1,93 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
+
 /* Contenedor del carrusel */
 .carousel-container {
-
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    margin-bottom: 30px;
-    margin-top: 120px; /* Ajuste para poner el carrusel arriba */
+    margin-bottom: 60px;
+    margin-top: 30px;
     position: relative;
-}
+    font-family: 'Noto Sans Display', sans-serif;
+  }
   
-.carousel {
-    width: 70%;
-    position: relative;
+  /* Título del carrusel */
+  .carousel-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center; /* Asegura que el texto esté centrado */
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #333;
+    width: 80%; /* Ajusta el ancho al 80% para coincidir con el carrusel */
+    margin-left: auto; /* Centra el título horizontalmente */
+    margin-right: auto; /* Centra el título horizontalmente */
+}
+
+
+  
+  /* Estilos del carrusel */
+  .carousel {
+    width: 80%;
+    margin: 0 auto;
     display: flex;
     align-items: center;
-}
+    position: relative;
+    overflow: hidden; /* Ocultar productos fuera de vista */
+    justify-content: center;
+  }
   
-.carousel-item {
-    width: 100%;
-    text-align: center;
-    transition: opacity 0.5s ease-in-out; /* Añadir transición suave */
-}
-  
-.carousel-image {
-    width: 100%; /* Esto asegura que la imagen ocupe el ancho del contenedor */
-    height: 400px; /* Establecemos una altura fija para todas las imágenes */
-    object-fit: cover; /* Esto asegura que la imagen se ajuste sin distorsionarse */
-    max-width: 600px;
-    border-radius: 10px;
-    cursor: pointer; /* Cursor de mano para indicar que es clickeable */
-}
-  
-.carousel-info {
-    margin-top: 10px;
-}
-
-/* Estilos para las letras */
-.product-name {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-}
-
-.product-description {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 10px;
-}
-
-.product-price {
-    font-size: 1.5rem;
-    color: #333;
-    font-weight: bold;
-}
-
-/* Botones del carrusel */
-.carousel-btn {
+  /* Botones del carrusel */
+  .carousel-btn {
     position: absolute;
     top: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    background-color: #f5f5f5;
+    color: #1e2a38;
     border: none;
     font-size: 24px;
     cursor: pointer;
     padding: 10px;
     z-index: 1;
-}
+    border-radius: 50%;
+  }
   
-.prev-btn {
+  .prev-btn {
     left: 10px;
-}
+  }
   
-.next-btn {
+  .next-btn {
     right: 10px;
-}
+  }
   
-/* Animación de desvanecimiento para cambiar entre productos */
-.fade {
-    opacity: 0;
-    animation: fadeIn 0.5s forwards;
-}
+  /* Contenedor de los productos del carrusel */
+  .carousel-items {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.3s ease-in-out; /* Transición suave */
+    justify-content: center;
+  }
   
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+  /* Estilos para los productos */
+  .carousel-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 1px;
+    padding: 20px;
+    text-align: center;
+    min-width: 300px;
+    max-width: 300px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease; /* Transición para hover */
+  }
+  
+  .carousel-item:hover {
+    transform: translateY(-5px); /* Eleva el producto al hacer hover */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más fuerte al hacer hover */
+  }
+  
+  /* Ajuste de tamaño fijo para las imágenes */
+  .carousel-image {
+    width: 150px; /* Ancho fijo para todas las imágenes */
+    height: 150px; /* Altura fija para todas las imágenes */
+    object-fit: contain; /* Asegura que la imagen mantenga sus proporciones sin distorsionarse */
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Información del producto */
+  .product-name {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: #333;
+  }
+  
+  .product-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #1e2a38; /* Naranja del precio */
+  }
+  

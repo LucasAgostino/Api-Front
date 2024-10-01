@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Noto Sans Display', sans-serif; 
   background-color: #f5f5f5;
 }
   
@@ -36,7 +36,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 600px
+    min-height: 600px
 }
   
   .product-card:hover {
@@ -50,6 +50,7 @@ body {
   }
   
   .product-title {
+    font-family: 'Noto Sans Display', sans-serif;
     text-align: center;
     font-size: 1.5rem;
     margin: 15px 0;
@@ -57,8 +58,9 @@ body {
   }
   
   .product-description {
-    font-size: 20px;
-    flex-grow: 1; /* Esto permite que el texto se expanda hasta llenar el espacio disponible */
+    font-family: 'Noto Sans Display', sans-serif;
+    font-size: 19px;
+    
     text-align: justify; /* Para alinear el texto correctamente */
     margin-bottom: 20px;
 }
@@ -73,7 +75,7 @@ body {
     background-color: #1e2a38;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor: pointer;
     font-weight: bold;
     font-size: 1.2rem; /* Aumenta el tamaño de la fuente */

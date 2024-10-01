@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
+
 .learn-with-us-section {
     display: flex;
     justify-content: space-around; /* Centra los elementos horizontalmente */
@@ -25,6 +27,7 @@
   }
   
   .learn-description {
+    font-family: 'Noto Sans Display', sans-serif;
     font-size: 1.1rem;
     text-align: justify;
     line-height: 1.8; /* Mejor separación entre las líneas */

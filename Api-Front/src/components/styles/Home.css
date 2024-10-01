@@ -1,4 +1,5 @@
 /* General reset */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -8,6 +9,7 @@
   
   /* Full-screen container */
   .firstContainer {
+    font-family: 'Noto Sans Display', sans-serif;
     height: 100vh; 
     display: flex;
     justify-content: center; 

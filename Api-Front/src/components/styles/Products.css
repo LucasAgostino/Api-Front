@@ -1,16 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
 /* Contenedor principal que engloba todo */
-.body{
-    font-family: 'Noto Sans Display', sans-serif; 
-    background-color: #f5f5f5;
-}
+
 .main-container {
     width: 100%;
     padding: 20px;
     background-color: #f5f5f5;
+    font-family: 'Noto Sans Display', sans-serif;
 }
 
 /* Wrapper que engloba sidebar y productos */
 .content-wrapper {
+
+    padding-top: 20px;
     display: flex;
     width: 70%; /* Ocupa el 70% de la página */
     justify-content: space-between; /* Sidebar pegada a productos */
@@ -23,9 +24,8 @@
     width: 25%; /* Sidebar ocupa el 25% del 70% total */
     background-color: #f5f5f5;
     padding: 20px;
-    border-right: 1px solid #ddd;
-    min-height: 100vh; /* Asegura que la sidebar tenga suficiente altura */
-    overflow-y: auto; /* Asegura que el contenido sea visible */
+    border-top: 2px solid #333;
+    min-height: 100vh; 
 }
 
 .sidebar h2 {
@@ -59,45 +59,80 @@
     grid-template-columns: repeat(3, 1fr); /* Tres productos por fila */
     gap: 20px;
     width: 100%;
+    margin-left: 20px;
 }
 
-/* Tarjeta de producto */
-.product-card {
+.product-card1 {
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 1px;
     padding: 20px;
     text-align: center;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    height: 550px; /* Altura fija de las tarjetas */
+    display: flex;
+    flex-direction: column; /* Distribuye los elementos de arriba a abajo */
+    justify-content: space-between; /* Asegura que haya espacio entre los elementos */
+    transition: transform 0.3s ease; /* Transición suave en hover */
 }
 
-.product-card img {
+.product-card1:hover {
+    transform: translateY(-10px); /* Eleva la tarjeta al hacer hover */
+}
+
+/* Ajuste de tamaño de imágenes */
+.product-card1 img {
     width: 100%;
-    height: auto;
+    height: 200px; /* Altura fija para todas las imágenes */
+    object-fit: cover; /* Asegura que la imagen se ajuste correctamente al contenedor */
     border-radius: 5px;
     margin-bottom: 10px;
 }
 
-.product-card h3 {
-    font-size: 1.2rem;
+/* Contenido del medio (precio y descripción) */
+.product-card1 .product-info {
+    flex-grow: 1; /* Permite que la información del producto ocupe el espacio restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-card1 h3 {
+    font-size: 1.4rem; /* Letra más grande para el título */
     margin: 10px 0;
 }
 
-.product-card p {
-    font-size: 1rem;
+.product-card1 p {
+    font-size: 1.1rem; /* Letra más grande para la descripción */
+    color: #666;
+    line-height: 1.5;
     margin-bottom: 10px;
+    max-height: 5.4em; /* Más espacio para descripciones largas */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Si es muy larga, aparecerán tres puntos */
 }
 
-.view-more-btn {
-    background-color: #007bff;
+.product-card1 .price {
+    font-size: 1.3rem; /* Letra más grande para el precio */
+    font-weight: bold;
+    margin: 10px 0;
+    color: #333;
+}
+
+/* Botón "Ver más" en la parte inferior */
+.product-card1 .view-more-btn {
+    background-color: #1e2a38;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 25px;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    align-self: center; /* Centra el botón */
+    margin-top: auto; /* Empuja el botón hacia abajo */
 }
 
-.view-more-btn:hover {
-    background-color: #0056b3;
+.product-card1 .view-more-btn:hover {
+    background-color: #16222b;
 }
