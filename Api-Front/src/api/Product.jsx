@@ -89,6 +89,16 @@ export const fetchProductsByCategory = async (categoryId) => {
     }
 };
 
+// Función para obtener todos los tags
+export const fetchTags = async () => {
+    try {
+        const response = await api.get('/get/tags');
+        return response.data;
+    } catch (error) {
+        throw new Error('Error fetching tags');
+    }
+};
+
 // Función para filtrar productos por precio
 export const filterProductsByPrice = async (minPrice, maxPrice) => {
     try {

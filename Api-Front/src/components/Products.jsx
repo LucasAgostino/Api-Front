@@ -5,14 +5,18 @@ import BrandCarousel from './BrandCarousel';
 import HeroCarousel from './HeroCarousel';
 import { fetchProductos } from '../api/Product'; 
 import { fetchCategories } from '../api/Category'; // Importa la función para obtener las categorías
+import { fetchTags } from '../api/Product'; // Importa la función para obtener los tags
 
 const ProductsGrid = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]); // Estado para las etiquetas
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingTags, setLoadingTags] = useState(true); // Estado para la carga de etiquetas
   const [errorProducts, setErrorProducts] = useState(null);
   const [errorCategories, setErrorCategories] = useState(null);
+  const [errorTags, setErrorTags] = useState(null); // Estado para errores de etiquetas
 
   useEffect(() => {
     // Obtener productos
@@ -39,13 +43,27 @@ const ProductsGrid = () => {
       }
     };
 
+    // Obtener etiquetas
+    const getTags = async () => {
+      try {
+        const data = await fetchTags();
+        setTags(data); // Guardar etiquetas en el estado
+      } catch (error) {
+        setErrorTags('Error al cargar las etiquetas');
+      } finally {
+        setLoadingTags(false);
+      }
+    };
+
     getProducts();
     getCategories();
+    getTags(); // Llamar para obtener las etiquetas
   }, []);
 
-  if (loadingProducts || loadingCategories) return <p>Cargando...</p>;
+  if (loadingProducts || loadingCategories || loadingTags) return <p>Cargando...</p>;
   if (errorProducts) return <p>{errorProducts}</p>;
   if (errorCategories) return <p>{errorCategories}</p>;
+  if (errorTags) return <p>{errorTags}</p>;
 
   return (
     <div className="main-container">
@@ -74,11 +92,11 @@ const ProductsGrid = () => {
           </li>
 
           <h2>Etiquetas</h2>
-          <ul>
-            <li>Etiqueta 1</li>
-            <li>Etiqueta 2</li>
-            <li>Etiqueta 3</li>
-          </ul>
+          <li>
+            {tags.map((tag) => (
+              <li key={tag}>{tag}</li> // Mostrar etiquetas dinámicamente
+            ))}
+          </li>
         </aside>
 
         {/* Productos */}
