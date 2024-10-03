@@ -4,7 +4,7 @@ import '../styles/Login.css';
 import { authenticateUser } from '../../api/Auth'; // Importar la función de autenticación
 
 const Login = () => {
-  const [username, setUsername] = useState(''); // Cambiado a username
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -12,11 +12,13 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const authData = { username, password }; // Utilizando username
+      const authData = { username, password };
       const response = await authenticateUser(authData);
       
-      // Aquí puedes manejar el token o la respuesta recibida, por ejemplo, guardarlo en localStorage
-      localStorage.setItem('token', response.token); // Si la respuesta tiene un token JWT
+      // Guardar el token y el rol en localStorage
+      localStorage.setItem('token', response.access_token); // Guardar el token JWT
+      localStorage.setItem('role', response.role); // Guardar el rol del usuario
+
       console.log('Autenticación exitosa:', response);
 
       // Redirigir al usuario después de una autenticación exitosa
@@ -36,9 +38,9 @@ const Login = () => {
           <div>
             <label>Nombre de Usuario</label>
             <input
-              type="text" // Cambiado a text
+              type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)} // Cambiado a setUsername
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
