@@ -1,0 +1,57 @@
+/* Sidebar CSS */
+.sidebaradmin {
+  display: flex;
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+}
+
+#leftside-navigation-admin {
+  width: 240px;
+  background: #293949;
+  position: fixed;
+  left: 0;
+  top: 0; /* Empieza desde la parte superior de la pantalla */
+  height: 100vh; /* Ocupa toda la altura de la pantalla */
+  overflow-y: auto;
+  z-index: 500; /* Asegura que esté visible sobre el contenido principal */
+}
+
+/* Estilos para las opciones del sidebar */
+#leftside-navigation-admin div {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 18px 25px;
+  font-size: 14px;
+  color: #aeb2b7;
+  cursor: pointer;
+}
+
+#leftside-navigation-admin div:hover {
+  color: #1abc9c;
+}
+
+/* Estilos para el botón de volver al home */
+.home-button-container {
+  position: absolute;
+  bottom: 20px; /* Fija el botón al final del sidebar */
+  width: 100%;
+  padding: 18px 25px;
+  font-size: 14px;
+  color: #aeb2b7;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.home-button-container i {
+  margin-right: 10px; /* Espacio entre el ícono y el texto */
+}
+
+.home-button-container:hover {
+  color: #1abc9c; /* Cambia el color cuando se pasa el mouse por encima */
+}
+
+/* Contenido principal */
+.sidebaradmin main {
+  margin-left: 240px;
+  padding: 20px;
+  width: calc(100% - 240px);
+}
