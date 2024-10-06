@@ -24,19 +24,19 @@ const SidebarAdmin = () => {
         </div>
 
         <div onClick={() => handleOptionClick('users')}>
-          <i className="fa fa-dashboard"></i>
+          <i className="fa fa-dashboard material-symbols-outlined">switch_account</i>
           <span>Usuarios</span>
         </div>
         <div onClick={() => handleOptionClick('orders')}>
-          <i className="fa fa-cogs"></i>
+          <i className="fa fa-cogs material-symbols-outlined">orders</i>
           <span>Ordenes</span>
         </div>
         <div onClick={() => handleOptionClick('products')}>
-          <i className="fa fa-table"></i>
+          <i className="fa fa-table material-symbols-outlined">computer</i>
           <span>Productos</span>
         </div>
         <div onClick={() => handleOptionClick('category')}>
-          <i className="fa fa-envelope"></i>
+          <i className="fa fa-envelope material-symbols-outlined">list</i>
           <span>Categorias</span>
         </div>
 
@@ -44,7 +44,7 @@ const SidebarAdmin = () => {
 
         {/* Botón para volver al home */}
         <div className="home-button-container" onClick={handleHomeClick}>
-          <i className="fa fa-home"></i>
+          <i className="fa fa-home material-symbols-outlined">home</i>
           <span>Volver al Home</span>
         </div>
       </nav>

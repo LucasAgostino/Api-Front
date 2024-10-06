@@ -2,6 +2,7 @@
 .sidebaradmin {
   display: flex;
   height: 100vh; /* Ocupa toda la altura de la pantalla */
+  font-family:'Noto Sans Display', sans-serif; 
 }
 
 #leftside-navigation-admin {
@@ -22,10 +23,15 @@
   font-size: 14px;
   color: #aeb2b7;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 #leftside-navigation-admin div:hover {
   color: #1abc9c;
+}
+#leftside-navigation-admin i {
+  margin-right: 10px;
 }
 
 /* Estilos para el botón de volver al home */
