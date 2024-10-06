@@ -9,6 +9,7 @@ import Register from './components/Auth/Register';
 import ProductDetail from './components/ProductDetail'; // Página de detalles del producto
 import Footer from './components/Footer';
 import SidebarAdmin from './components/SidebarAdmin'; // Sidebar del admin
+import ShoppingCart from './components/ShoppingCart';
 
 // Creamos un layout para las rutas públicas con Header y Footer
 const PublicLayout = () => (
@@ -21,6 +22,7 @@ const PublicLayout = () => (
         <Route path="/login" element={<Login />} /> {/* Ruta al login */}
         <Route path="/register" element={<Register />} /> {/* Ruta al registro */}
         <Route path="/products/:id" element={<ProductDetail />} /> {/* Ruta a la página de detalles del producto */}
+        <Route path="/cart" element={<ShoppingCart />} /> {/* Ruta al carrito de compras */}
       </Routes>
     </main>
     <Footer />

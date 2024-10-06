@@ -40,12 +40,33 @@ export const updateProductInCart = async (productId, quantity) => {
 // Función para obtener el carrito del usuario
 export const fetchCart = async () => {
     try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            console.error('No se encontró el token en localStorage');
+            throw new Error('No token found');
+        }
+
+        // Asegúrate de que el token esté configurado en las cabeceras
+        setAuthToken(token); 
+        console.log('Token enviado en la solicitud:', api.defaults.headers.common['Authorization']);
+        
         const response = await api.get('/get');
-        return response.data; // Devuelve el carrito
+        console.log('Respuesta del servidor:', response.data);
+        return response.data;
     } catch (error) {
+        if (error.response) {
+            console.error('Error del servidor:', error.response.data);
+            console.error('Código de estado HTTP:', error.response.status);
+        } else if (error.request) {
+            console.error('Error en la solicitud, sin respuesta del servidor:', error.request);
+        } else {
+            console.error('Error inesperado:', error.message);
+        }
         throw new Error('Error fetching cart');
     }
 };
+
 
 // Función para eliminar un producto del carrito
 export const removeProductFromCart = async (productId) => {
