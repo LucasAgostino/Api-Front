@@ -1,15 +1,16 @@
 .shopping-cart-container {
-    margin: 40px auto;
+    margin: 150px auto 50px;
     width: 90%;
     max-width: 1200px;
     background-color: #f6f6f6;
     padding: 20px;
-    border-radius: 8px;
+
 }
 
 .shopping-cart-flex {
     display: flex;
-    justify-content: space-between;
+
+    gap: 35px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -17,7 +18,7 @@
     width: 70%;
     background-color: white;
     padding: 20px;
-    border-radius: 8px;
+
 }
 
 .shopping-cart-header {
@@ -41,7 +42,7 @@
     justify-content: space-between;
     margin-top: 40px;
     margin-bottom: 20px;
-    text-align: center; /* Centrar el contenido de las columnas */
+    text-align: center;
 }
 
 .shopping-cart-column-labels h3 {
@@ -53,17 +54,18 @@
 }
 
 .shopping-cart-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 40% 20% 40%; /* Fijar el ancho de las columnas */
     align-items: center;
     padding: 15px 0;
     border-bottom: 1px solid #eaeaea;
-    justify-content: space-between; /* Asegurar que los elementos se distribuyan correctamente */
 }
 
 .product-details {
     display: flex;
-    width: 40%;
+    width: 100%; /* Ocupa el 40% del ancho asignado */
     align-items: center;
+    gap: 10px;
 }
 
 .product-image img {
@@ -72,7 +74,8 @@
 }
 
 .product-info {
-    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-name {
@@ -95,12 +98,10 @@
     color: red;
 }
 
-.product-quantity,
-.product-price,
-.product-total {
-    width: 15%;
-    text-align: center;
-    font-size: 0.9rem;
+.product-quantity-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .quantity-input {
@@ -108,6 +109,7 @@
     width: 30px;
     border: 1px solid #ddd;
     padding: 5px;
+    margin: 0 10px;
     border-radius: 4px;
 }
 
@@ -115,6 +117,24 @@
     border: none;
     background: none;
     cursor: pointer;
+}
+
+.product-price {
+    text-align: right;
+    font-size: 1rem;
+    justify-content: flex-end;
+    
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: gray;
+    margin-right: 10px;
+}
+
+.discount-price {
+    font-weight: bold;
+    color: green;
 }
 
 .shopping-cart-continue {
@@ -206,15 +226,4 @@
 
 .checkout-btn:hover {
     background-color: #3a70b2;
-}
-
-.original-price {
-    text-decoration: line-through;
-    color: gray;
-    margin-right: 10px;
-}
-
-.discount-price {
-    font-weight: bold;
-    color: green;
 }
