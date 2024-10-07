@@ -3,6 +3,7 @@ import './styles/SidebarAdmin.css'; // Archivo CSS actualizado importado
 import UsersContent from './UsersContent'; // Importa el nuevo componente para Usuarios
 import ProductsContent from './ProductsContent';
 import OrdersContent from './OrdersContent';
+import CategoryContent from './CategoryContent';
 
 const SidebarAdmin = () => {
   const [selectedOption, setSelectedOption] = useState('dashboard');
@@ -60,9 +61,6 @@ const SidebarAdmin = () => {
   );
 };
 
-// Componentes para cada sección (estos ya estaban definidos)
-const CategoryContent = () => {
-  return <div>Contenido de Categorias</div>;
-};
+
 
 export default SidebarAdmin;
