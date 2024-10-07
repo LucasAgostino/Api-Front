@@ -26,7 +26,7 @@ export const fetchCategories = async () => {
 // Función para crear una nueva categoría
 export const createCategory = async (category) => {
   try {
-    const response = await api.post(category); // El token ya está en los headers gracias a setAuthToken
+    const response = await api.post('',category); // El token ya está en los headers gracias a setAuthToken
     return response.data; // Devuelve la categoría creada
   } catch (error) {
     throw new Error('Error creating category');
