@@ -16,14 +16,21 @@ export const setAuthToken = (token) => {
 // Función para agregar un producto al carrito
 export const addProductToCart = async (productId, quantity) => {
     try {
-        const response = await api.post('/add', null, {
-            params: { productId, quantity }
-        });
-        return response.data; // Devuelve el mensaje de respuesta
+      const token = localStorage.getItem('token'); // Obtener el token desde localStorage
+      if (!token) {
+        throw new Error('No se encontró el token. El usuario no está autenticado.');
+      }
+      
+      setAuthToken(token); // Configurar el token en las cabeceras
+      
+      const response = await api.post('/add', null, {
+        params: { productId, quantity }
+      });
+      return response.data; // Devuelve el mensaje de respuesta
     } catch (error) {
-        throw new Error('Error adding product to cart');
+      throw new Error('Error adding product to cart');
     }
-};
+  };
 
 // Función para actualizar un producto en el carrito
 export const updateProductInCart = async (productId, quantity) => {

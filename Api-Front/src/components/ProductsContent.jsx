@@ -5,21 +5,37 @@ import {
   softDeleteProduct,
   updateProduct,
 } from '../api/Product'; // Asegúrate de que la ruta es correcta
-import './styles/ProductsContent.css'; // Importa el CSS
+import { fetchCategories } from '../api/Category'; // Importa la función para traer las categorías
+import './styles/ProductsContentAdmin.css'; // Importa el CSS
 
 const ProductsContent = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]); // Estado para las categorías
   const [newProduct, setNewProduct] = useState({
     productName: '',
     price: 0,
     productDescription: '',
     stock: 0,
-    categoryName: '',
+    categoryName: '', // Esto ahora será un select
     discountPercentage: 0.0,
     tags: '',
+    imageBase64s: '', // Estado para almacenar la imagen en base64
   });
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
+
+  // Obtener todas las categorías al cargar el componente
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      try {
+        const data = await fetchCategories(); // Trae las categorías desde la API
+        setCategories(data); // Guarda las categorías en el estado
+      } catch (error) {
+        console.error('Error al obtener las categorías:', error);
+      }
+    };
+    fetchAllCategories();
+  }, []);
 
   // Obtener todos los productos al cargar el componente
   useEffect(() => {
@@ -34,10 +50,21 @@ const ProductsContent = () => {
     fetchAllProducts();
   }, []);
 
+  // Manejar la carga de imágenes y convertirla a base64
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setNewProduct({ ...newProduct, imageBase64s: [reader.result] }); // Actualiza el estado con la imagen en base64
+    };
+    if (file) {
+      reader.readAsDataURL(file); // Lee el archivo y lo convierte a base64
+    }
+  };
+
   // Crear un nuevo producto
   const handleCreateProduct = async () => {
     try {
-      // El campo tags es un string en el formulario, lo convertimos a un array
       const productData = {
         ...newProduct,
         tags: newProduct.tags.split(',').map((tag) => tag.trim()), // Convierte la cadena de tags a un array
@@ -54,6 +81,7 @@ const ProductsContent = () => {
         categoryName: '',
         discountPercentage: 0.0,
         tags: '',
+        imageBase64s: '', // Reiniciar la imagen
       }); // Reinicia el formulario
     } catch (error) {
       console.error('Error al crear el producto:', error);
@@ -93,47 +121,67 @@ const ProductsContent = () => {
       {/* Crear nuevo producto */}
       <div className="create-product-form">
         <h3>Crear Nuevo Producto</h3>
+        <label htmlFor="productName">Nombre del producto</label>
         <input
           type="text"
+          id="productName"
           value={newProduct.productName}
           onChange={(e) => setNewProduct({ ...newProduct, productName: e.target.value })}
-          placeholder="Nombre del producto"
         />
+        <label htmlFor="price">Precio del producto</label>
         <input
           type="number"
+          id="price"
           value={newProduct.price}
           onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-          placeholder="Precio del producto"
         />
+        <label htmlFor="productDescription">Descripción del producto</label>
         <textarea
+          id="productDescription"
           value={newProduct.productDescription}
           onChange={(e) => setNewProduct({ ...newProduct, productDescription: e.target.value })}
-          placeholder="Descripción del producto"
         ></textarea>
+        <label htmlFor="stock">Stock</label>
         <input
           type="number"
+          id="stock"
           value={newProduct.stock}
           onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
-          placeholder="Stock"
         />
-        <input
-          type="text"
+        <label htmlFor="categoryName">Categoría</label>
+        <select
+          id="categoryName"
           value={newProduct.categoryName}
           onChange={(e) => setNewProduct({ ...newProduct, categoryName: e.target.value })}
-          placeholder="Categoría"
-        />
+        >
+          <option value="">Seleccione una categoría</option>
+          {categories.map((category) => (
+            <option key={category.categoryId} value={category.categoryName}>
+              {category.categoryName}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="discountPercentage">Porcentaje de descuento</label>
         <input
           type="number"
+          id="discountPercentage"
           value={newProduct.discountPercentage}
           onChange={(e) => setNewProduct({ ...newProduct, discountPercentage: e.target.value })}
-          placeholder="Porcentaje de descuento"
         />
+        <label htmlFor="tags">Tags separados por coma</label>
         <input
           type="text"
+          id="tags"
           value={newProduct.tags}
           onChange={(e) => setNewProduct({ ...newProduct, tags: e.target.value })}
-          placeholder="Tags separados por coma"
         />
+        <label htmlFor="imageUpload">Subir imagen</label>
+        <input type="file" id="imageUpload" onChange={handleImageUpload} />
+        {newProduct.imageBase64s && (
+          <div className="image-preview">
+            <img src={newProduct.imageBase64s} alt="Preview" style={{ width: '100px' }} />
+          </div>
+        )}
         <button onClick={handleCreateProduct}>Crear Producto</button>
       </div>
 
@@ -150,6 +198,7 @@ const ProductsContent = () => {
               <th>Categoría</th>
               <th>Descuento</th>
               <th>Tags</th>
+              <th>Imagen</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -164,6 +213,11 @@ const ProductsContent = () => {
                 <td>{product.discountPercentage}%</td>
                 <td>{product.tags.join(', ')}</td>
                 <td>
+                  {product.imageBase64s && (
+                    <img src={product.imageBase64s[0]} alt={product.productName} style={{ width: '50px' }} />
+                  )}
+                </td>
+                <td>
                   <button onClick={() => setEditProductId(product.productId)}>Editar</button>
                   <button onClick={() => handleDeleteProduct(product.productId)}>Eliminar</button>
                 </td>
@@ -177,46 +231,59 @@ const ProductsContent = () => {
       {editProductId && (
         <div className="edit-product-form">
           <h3>Editar Producto</h3>
+          <label htmlFor="editProductName">Nombre del producto</label>
           <input
             type="text"
+            id="editProductName"
             value={editProductData.productName || ''}
             onChange={(e) => setEditProductData({ ...editProductData, productName: e.target.value })}
-            placeholder="Nombre del producto"
           />
+          <label htmlFor="editPrice">Precio del producto</label>
           <input
             type="number"
+            id="editPrice"
             value={editProductData.price || 0}
             onChange={(e) => setEditProductData({ ...editProductData, price: e.target.value })}
-            placeholder="Precio del producto"
           />
+          <label htmlFor="editProductDescription">Descripción del producto</label>
           <textarea
+            id="editProductDescription"
             value={editProductData.productDescription || ''}
             onChange={(e) => setEditProductData({ ...editProductData, productDescription: e.target.value })}
-            placeholder="Descripción del producto"
           ></textarea>
+          <label htmlFor="editStock">Stock</label>
           <input
             type="number"
+            id="editStock"
             value={editProductData.stock || 0}
             onChange={(e) => setEditProductData({ ...editProductData, stock: e.target.value })}
-            placeholder="Stock"
           />
-          <input
-            type="text"
-            value={editProductData.categoryName || ''}
+          <label htmlFor="editCategoryName">Categoría</label>
+          <select
+            id="editCategoryName"
+            value={editProductData.categoryName}
             onChange={(e) => setEditProductData({ ...editProductData, categoryName: e.target.value })}
-            placeholder="Categoría"
-          />
+          >
+            <option value="">Seleccione una categoría</option>
+            {categories.map((category) => (
+              <option key={category.categoryId} value={category.categoryName}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="editDiscountPercentage">Porcentaje de descuento</label>
           <input
             type="number"
+            id="editDiscountPercentage"
             value={editProductData.discountPercentage || 0}
             onChange={(e) => setEditProductData({ ...editProductData, discountPercentage: e.target.value })}
-            placeholder="Porcentaje de descuento"
           />
+          <label htmlFor="editTags">Tags separados por coma</label>
           <input
             type="text"
+            id="editTags"
             value={editProductData.tags || ''}
             onChange={(e) => setEditProductData({ ...editProductData, tags: e.target.value })}
-            placeholder="Tags separados por coma"
           />
           <button onClick={() => handleEditProduct(editProductId)}>Guardar Cambios</button>
         </div>

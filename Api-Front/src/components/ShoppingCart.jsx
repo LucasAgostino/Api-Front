@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchCart, removeProductFromCart } from '../api/Cart'; // Importar la función para eliminar
+import { fetchCart, removeProductFromCart, addProductToCart, decreaseProductInCart, checkoutCart } from '../api/Cart'; // Importar la función para eliminar
 import '../components/styles/ShoppingCart.css';
 
 const ShoppingCart = () => {
@@ -35,6 +35,26 @@ const ShoppingCart = () => {
     loadCart(); // Cargamos el carrito cuando se monta el componente
   }, [navigate]);
 
+  const updateQuantity = async (productId, quantity, action) => {
+    try {
+      if (action === "decrease" && quantity > 1) {
+        // Llamar a decreaseProductInCart para reducir la cantidad
+        await decreaseProductInCart(productId, 1);
+      } else if (action === "increase") {
+        // Llamar a addProductToCart para incrementar la cantidad
+        await addProductToCart(productId, 1);
+      } else if (quantity === 1 && action === "decrease") {
+        console.warn("La cantidad no puede ser menor que 1.");
+        return;
+      }
+  
+      const updatedCart = await fetchCart(); // Recargar el carrito después de la actualización
+      setCart(updatedCart); // Actualizar el estado del carrito
+    } catch (error) {
+      console.error('Error al actualizar la cantidad del producto:', error);
+    }
+  };
+  
   // Función para calcular el total de los productos en el carrito
   const calculateTotalCost = () => {
     if (!cart) return 0;
@@ -96,14 +116,21 @@ const ShoppingCart = () => {
             </div>
         
             <div className="product-quantity-container">
-                <button className="quantity-decrease" onClick={() => updateQuantity(product.cartProductId, product.quantity - 1)}>
-                    -
-                </button>
-                <input className="quantity-input" type="text" value={product.quantity} readOnly />
-                <button className="quantity-increase" onClick={() => updateQuantity(product.cartProductId, product.quantity + 1)}>
-                    +
-                </button>
-            </div>
+            <button 
+              className="quantity-decrease" 
+              onClick={() => updateQuantity(product.productId, product.quantity, "decrease")}
+            >
+              -
+            </button>
+            <input className="quantity-input" type="text" value={product.quantity} readOnly />
+            <button 
+              className="quantity-increase" 
+              onClick={() => updateQuantity(product.productId, product.quantity, "increase")}
+            >
+              +
+            </button>
+
+              </div>
         
             <div className="product-price">
                 {product.discountPrice && (
@@ -148,7 +175,22 @@ const ShoppingCart = () => {
               <span>Costo Total</span>
               <span>${(calculateTotalCost()).toFixed(2)}</span>
             </div>
-            <button className="checkout-btn">Checkout</button>
+            <button 
+              className="checkout-btn" 
+              onClick={async () => {
+                try {
+                  await checkoutCart(); // Llamar a la función para realizar el checkout
+                  alert('Checkout exitoso. Gracias por tu compra.'); // Mensaje de éxito
+                  navigate('/'); // Redirige a la página principal después del checkout
+                } catch (error) {
+                  console.error('Error al realizar el checkout:', error);
+                  alert('Hubo un problema con el checkout. Intenta nuevamente.');
+                }
+              }}
+            >
+              Checkout
+            </button>
+
           </div>
         </div>
       </div>
