@@ -20,7 +20,7 @@ const ProductsContent = () => {
     price: 0,
     productDescription: '',
     stock: 0,
-    categoryName: '', // Esto ahora será un select
+    categoryId: '', // Esto ahora será un select
     discountPercentage: 0.0,
     tags: '',
     imageBase64s: '', // Estado para almacenar la imagen en base64
@@ -69,67 +69,86 @@ const ProductsContent = () => {
   };
 
   // Añadir etiqueta seleccionada a la lista de etiquetas del producto
-  const handleAddTag = (e) => {
-    const selectedTag = e.target.value;
-    if (selectedTag && !selectedTags.includes(selectedTag)) {
-      setSelectedTags([...selectedTags, selectedTag]);
-    }
-  };
+const handleAddTag = (e) => {
+  const selectedTag = e.target.value;
+  if (selectedTag && !selectedTags.includes(selectedTag)) {
+    const updatedTags = [...selectedTags, selectedTag];
+    setSelectedTags(updatedTags);
+    setNewProduct({ ...newProduct, tags: updatedTags.join(', ') }); // Actualiza las tags en el estado de newProduct
+  }
+};
 
   // Eliminar etiqueta seleccionada de la lista
   const handleRemoveTag = (tagToRemove) => {
-    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+    const updatedTags = selectedTags.filter((tag) => tag !== tagToRemove);
+    setSelectedTags(updatedTags);
+    setNewProduct({ ...newProduct, tags: updatedTags.join(', ') }); // Actualiza las tags en el estado de newProduct
   };
-
+  
   // Crear un nuevo producto
   const handleCreateProduct = async () => {
     const token = localStorage.getItem('token');
-    console.log('Token:', token); // Asegúrate de que el token está disponible
   
     if (!token) {
       console.error('No se encontró un token');
       return;
     }
   
-    setAuthToken(token); // Establece el token antes de hacer la solicitud
+    setAuthToken(token);
+  
+    const formData = new FormData();
+    formData.append('productName', newProduct.productName);
+    formData.append('productDescription', newProduct.productDescription);
+    formData.append('price', parseFloat(newProduct.price).toString());
+    formData.append('stock', parseInt(newProduct.stock, 10).toString());
+    formData.append('categoryId', parseInt(newProduct.categoryId, 10).toString());
+  
+    // Agregar descuento, incluso si es 0
+    formData.append('discountPercentage', parseFloat(newProduct.discountPercentage).toString());
+  
+    // Agregar imágenes, aunque no existan (se enviará null o vacío si no hay)
+    if (newProduct.imageBase64s) {
+      const blob = await fetch(newProduct.imageBase64s).then(res => res.blob());
+      formData.append('images', blob, 'image.jpg');
+    } else {
+      formData.append('images', null); // Agregar un valor vacío o null si no hay imagen
+    }
+  
+    // Agregar tags como un array
+    const tagsArray = newProduct.tags.split(',').map(tag => tag.trim());
+    tagsArray.forEach(tag => formData.append('tags', tag));
+  
+    // Imprimir los datos que se envían
+    for (let [key, value] of formData.entries()) {
+      console.log(key + ': ' + value);
+    }
   
     try {
-      const productData = {
-        productName: newProduct.productName,
-        productDescription: newProduct.productDescription,
-        price: newProduct.price,
-        discountPercentage: newProduct.discountPercentage || 0,
-        stock: newProduct.stock,
-        categoryId: newProduct.categoryId, // Enviar el ID de la categoría
-        tags: newProduct.tags.split(',').map((tag) => tag.trim()), // Convierte la cadena de tags a un array
-        imageBase64s: newProduct.imageBase64s ? [newProduct.imageBase64s] : [], // Verifica si hay imagen y envíala como array
-      };
-  
-      console.log('Datos que se envían:', productData);
-  
-      const createdProduct = await createProduct(productData);
+      const createdProduct = await createProduct(formData);
       console.log('Producto creado:', createdProduct);
   
-      // Aquí se muestra el uso del categoryName que devuelve el backend
-      setProducts([...products, createdProduct]); // Ahora, el createdProduct tiene categoryName en lugar de categoryId
-  
+      // Reiniciar formulario
       setNewProduct({
         productName: '',
-        price: 0,
+        price: '',
         productDescription: '',
-        stock: 0,
-        categoryId: '', // Reinicia el ID de la categoría
+        stock: '',
+        categoryId: '',
         discountPercentage: 0.0,
         tags: '',
-        imageBase64s: '', // Reinicia el estado de la imagen
+        imageBase64s: '',
       });
+      setSelectedTags([]);
     } catch (error) {
       console.error('Error al crear el producto:', error);
     }
   };
   
   
-
+  
+  
+  
+  
   return (
     <div className="products-contents-admin">
       <h2>Gestión de Productos</h2>
@@ -167,12 +186,12 @@ const ProductsContent = () => {
         <label htmlFor="categoryName">Categoría</label>
         <select
           id="categoryName"
-          value={newProduct.categoryName}
-          onChange={(e) => setNewProduct({ ...newProduct, categoryName: e.target.value })}
+          value={newProduct.categoryId}
+          onChange={(e) => setNewProduct({ ...newProduct, categoryId: e.target.value })}
         >
           <option value="">Seleccione una categoría</option>
           {categories.map((category) => (
-            <option key={category.categoryId} value={category.categoryName}>
+            <option key={category.categoryId} value={category.categoryId}>
               {category.categoryName}
             </option>
           ))}
@@ -195,16 +214,21 @@ const ProductsContent = () => {
         </select>
 
         {/* Mostrar etiquetas seleccionadas */}
-        <div className="selected-tags">
-          {selectedTags.map((tag) => (
-            <div key={tag} className="tag">
-              {tag}
-              <span className="remove" onClick={() => handleRemoveTag(tag)}>
-                &times;
-              </span>
-            </div>
-          ))}
-        </div>
+<div className="selected-tags">
+  {selectedTags.length > 0 ? (
+    selectedTags.map((tag) => (
+      <div key={tag} className="tag">
+        {tag}
+        <span className="remove" onClick={() => handleRemoveTag(tag)}>
+          &times;
+        </span>
+      </div>
+    ))
+  ) : (
+    <div>No hay etiquetas seleccionadas.</div> // Mensaje si no hay etiquetas
+  )}
+</div>
+
 
         <label htmlFor="imageUpload">Subir imagen</label>
         <input type="file" id="imageUpload" onChange={handleImageUpload} />
