@@ -90,3 +90,57 @@
 .products-list button:hover {
   background-color: #2980b9;
 }
+
+/* Estilo para el contenedor de etiquetas seleccionadas */
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.selected-tags .tag {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.selected-tags .tag:hover {
+  background-color: #2980b9;
+}
+
+.selected-tags .tag .remove {
+  margin-left: 10px;
+  color: #e74c3c;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.selected-tags .tag .remove:hover {
+  color: #c0392b;
+}
+
+/* Estilo para el select de etiquetas */
+select#tags {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+.image-preview {
+  margin-top: 10px;
+}
+
+.image-preview img {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100px;
+}

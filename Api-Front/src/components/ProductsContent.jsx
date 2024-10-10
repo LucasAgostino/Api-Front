@@ -4,13 +4,17 @@ import {
   createProduct,
   softDeleteProduct,
   updateProduct,
+  fetchTags, // Importa la función para traer las etiquetas (tags)
 } from '../api/Product'; // Asegúrate de que la ruta es correcta
 import { fetchCategories } from '../api/Category'; // Importa la función para traer las categorías
 import './styles/ProductsContentAdmin.css'; // Importa el CSS
+import { setAuthToken } from '../api/Product'; // O la ruta correcta donde está definida
 
 const ProductsContent = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]); // Estado para las categorías
+  const [tags, setTags] = useState([]); // Estado para los tags (etiquetas)
+  const [selectedTags, setSelectedTags] = useState([]); // Estado para las etiquetas seleccionadas
   const [newProduct, setNewProduct] = useState({
     productName: '',
     price: 0,
@@ -24,17 +28,19 @@ const ProductsContent = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
 
-  // Obtener todas las categorías al cargar el componente
+  // Obtener todas las categorías y etiquetas al cargar el componente
   useEffect(() => {
-    const fetchAllCategories = async () => {
+    const fetchAllData = async () => {
       try {
-        const data = await fetchCategories(); // Trae las categorías desde la API
-        setCategories(data); // Guarda las categorías en el estado
+        const categoryData = await fetchCategories();
+        const tagData = await fetchTags();
+        setCategories(categoryData); // Guarda las categorías en el estado
+        setTags(tagData); // Guarda los tags en el estado
       } catch (error) {
-        console.error('Error al obtener las categorías:', error);
+        console.error('Error al obtener los datos:', error);
       }
     };
-    fetchAllCategories();
+    fetchAllData();
   }, []);
 
   // Obtener todos los productos al cargar el componente
@@ -62,60 +68,70 @@ const ProductsContent = () => {
     }
   };
 
+  // Añadir etiqueta seleccionada a la lista de etiquetas del producto
+  const handleAddTag = (e) => {
+    const selectedTag = e.target.value;
+    if (selectedTag && !selectedTags.includes(selectedTag)) {
+      setSelectedTags([...selectedTags, selectedTag]);
+    }
+  };
+
+  // Eliminar etiqueta seleccionada de la lista
+  const handleRemoveTag = (tagToRemove) => {
+    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+  };
+
   // Crear un nuevo producto
   const handleCreateProduct = async () => {
+    const token = localStorage.getItem('token');
+    console.log('Token:', token); // Asegúrate de que el token está disponible
+  
+    if (!token) {
+      console.error('No se encontró un token');
+      return;
+    }
+  
+    setAuthToken(token); // Establece el token antes de hacer la solicitud
+  
     try {
       const productData = {
-        ...newProduct,
+        productName: newProduct.productName,
+        productDescription: newProduct.productDescription,
+        price: newProduct.price,
+        discountPercentage: newProduct.discountPercentage || 0,
+        stock: newProduct.stock,
+        categoryId: newProduct.categoryId, // Enviar el ID de la categoría
         tags: newProduct.tags.split(',').map((tag) => tag.trim()), // Convierte la cadena de tags a un array
+        imageBase64s: newProduct.imageBase64s ? [newProduct.imageBase64s] : [], // Verifica si hay imagen y envíala como array
       };
-
+  
+      console.log('Datos que se envían:', productData);
+  
       const createdProduct = await createProduct(productData);
-      console.log('Producto creado:', createdProduct); // Verifica si llega la respuesta del backend
-      setProducts([...products, createdProduct]);
+      console.log('Producto creado:', createdProduct);
+  
+      // Aquí se muestra el uso del categoryName que devuelve el backend
+      setProducts([...products, createdProduct]); // Ahora, el createdProduct tiene categoryName en lugar de categoryId
+  
       setNewProduct({
         productName: '',
         price: 0,
         productDescription: '',
         stock: 0,
-        categoryName: '',
+        categoryId: '', // Reinicia el ID de la categoría
         discountPercentage: 0.0,
         tags: '',
-        imageBase64s: '', // Reiniciar la imagen
-      }); // Reinicia el formulario
+        imageBase64s: '', // Reinicia el estado de la imagen
+      });
     } catch (error) {
       console.error('Error al crear el producto:', error);
     }
   };
-
-  // Eliminar un producto (soft delete)
-  const handleDeleteProduct = async (productId) => {
-    try {
-      await softDeleteProduct(productId);
-      setProducts(products.filter((product) => product.productId !== productId));
-    } catch (error) {
-      console.error('Error al eliminar el producto:', error);
-    }
-  };
-
-  // Manejar la edición de un producto
-  const handleEditProduct = async (productId) => {
-    try {
-      const productData = {
-        ...editProductData,
-        tags: editProductData.tags.split(',').map((tag) => tag.trim()), // Convierte la cadena de tags a un array
-      };
-
-      const updatedProduct = await updateProduct(productId, productData);
-      setProducts(products.map((product) => (product.productId === productId ? updatedProduct : product)));
-      setEditProductId(null); // Finaliza la edición
-    } catch (error) {
-      console.error('Error al actualizar el producto:', error);
-    }
-  };
+  
+  
 
   return (
-    <div className="products-content">
+    <div className="products-contents-admin">
       <h2>Gestión de Productos</h2>
 
       {/* Crear nuevo producto */}
@@ -168,13 +184,28 @@ const ProductsContent = () => {
           value={newProduct.discountPercentage}
           onChange={(e) => setNewProduct({ ...newProduct, discountPercentage: e.target.value })}
         />
-        <label htmlFor="tags">Tags separados por coma</label>
-        <input
-          type="text"
-          id="tags"
-          value={newProduct.tags}
-          onChange={(e) => setNewProduct({ ...newProduct, tags: e.target.value })}
-        />
+        <label htmlFor="tags">Etiquetas</label>
+        <select id="tags" onChange={handleAddTag}>
+          <option value="">Seleccione una etiqueta</option>
+          {tags.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
+          ))}
+        </select>
+
+        {/* Mostrar etiquetas seleccionadas */}
+        <div className="selected-tags">
+          {selectedTags.map((tag) => (
+            <div key={tag} className="tag">
+              {tag}
+              <span className="remove" onClick={() => handleRemoveTag(tag)}>
+                &times;
+              </span>
+            </div>
+          ))}
+        </div>
+
         <label htmlFor="imageUpload">Subir imagen</label>
         <input type="file" id="imageUpload" onChange={handleImageUpload} />
         {newProduct.imageBase64s && (

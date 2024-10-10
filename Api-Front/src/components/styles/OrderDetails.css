@@ -1,0 +1,84 @@
+.order-details-form {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    width: 100px;
+  }
+  
+  h2 {
+    color: #293949;
+    text-align: center;
+    flex-grow: 1;
+  }
+  
+  .order-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .order-column {
+    width: 48%;
+  }
+  
+  .order-column p {
+    margin: 8px 0;
+  }
+  
+  .order-products-title {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .order-products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .order-products-table th,
+  .order-products-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  .order-products-table th {
+    background-color: #d8e1f2;
+  }
+  
+  .footer {
+    text-align: center;
+    padding-top: 10px;
+  }
+  
+  .back-button {
+    padding: 12px 25px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #2980b9;
+  }
+  
