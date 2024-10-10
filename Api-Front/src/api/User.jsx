@@ -51,3 +51,14 @@ export const getUserByEmail = async (email) => {
     throw error;
   }
 };
+
+// Obtener el usuario actualmente logueado
+export const getCurrentUser = async () => {
+  try {
+    const response = await axiosInstance.get('/current');
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo el usuario actual:', error);
+    throw error;
+  }
+};

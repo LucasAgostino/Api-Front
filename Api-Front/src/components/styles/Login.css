@@ -1,20 +1,26 @@
-/* Contenedor principal del login */
+/* Contenedor principal del registro */
 .login-container {
   background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 800px;
+  height: 650px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  margin: 200px auto; /* Añadido margen para centrarlo mejor verticalmente */
-  height: auto; /* Ajuste de altura automática */
+  margin: 150px auto 50px; /* Añadido margen para centrarlo mejor verticalmente */
   position: relative;
   font-family: 'Noto Sans Display', sans-serif;
 }
 
-/* Lado izquierdo (formulario) */
+/* Lado izquierdo (imagen) ahora */
+.login-image {
+  width: 50%;
+
+}
+
+/* Lado derecho (formulario) */
 .login-form {
   width: 50%;
   padding: 40px;
@@ -61,7 +67,6 @@
   width: 100%;
   padding: 12px;
   background-color: #1e2a38;
-  ;
   color: white;
   font-size: 1rem;
   border: none;
@@ -72,46 +77,8 @@
 
 .login-form button:hover {
   background-color: #16222b;
-;
 }
 
-/* Estilo para la sección 'Remember me' */
-.login-form .remember-me {
-
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.login-form .remember-me input {
-  margin-right: 10px;
-}
-
-.login-form .remember-me label {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* Estilos para enlaces */
-.login-form a {
-  color: #007bff;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.login-form a:hover {
-  text-decoration: underline;
-}
-
-/* Lado derecho (imagen) */
-.login-image {
-  width: 50%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.no-footer {
-  display: none;
-}
 /* Estilos responsivos */
 @media (max-width: 768px) {
   .login-container {

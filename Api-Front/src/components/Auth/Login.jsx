@@ -21,8 +21,13 @@ const Login = () => {
 
       console.log('Autenticación exitosa:', response);
 
-      // Redirigir al usuario después de una autenticación exitosa
-      navigate('/');
+          // Redirigir al usuario al home
+          navigate('/');
+
+          // Refresca toda la página después de redirigir
+          setTimeout(() => {
+            window.location.reload();
+          }, 100); // Añade un pequeño retraso antes de recargar la página
     } catch (error) {
       setErrorMessage('Error al iniciar sesión. Verifica tus credenciales.');
       console.error('Error en la autenticación:', error);

@@ -61,3 +61,14 @@ export const getUserOrders = async () => {
     throw error;
   }
 };
+
+export const getUserOrderById = async (orderId) => {
+  try {
+    const response = await axiosInstance.get(`/myorder/${orderId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error obteniendo los detalles de la orden del usuario:', error);
+    throw error;
+  }
+};
+

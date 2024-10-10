@@ -69,14 +69,14 @@ const ProductsContent = () => {
   };
 
   // Añadir etiqueta seleccionada a la lista de etiquetas del producto
-const handleAddTag = (e) => {
-  const selectedTag = e.target.value;
-  if (selectedTag && !selectedTags.includes(selectedTag)) {
-    const updatedTags = [...selectedTags, selectedTag];
-    setSelectedTags(updatedTags);
-    setNewProduct({ ...newProduct, tags: updatedTags.join(', ') }); // Actualiza las tags en el estado de newProduct
-  }
-};
+  const handleAddTag = (e) => {
+    const selectedTag = e.target.value;
+    if (selectedTag && !selectedTags.includes(selectedTag)) {
+      const updatedTags = [...selectedTags, selectedTag];
+      setSelectedTags(updatedTags);
+      setNewProduct({ ...newProduct, tags: updatedTags.join(', ') }); // Actualiza las tags en el estado de newProduct
+    }
+  };
 
   // Eliminar etiqueta seleccionada de la lista
   const handleRemoveTag = (tagToRemove) => {
@@ -144,10 +144,28 @@ const handleAddTag = (e) => {
     }
   };
   
-  
-  
-  
-  
+  // Manejar la eliminación de un producto
+  const handleDeleteProduct = async (productId) => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No se encontró un token');
+      return;
+    }
+
+    setAuthToken(token);
+
+    try {
+      // Llamar a la función softDeleteProduct pasando el ID del producto
+      await softDeleteProduct(productId);
+      console.log(`Producto con ID ${productId} eliminado correctamente`);
+
+      // Actualizar la lista de productos después de eliminar
+      setProducts((prevProducts) => prevProducts.filter(product => product.productId !== productId));
+    } catch (error) {
+      console.error('Error al eliminar el producto:', error);
+    }
+  };
   
   return (
     <div className="products-contents-admin">
