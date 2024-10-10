@@ -96,7 +96,31 @@ const ShoppingCart = () => {
                 <div className="product-info">
                     <p className="product-name">{product.productName}</p>
                     <p className="product-category">{product.categoryName || 'N/A'}</p>
-                    <a
+                    
+                </div>
+            </div>
+        
+            <div className="product-quantity-container">
+              <div className="product-quantity-modify">
+
+              
+                <button 
+                  className="quantity-decrease" 
+                  onClick={() => updateQuantity(product.productId, product.quantity, "decrease")}
+                >
+                  -
+                </button>
+                <input className="quantity-input" type="text" value={product.quantity} readOnly />
+                <button 
+                  className="quantity-increase" 
+                  onClick={() => updateQuantity(product.productId, product.quantity, "increase")}
+                >
+                  +
+                </button>
+
+              </div>
+              <div>
+              <a
                         href="#"
                         className="product-remove"
                         onClick={async () => {
@@ -112,25 +136,8 @@ const ShoppingCart = () => {
                     >
                         Eliminar
                     </a>
-                </div>
-            </div>
-        
-            <div className="product-quantity-container">
-            <button 
-              className="quantity-decrease" 
-              onClick={() => updateQuantity(product.productId, product.quantity, "decrease")}
-            >
-              -
-            </button>
-            <input className="quantity-input" type="text" value={product.quantity} readOnly />
-            <button 
-              className="quantity-increase" 
-              onClick={() => updateQuantity(product.productId, product.quantity, "increase")}
-            >
-              +
-            </button>
-
               </div>
+            </div>
         
             <div className="product-price">
                 {product.discountPrice && (

@@ -11,6 +11,7 @@
   margin: 200px auto; /* Añadido margen para centrarlo mejor verticalmente */
   height: auto; /* Ajuste de altura automática */
   position: relative;
+  font-family: 'Noto Sans Display', sans-serif;
 }
 
 /* Lado izquierdo (formulario) */
@@ -31,6 +32,7 @@
 }
 
 .login-form p {
+  margin-top: 10px;
   margin-bottom: 20px;
   color: #666;
   font-size: 1rem; /* Tamaño ajustado para mayor claridad */

@@ -25,7 +25,7 @@ html {
   body {
     margin: 0;
     overflow-x: hidden;
-    font-family: 'Noto Sans JP', sans-serif;
+    font-family: 'Noto Sans Display', sans-serif;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -191,6 +191,22 @@ html {
   #files {
     display: none;
   }
+
+  .cart-icon {
+    height: 30px;
+    width: 30px;
+    vertical-align: middle;
+  }
+  
+  .auth-links {
+    display: flex;
+    align-items: center;
+  }
+  
+  .auth-links img {
+    vertical-align: middle; 
+  }
+  
   
   @media screen and (max-width: 820px) {
     .topnav {

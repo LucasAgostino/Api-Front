@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Para redirigir si no es ADMIN
 import './styles/SidebarAdmin.css'; // Archivo CSS actualizado importado
 import UsersContent from './UsersContent'; // Importa el nuevo componente para Usuarios
 import ProductsContent from './ProductsContent';
@@ -7,6 +8,17 @@ import CategoryContent from './CategoryContent';
 
 const SidebarAdmin = () => {
   const [selectedOption, setSelectedOption] = useState('dashboard');
+  const navigate = useNavigate(); // Hook para redirigir
+  const [isAdmin, setIsAdmin] = useState(false); // Estado para verificar si el usuario es admin
+
+  useEffect(() => {
+    const role = localStorage.getItem('role'); // Obtiene el rol del usuario desde localStorage (o desde tu método preferido)
+    if (role === 'ADMIN') {
+      setIsAdmin(true);
+    } else {
+      navigate('/'); // Redirigir si no es ADMIN
+    }
+  }, [navigate]);
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
@@ -15,6 +27,11 @@ const SidebarAdmin = () => {
   const handleHomeClick = () => {
     window.location.href = '/'; // Cambia esto si usas React Router (puedes usar <Link /> en lugar de esto)
   };
+
+  if (!isAdmin) {
+    // Renderiza un mensaje mientras redirige si no es admin
+    return <p>Redirigiendo...</p>;
+  }
 
   return (
     <div className="sidebaradmin">
@@ -41,8 +58,6 @@ const SidebarAdmin = () => {
           <span>Categorias</span>
         </div>
 
-       
-
         {/* Botón para volver al home */}
         <div className="home-button-container" onClick={handleHomeClick}>
           <i className="fa fa-home material-symbols-outlined">home</i>
@@ -60,7 +75,5 @@ const SidebarAdmin = () => {
     </div>
   );
 };
-
-
 
 export default SidebarAdmin;

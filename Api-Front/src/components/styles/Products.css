@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap');
-/* Contenedor principal que engloba todo */
-
+/* General adjustments */
 .main-container {
     width: 100%;
     padding: 20px;
@@ -8,55 +6,70 @@
     font-family: 'Noto Sans Display', sans-serif;
 }
 
-/* Wrapper que engloba sidebar y productos */
-.content-wrapper {
-
-    padding-top: 20px;
-    display: flex;
-    width: 70%; /* Ocupa el 70% de la página */
-    justify-content: space-between; /* Sidebar pegada a productos */
-    align-items: flex-start;
-    margin: 0 auto; /* Añade márgenes automáticos para centrar el contenido */
-}
-
-/* Sidebar */
+/* Sidebar with hover effects for categories and tags */
 .sidebar {
-    width: 25%; /* Sidebar ocupa el 25% del 70% total */
+    width: 25%;
     background-color: #f5f5f5;
     padding: 20px;
     border-top: 2px solid #333;
-    min-height: 100vh; 
+    min-height: 100vh;
 }
 
 .sidebar h2 {
     font-size: 1.2rem;
     margin-bottom: 20px;
+    cursor: pointer; /* Indicar que los títulos son interactivos */
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
+/* New style for categories and tags with hover */
+.categories-container, .tags-container {
+    display: flex;
+    flex-direction: column;
 }
 
-.sidebar ul li {
+.category-item, .tag-item {
+    padding: 10px;
     margin-bottom: 10px;
     font-size: 1rem;
     cursor: pointer;
-    color: #333; /* Asegura que el texto sea visible */
-    display: block; /* Asegura que los elementos se vean como bloques */
+    color: #333;
+    background-color: #eee;
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
 
-/* Contenedor de productos */
+/* Hover effect for category and tag items */
+.category-item:hover, .tag-item:hover {
+    background-color: #1e2a38;
+    color: #fff;
+}
+
+/* Active category selection */
+.selected {
+    background-color: #1e2a38;
+    color: #fff;
+}
+
+/* Wrapper */
+.content-wrapper {
+    padding-top: 20px;
+    display: flex;
+    width: 70%;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 auto;
+}
+
+/* Products grid */
 .products-content {
-    width: 75%; /* Productos ocupan el 75% del 70% total */
+    width: 75%;
     display: flex;
     justify-content: center;
 }
 
-/* Grid de productos */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Tres productos por fila */
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     width: 100%;
     margin-left: 20px;
@@ -69,70 +82,145 @@
     padding: 20px;
     text-align: center;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    height: 550px; /* Altura fija de las tarjetas */
+    height: 500px;
     display: flex;
-    flex-direction: column; /* Distribuye los elementos de arriba a abajo */
-    justify-content: space-between; /* Asegura que haya espacio entre los elementos */
-    transition: transform 0.3s ease; /* Transición suave en hover */
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
 }
 
 .product-card1:hover {
-    transform: translateY(-10px); /* Eleva la tarjeta al hacer hover */
+    transform: translateY(-10px);
 }
 
-/* Ajuste de tamaño de imágenes */
+/* Image adjustments */
 .product-card1 img {
     width: 100%;
-    height: 200px; /* Altura fija para todas las imágenes */
-    object-fit: cover; /* Asegura que la imagen se ajuste correctamente al contenedor */
+    height: 250px;
+    object-fit: cover;
     border-radius: 5px;
     margin-bottom: 10px;
 }
 
-/* Contenido del medio (precio y descripción) */
-.product-card1 .product-info {
-    flex-grow: 1; /* Permite que la información del producto ocupe el espacio restante */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .product-card1 h3 {
-    font-size: 1.4rem; /* Letra más grande para el título */
+    font-size: 1.4rem;
     margin: 10px 0;
 }
 
 .product-card1 p {
-    font-size: 1.1rem; /* Letra más grande para la descripción */
+    font-size: 1.1rem;
     color: #666;
     line-height: 1.5;
     margin-bottom: 10px;
-    max-height: 5.4em; /* Más espacio para descripciones largas */
+    max-height: 5.4em;
     overflow: hidden;
-    text-overflow: ellipsis; /* Si es muy larga, aparecerán tres puntos */
+    text-overflow: ellipsis;
 }
 
 .product-card1 .price {
-    font-size: 1.3rem; /* Letra más grande para el precio */
+    font-size: 1.3rem;
     font-weight: bold;
     margin: 10px 0;
     color: #333;
 }
 
-/* Botón "Ver más" en la parte inferior */
+/* View more button */
 .product-card1 .view-more-btn {
     background-color: #1e2a38;
     color: #fff;
     border: none;
     padding: 12px 25px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 3px;
     transition: background-color 0.3s ease;
-    align-self: center; /* Centra el botón */
-    margin-top: auto; /* Empuja el botón hacia abajo */
+    align-self: center;
+    margin-top: auto;
 }
 
 .product-card1 .view-more-btn:hover {
     background-color: #16222b;
 }
+
+.categories-container, .tags-container {
+    transition: max-height 0.3s ease-in-out;
+    overflow: hidden;
+  }
+  
+  .category-item, .tag-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #333;
+    background-color: #eee;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .category-item:hover, .tag-item:hover {
+    background-color: #d1d1d1;
+    color: #000;
+  }
+  
+  .selected {
+    background-color: #1e2a38;
+    color: #fff;
+  }
+  
+  /* Minimalista - Price filter */
+.price-filter {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column; /* Cambiado para que el título quede arriba */
+    align-items: flex-start;
+}
+
+.price-filter h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.price-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.price-inputs label {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.price-inputs input {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.price-inputs input:focus {
+    border-color: #1e2a38;
+    outline: none;
+}
+
+.filter-btn {
+    background-color: #1e2a38;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px; /* Se ajusta el espacio entre inputs y botón */
+}
+
+.filter-btn:hover {
+    background-color: #16222b;
+    transform: scale(1.05);
+}
+

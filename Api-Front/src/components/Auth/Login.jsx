@@ -57,8 +57,8 @@ const Login = () => {
         </form>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <p>
-          ¿Todavía no tienes cuenta?{' '}
-          <Link to="/register">Regístrate acá</Link>
+          ¿Todavía no tenés cuenta?{' '}
+          <Link to="/register">Registrate acá</Link>
         </p>
       </div>
       <img className="login-image" src="/login.png" alt="Login Banner" />

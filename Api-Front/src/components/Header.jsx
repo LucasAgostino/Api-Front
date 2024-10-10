@@ -4,6 +4,8 @@ import '../components/styles/Header.css';
 const Header = () => {
   const [navbarClass, setNavbarClass] = useState('topnav');
   const [scrollTop, setScrollTop] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null); // Estado para el rol del usuario
 
   const handleScroll = () => {
     setScrollTop(window.scrollY);
@@ -36,6 +38,20 @@ const Header = () => {
     }
   }, [scrollTop]);
 
+  useEffect(() => {
+    // Verificar si el token y el rol están en localStorage
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role'); // Asegúrate de guardar el rol del usuario en localStorage
+
+    if (token) {
+      setIsAuthenticated(true);
+      setUserRole(role); // Establecemos el rol del usuario
+    } else {
+      setIsAuthenticated(false);
+      setUserRole(null);
+    }
+  }, []);
+
   return (
     <header id="header">
       <div className="topnav" id="myTopnav">
@@ -49,19 +65,30 @@ const Header = () => {
             <input type="text" className="search-input" placeholder="Buscar..." />
             <img src="/buscar.png" alt="Buscar" />
           </div>
-          
 
           <a href="#">CONTACTANOS</a>
         </div>
+        
+        {isAuthenticated ? (
+          <div className="auth-links">
+            {/* Si el usuario tiene rol de ADMIN, mostrar "Sección Admin" */}
+            {userRole === 'ADMIN' ? (
+              <a href="/admin" className="admin-link">ADMIN</a>
+            ) : (
+              <a href="/cart" className="cart-link" ><img src="/icons/cart.png" className='cart-icon' /></a>
+            )}
+            <a href="/profile" className="profile-link">PERFIL</a>
+          </div>
+        ) : (
+          <a href="/login" className="login-link">INICIA SESIÓN</a>
+        )}
 
-        <a href="/login" className="login-link">INICIA SESIÓN</a>
-        <a href="javascript:void(0);" className="icon" onClick={() => {}}>
+        <a href="javascript:void(0);" className="icon" onClick={toggleNavbar}>
           &#9776;
         </a>
       </div>
     </header>
   );
-  
 };
 
 export default Header;

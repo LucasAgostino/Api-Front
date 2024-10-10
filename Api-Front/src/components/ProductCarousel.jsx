@@ -1,44 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../components/styles/ProductCarousel.css'; // Importamos el CSS del carrusel
+import { fetchProductos } from '../api/Product'; // Importar la función para obtener productos
 
 const ProductCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [featuredProducts, setFeaturedProducts] = useState([]); // Estado para los productos destacados
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Procesador Intel Core i3",
-      price: "$192.540",
-      img: "/pruebas/1.png"
-    },
-    {
-      id: 2,
-      name: "Mouse Corsair M75",
-      price: "$74.990",
-      img: "/pruebas/2.jpg"
-    },
-    {
-      id: 3,
-      name: "Procesador Intel Core i7",
-      price: "$540.790",
-      img: "/pruebas/3.png"
-    },
-    {
-      id: 4,
-      name: "Teclado",
-      price: "$350.000",
-      img: "/pruebas/1.png"
-    },
-    {
-      id: 5,
-      name: "Kit De Limpieza",
-      price: "$420.000",
-      img: "/pruebas/2.jpg"
-    }
-  ];
+  // Cargar los productos destacados
+  useEffect(() => {
+    const getFeaturedProducts = async () => {
+      try {
+        const products = await fetchProductos(); // Obtener productos desde la API
+        setFeaturedProducts(products.slice(0, 5)); // Tomar los primeros 5 productos de la lista
+      } catch (error) {
+        setError('Error al cargar los productos destacados.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getFeaturedProducts();
+  }, []);
 
   const goToNext = () => {
-    // Si estamos en el final, vuelve al inicio
     if (currentIndex >= featuredProducts.length - 4) {
       setCurrentIndex(0);
     } else {
@@ -47,7 +33,6 @@ const ProductCarousel = () => {
   };
 
   const goToPrevious = () => {
-    // Si estamos al principio, vuelve al final
     if (currentIndex === 0) {
       setCurrentIndex(featuredProducts.length - 4);
     } else {
@@ -55,10 +40,12 @@ const ProductCarousel = () => {
     }
   };
 
-  // Función para manejar clic en la imagen del producto y redirigir
   const goToProductDetails = (productId) => {
     window.location.href = `/product-details/${productId}`; // Redirige a la página de detalles del producto
   };
+
+  if (loading) return <p>Cargando productos destacados...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="carousel-container">
@@ -69,16 +56,16 @@ const ProductCarousel = () => {
         </button>
         <div className="carousel-items">
           {featuredProducts.slice(currentIndex, currentIndex + 4).map((product) => (
-            <div className="carousel-item" key={product.id}>
+            <div className="carousel-item" key={product.productId}>
               <img
-                src={product.img}
-                alt={product.name}
+                src={`data:image/jpeg;base64,${product.imageBase64s[0]}`}
+                alt={product.productName}
                 className="carousel-image"
-                onClick={() => goToProductDetails(product.id)}
+                onClick={() => goToProductDetails(product.productId)}
               />
               <div className="carousel-info">
-                <h3 className="product-name">{product.name}</h3>
-                <p className="product-price">{product.price}</p>
+                <h3 className="product-name">{product.productName}</h3>
+                <p className="product-price">${product.price.toFixed(2)}</p>
               </div>
             </div>
           ))}
