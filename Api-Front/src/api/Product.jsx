@@ -79,15 +79,6 @@ export const fetchProductById = async (productId) => {
     }
 };
 
-// Función para obtener productos por categoría
-export const fetchProductsByCategory = async (categoryId) => {
-    try {
-        const response = await api.get(`/get/cat/${categoryId}`);
-        return response.data;
-    } catch (error) {
-        throw new Error('Error fetching products by category');
-    }
-};
 
 // Función para obtener todos los tags
 export const fetchTags = async () => {
@@ -96,18 +87,6 @@ export const fetchTags = async () => {
         return response.data;
     } catch (error) {
         throw new Error('Error fetching tags');
-    }
-};
-
-// Función para filtrar productos por precio
-export const filterProductsByPrice = async (minPrice, maxPrice) => {
-    try {
-        const response = await api.get('/get/filter', {
-            params: { minPrice, maxPrice }
-        });
-        return response.data;
-    } catch (error) {
-        throw new Error('Error filtering products by price');
     }
 };
 
@@ -134,3 +113,35 @@ export const removeImageFromProduct = async (productId, imageId) => {
         throw new Error('Error removing image from product');
     }
 };
+
+// Función para filtrar productos por precio, categoría y etiquetas
+export const filterProducts = async (minPrice, maxPrice, categoryId, tags) => {
+    try {
+        const response = await api.get('/get/filter', {
+            params: {
+                minPrice: minPrice || null, // Si no hay minPrice, se envía como null
+                maxPrice: maxPrice || null, // Si no hay maxPrice, se envía como null
+                categoryId: categoryId || null, // Si no hay categoryId, se envía como null
+                // Asegúrate de que 'tags' se envíe como un arreglo
+                tags: tags ? Array.from(tags) : null // Convierte el conjunto a un array si no es null
+            },
+            paramsSerializer: (params) => {
+                // Serializar los parámetros de modo que 'tags' aparezca varias veces
+                return Object.entries(params)
+                    .flatMap(([key, value]) =>
+                        Array.isArray(value)
+                            ? value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`)
+                            : value != null
+                            ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+                            : []
+                    )
+                    .join('&');
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error('Error filtering products');
+    }
+};
+
+

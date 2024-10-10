@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProductCarousel from './ProductCarousel';
 import BrandCarousel from './BrandCarousel';
 import HeroCarousel from './HeroCarousel';
-import { fetchProductos, fetchProductsByCategory, filterProductsByPrice } from '../api/Product';
+import { fetchProductos, filterProducts } from '../api/Product';
 import { fetchCategories } from '../api/Category';
 import { fetchTags } from '../api/Product';
 
@@ -19,10 +19,11 @@ const ProductsGrid = () => {
   const [errorCategories, setErrorCategories] = useState(null);
   const [errorTags, setErrorTags] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [minPrice, setMinPrice] = useState(0); // Estado para el precio mínimo
-  const [maxPrice, setMaxPrice] = useState(10000000); // Estado para el precio máximo
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false); // Controla si el menú de categorías está abierto
-  const [isTagsOpen, setIsTagsOpen] = useState(false); // Controla si el menú de etiquetas está abierto
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000000);
+  const [selectedTags, setSelectedTags] = useState(new Set());
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isTagsOpen, setIsTagsOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,57 +65,54 @@ const ProductsGrid = () => {
     getTags();
   }, []);
 
-  // Función para manejar el click en "Ver más"
   const handleViewMore = (productId) => {
     navigate(`/product-details/${productId}`);
   };
 
-  // Función para manejar el filtro por categoría
-  const handleCategoryClick = async (categoryId) => {
-    if (categoryId === selectedCategory) {
-      setSelectedCategory(null);
-      setLoadingProducts(true);
-      try {
-        const allProducts = await fetchProductos();
-        setProducts(allProducts);
-      } catch (error) {
-        setErrorProducts('Error al cargar los productos');
-      } finally {
-        setLoadingProducts(false);
-      }
-    } else {
-      setSelectedCategory(categoryId);
-      setLoadingProducts(true);
-      try {
-        const filteredProducts = await fetchProductsByCategory(categoryId);
-        setProducts(filteredProducts);
-      } catch (error) {
-        setErrorProducts('Error al cargar los productos por categoría');
-      } finally {
-        setLoadingProducts(false);
-      }
-    }
-  };
-
-  // Función para manejar el filtro por precio
-  const handleFilterByPrice = async () => {
+  // Función para manejar el filtro por precio, categoría y etiquetas
+  const handleFilter = async (categoryId = selectedCategory, tags = selectedTags) => {
     setLoadingProducts(true);
     try {
-      const filteredProducts = await filterProductsByPrice(minPrice, maxPrice);
+      const filteredProducts = await filterProducts(minPrice, maxPrice, categoryId, tags);
       setProducts(filteredProducts);
     } catch (error) {
-      setErrorProducts('Error al filtrar los productos por precio');
+      setErrorProducts('Error al filtrar los productos');
     } finally {
       setLoadingProducts(false);
     }
   };
 
-  // Función para alternar si el menú de categorías está abierto o cerrado
+// Función para manejar la selección de etiquetas
+const handleTagClick = (tag) => {
+  const newSelectedTags = new Set(selectedTags);
+  
+  if (newSelectedTags.has(tag)) {
+    newSelectedTags.delete(tag); // Deseleccionar si ya está
+  } else {
+    newSelectedTags.add(tag); // Seleccionar nueva etiqueta
+  }
+  
+  setSelectedTags(newSelectedTags); // Actualiza el estado de etiquetas seleccionadas
+
+  // Filtrar automáticamente con todas las etiquetas seleccionadas
+  handleFilter(selectedCategory, newSelectedTags); 
+};
+
+  // Función para manejar el click en categorías
+  const handleCategoryClick = (categoryId) => {
+    const newSelectedCategory = categoryId === selectedCategory ? null : categoryId; // Cambiar categoría
+    
+    // Actualizar el estado de categoría
+    setSelectedCategory(newSelectedCategory);
+
+    // Filtrar automáticamente con la nueva categoría
+    handleFilter(newSelectedCategory, selectedTags); // Aplicar el filtro inmediatamente
+  };
+
   const toggleCategories = () => {
     setIsCategoriesOpen(!isCategoriesOpen);
   };
 
-  // Función para alternar si el menú de etiquetas está abierto o cerrado
   const toggleTags = () => {
     setIsTagsOpen(!isTagsOpen);
   };
@@ -145,7 +143,7 @@ const ProductsGrid = () => {
             <h2>Filtrar por precio</h2>
             <div className="price-inputs">
               <label>
-                Min: 
+                Min:
                 <input
                   type="number"
                   value={minPrice}
@@ -163,7 +161,7 @@ const ProductsGrid = () => {
                 />
               </label>
             </div>
-            <button onClick={handleFilterByPrice} className="filter-btn">
+            <button onClick={() => handleFilter()} className="filter-btn">
               Filtrar
             </button>
           </div>
@@ -193,7 +191,11 @@ const ProductsGrid = () => {
           {isTagsOpen && (
             <div className="tags-container">
               {tags.map((tag) => (
-                <div key={tag} className="tag-item">
+                <div
+                  key={tag}
+                  className={`tag-item ${selectedTags.has(tag) ? 'selected' : ''}`}
+                  onClick={() => handleTagClick(tag)}
+                >
                   {tag}
                 </div>
               ))}
