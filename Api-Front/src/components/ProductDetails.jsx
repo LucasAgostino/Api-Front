@@ -13,6 +13,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1); // Estado para la cantidad del producto
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // Estado para la imagen actual
   const [stockError, setStockError] = useState(''); // Estado para el mensaje de error de stock
+  const [notification, setNotification] = useState(null); // Estado para la notificación
 
   // Cargar los detalles del producto cuando se monta el componente
   useEffect(() => {
@@ -34,7 +35,7 @@ const ProductDetails = () => {
   const handleQuantityChange = (event) => {
     const newQuantity = parseInt(event.target.value);
     setQuantity(newQuantity);
-    
+
     // Comprobar si la cantidad supera el stock disponible
     if (newQuantity > product.stock) {
       setStockError('La cantidad seleccionada supera el stock disponible.');
@@ -53,16 +54,26 @@ const ProductDetails = () => {
 
     // Comprobar si la cantidad seleccionada supera el stock antes de añadir al carrito
     if (quantity > product.stock) {
-      alert('La cantidad seleccionada supera el stock disponible.');
+      setNotification({ message: 'La cantidad seleccionada supera el stock disponible.', type: 'error' });
       return;
     }
 
     try {
       await addProductToCart(productId, quantity);
-      alert('Producto añadido al carrito');
+      setNotification({ message: 'Producto añadido al carrito', type: 'success' });
+
+      // Hacer que la notificación desaparezca después de 3 segundos
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
     } catch (error) {
-      alert('Error al añadir el producto al carrito');
+      setNotification({ message: 'Error al añadir el producto al carrito', type: 'error' });
       console.error(error);
+
+      // Hacer que la notificación desaparezca después de 3 segundos
+      setTimeout(() => {
+        setNotification(null);
+      }, 3000);
     }
   };
 
@@ -93,8 +104,14 @@ const ProductDetails = () => {
 
   return (
     <div className="product-details-page-container">
+      {/* Mostrar la notificación si existe */}
+      {notification && (
+        <div className={`notification ${notification.type}`}>
+          <p>{notification.message}</p>
+        </div>
+      )}
+
       <div className="product-details-card">
-        
         {/* Left side: Product Image */}
         <div className="product-image-container">
           <img 
@@ -106,12 +123,12 @@ const ProductDetails = () => {
           <button className="image-nav-button prev" onClick={() => handleImageChange('prev')}>❮</button>
           <button className="image-nav-button next" onClick={() => handleImageChange('next')}>❯</button>
         </div>
-        
+
         {/* Right side: Product Details */}
         <div className="product-details-content-container">
           <h1 className="product-details-title">{product.productName}</h1>
           <p className="product-details-description">{product.productDescription}</p>
-          
+
           {/* Mostrar el precio normal o tachado si hay descuento */}
           {product.discountPercentage > 0 ? (
             <>
@@ -122,15 +139,15 @@ const ProductDetails = () => {
           ) : (
             <p className="product-details-price">Precio: ${product.price.toFixed(2)}</p>
           )}
-          
+
           <p className="product-details-category">{product.categoryName}</p>
-  
+
           <div className="product-details-tags">
             {product.tags?.map((tag, index) => (
               <span key={index} className="product-details-tag">{tag}</span>
             ))}
           </div>
-  
+
           <div className="product-details-quantity">
             <p className="quantity-controls">
             Cantidad
@@ -145,7 +162,7 @@ const ProductDetails = () => {
             {/* Mostrar el mensaje de error si se supera el stock */}
             {stockError && <p className="stock-error-message">{stockError}</p>}
           </div>
-  
+
           {/* Deshabilitar el botón si no hay suficiente stock */}
           <button 
             className="add-to-cart-btn" 
@@ -158,7 +175,6 @@ const ProductDetails = () => {
           <a className="back-to-products" href="/products">← Volver a productos</a>
         </div>
       </div>
-
     </div>
   );
 }

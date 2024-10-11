@@ -2,53 +2,69 @@ import React from 'react';
 import './styles/OrderDetails.css'; // Importa el CSS del detalle de la orden
 
 const OrderDetails = ({ order, onBack }) => {
+  // Formatear la fecha de la orden a dd/mm/yyyy hh:mm
+  const formatOrderDateTime = (dateArray) => {
+    const [year, month, day, hours, minutes] = dateArray;
+    return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <div className="order-details-form">
-      <div className="header">
-        <img src="/logo.png" alt="Techmania Logo" className="logo" />
-        <h2>Detalles del Pedido</h2>
-      </div>
-
-      <div className="order-info">
-        <div className="order-column">
-          <p><strong>ID de la Orden:</strong> {order.orderId}</p>
+    <div className="invoice-container">
+      <div className="invoice-header">
+        <div className="invoice-header-left">
+          <h1>Orden #{order.orderId}</h1>
           <p><strong>Usuario:</strong> {order.userName}</p>
-          <p><strong>Fecha:</strong> {order.orderDate.join('-')}</p>
+          <p><strong>Fecha:</strong> {formatOrderDateTime(order.orderDate)}</p>
         </div>
-        <div className="order-column">
-          <p><strong>Total de la Orden:</strong> ${order.totalOrder}</p>
+        <div className="invoice-header-right">
+          <p><strong>Total de la Orden:</strong> ${order.totalOrder.toFixed(2)}</p>
         </div>
       </div>
 
-      <h4 className="order-products-title">Productos de la Orden:</h4> {/* Título fuera de la tabla */}
-      <table className="order-products-table">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {order.orderProducts.length > 0 ? (
-            order.orderProducts.map((product, index) => (
-              <tr key={index}>
-                <td>{product.productName}</td>
-                <td>{product.quantity}</td>
-                <td>${product.totalPrice}</td>
+      <table className="product-table">
+            <thead>
+              <tr>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+                <th>Descuento</th> 
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="3">No hay productos en esta orden.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {order.orderProducts.map((product) => {
+                const originalPriceTotal = product.totalPrice ;
+                const discountPriceTotal = product.price * product.quantity; 
+                
+                // Calcular el porcentaje de descuento
+                const discountPercentage = originalPriceTotal > discountPriceTotal 
+                  ? ((originalPriceTotal - discountPriceTotal) / originalPriceTotal) * 100
+                  : 0;
 
-      <div className="footer">
-        <button className="back-button" onClick={onBack}>Volver a la Lista</button>
+                return (
+                  <tr key={product.orderProductId}>
+                    <td>{product.quantity}</td>
+                    <td>{product.productName}</td>
+                    <td>${product.price.toFixed(2)}</td>
+                    <td>${discountPriceTotal.toFixed(2)}</td> 
+                    <td>{discountPercentage.toFixed(0)}%</td> {/* Mostrar el descuento calculado */}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+      <div className="total-section">
+        <p>Total Orden: ${order.totalOrder.toFixed(2)}</p>
       </div>
+
+      <div className="bottom-section">
+        <p>Gracias por tu compra</p>
+      </div>
+
+      <p className="back-to-profile-text" onClick={onBack}>
+        ← Volver a la Lista
+      </p>
     </div>
   );
 };

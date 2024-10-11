@@ -7,61 +7,55 @@ const ShoppingCart = () => {
   const [cart, setCart] = useState(null); // Estado para el carrito
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState(null); // Estado de errores
+  const [paymentMethod, setPaymentMethod] = useState(''); // Estado para el método de pago seleccionado
+  const [installments, setInstallments] = useState('1'); // Estado para las cuotas seleccionadas
+  const [successMessage, setSuccessMessage] = useState(''); // Estado para el mensaje de éxito
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token'); // Obtén el token del localStorage
-    console.log("Token:", token); // Verificar si el token está presente
-    
-
     if (!token) {
-      // Si no hay token, redirige al login
       navigate('/login');
       return;
     }
 
-    // Cargar el carrito si el usuario está autenticado
     const loadCart = async () => {
       try {
-        const fetchedCart = await fetchCart(); // Llamada a la API para obtener el carrito
-        setCart(fetchedCart); // Establecemos el carrito
+        const fetchedCart = await fetchCart();
+        setCart(fetchedCart);
       } catch (err) {
-        setError('Error al cargar el carrito.'); // Capturamos errores si falla la API
+        setError('Error al cargar el carrito.');
       } finally {
-        setLoading(false); // Finalizamos la carga
+        setLoading(false);
       }
     };
 
-    loadCart(); // Cargamos el carrito cuando se monta el componente
+    loadCart();
   }, [navigate]);
 
   const updateQuantity = async (productId, quantity, action) => {
     try {
       if (action === "decrease" && quantity > 1) {
-        // Llamar a decreaseProductInCart para reducir la cantidad
         await decreaseProductInCart(productId, 1);
       } else if (action === "increase") {
-        // Llamar a addProductToCart para incrementar la cantidad
         await addProductToCart(productId, 1);
       } else if (quantity === 1 && action === "decrease") {
         console.warn("La cantidad no puede ser menor que 1.");
         return;
       }
-  
-      const updatedCart = await fetchCart(); // Recargar el carrito después de la actualización
-      setCart(updatedCart); // Actualizar el estado del carrito
+
+      const updatedCart = await fetchCart();
+      setCart(updatedCart);
     } catch (error) {
       console.error('Error al actualizar la cantidad del producto:', error);
     }
   };
-  
-  // Función para calcular el total de los productos en el carrito
+
   const calculateTotalCost = () => {
     if (!cart) return 0;
-    return cart.products.reduce((total, product) => total + product.discountPrice , 0);
+    return cart.products.reduce((total, product) => total + product.discountPrice, 0);
   };
 
-  // Renderiza el carrito
   if (loading) {
     return <p>Cargando carrito...</p>;
   }
@@ -88,70 +82,74 @@ const ShoppingCart = () => {
             <h3>Precio</h3>
           </div>
           {cart.products.map((product) => (
-            <div className="shopping-cart-item">
-            <div className="product-details">
+            <div className="shopping-cart-item" key={product.productId}>
+              <div className="product-details">
                 <div className="product-image">
-                    <img src={`data:image/jpeg;base64,${product.imageBase64s[0]}`}  alt={product.productName} />
+                  <img src={`data:image/jpeg;base64,${product.imageBase64s[0]}`} alt={product.productName} />
                 </div>
                 <div className="product-info">
-                    <p className="product-name">{product.productName}</p>
-                    <p className="product-category">{product.categoryName || 'N/A'}</p>
-                    
-                </div>
-            </div>
-        
-            <div className="product-quantity-container">
-              <div className="product-quantity-modify">
-
-              
-                <button 
-                  className="quantity-decrease" 
-                  onClick={() => updateQuantity(product.productId, product.quantity, "decrease")}
-                >
-                  -
-                </button>
-                <input className="quantity-input" type="text" value={product.quantity} readOnly />
-                <button 
-                  className="quantity-increase" 
-                  onClick={() => updateQuantity(product.productId, product.quantity, "increase")}
-                >
-                  +
-                </button>
-
-              </div>
-              <div>
-              <a
-                        href="#"
-                        className="product-remove"
-                        onClick={async () => {
-                            try {
-                                console.log(product.productId);  // Verifica el productId antes de hacer la solicitud
-                                await removeProductFromCart(product.productId); // Llamamos a la API para eliminar el producto
-                                const updatedCart = await fetchCart(); // Volvemos a cargar el carrito
-                                setCart(updatedCart); // Actualizamos el estado con el carrito actualizado
-                            } catch (error) {
-                                console.error('Error al eliminar el producto del carrito:', error);
-                            }
-                        }}
+                  <p className="product-name">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/product-details/${product.productId}`);
+                      }}
                     >
-                        Eliminar
+                      {product.productName}
                     </a>
+                  </p>
+                  <p className="product-category">{product.categoryName || 'N/A'}</p>
+                </div>
               </div>
-            </div>
-        
-            <div className="product-price">
-                {product.discountPrice && (
-                    <>
-                        <span className="original-price">${product.totalPrice.toFixed(2)}</span>
-                        <span className="discount-price">${product.discountPrice.toFixed(2)}</span>
-                    </>
+
+              <div className="product-quantity-container">
+                <div className="product-quantity-modify">
+                  <button
+                    className="quantity-decrease"
+                    onClick={() => updateQuantity(product.productId, product.quantity, "decrease")}
+                  >
+                    -
+                  </button>
+                  <input className="quantity-input" type="text" value={product.quantity} readOnly />
+                  <button
+                    className="quantity-increase"
+                    onClick={() => updateQuantity(product.productId, product.quantity, "increase")}
+                  >
+                    +
+                  </button>
+                </div>
+                <div>
+                  <a
+                    href="#"
+                    className="product-remove"
+                    onClick={async () => {
+                      try {
+                        await removeProductFromCart(product.productId);
+                        const updatedCart = await fetchCart();
+                        setCart(updatedCart);
+                      } catch (error) {
+                        console.error('Error al eliminar el producto del carrito:', error);
+                      }
+                    }}
+                  >
+                    Eliminar
+                  </a>
+                </div>
+              </div>
+
+              <div className="product-price-cart">
+                {product.discountPrice && product.discountPrice < product.totalPrice ? (
+                  <>
+                    <span className="original-price-cart">${product.totalPrice.toFixed(2)}</span>
+                    <span className="discount-price-cart">${product.discountPrice.toFixed(2)}</span>
+                  </>
+                ) : (
+                  <span className="discount-price-cart">${product.totalPrice.toFixed(2)}</span>
                 )}
-                {!product.discountPrice && (
-                    <span>${product.totalPrice.toFixed(2)}</span>
-                )}
+              </div>
+
             </div>
-        </div>
-        
           ))}
           <a href="/products" className="shopping-cart-continue">
             ← Seguir Comprando
@@ -172,23 +170,55 @@ const ShoppingCart = () => {
               <option>Retiro en Sucursal - $00.00</option>
             </select>
           </div>
-          <div className="summary-promo">
-            <label>Promo Code</label>
-            <input type="text" placeholder="Enter your code" />
-            <button className="apply-promo">Apply</button>
+          <div className="summary-shipping">
+            <label>Método de Pago</label>
+            <select
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              <option value="">Selecciona un método de pago</option>
+              <option value="transferencia">Transferencia</option>
+              <option value="debito">Tarjeta de Débito</option>
+              <option value="credito">Tarjeta de Crédito</option>
+            </select>
           </div>
+
+          {/* Selector de cuotas si se elige Tarjeta de Crédito */}
+          {paymentMethod === 'credito' && (
+            <div className="summary-shipping">
+              <label>Cuotas</label>
+              <select
+                value={installments}
+                onChange={(e) => setInstallments(e.target.value)}
+              >
+                <option value="1">1 cuota</option>
+                <option value="3">3 cuotas sin interés</option>
+                <option value="6">6 cuotas sin interés</option>
+                <option value="12">12 cuotas sin interés</option>
+              </select>
+            </div>
+          )}
+
           <div className="summary-total">
             <div className="summary-total-label">
               <span>Costo Total</span>
               <span>${(calculateTotalCost()).toFixed(2)}</span>
             </div>
-            <button 
-              className="checkout-btn" 
+            <button
+              className="checkout-btn"
+              disabled={!paymentMethod} // Deshabilita el botón si no se seleccionó un método de pago
               onClick={async () => {
+                if (!paymentMethod) {
+                  alert('Por favor, selecciona un método de pago antes de proceder.');
+                  return;
+                }
+
                 try {
                   await checkoutCart(); // Llamar a la función para realizar el checkout
-                  alert('Checkout exitoso. Gracias por tu compra.'); // Mensaje de éxito
-                  navigate('/'); // Redirige a la página principal después del checkout
+                  setSuccessMessage('Orden exitosa. Gracias por tu compra!');
+                  setTimeout(() => {
+                    navigate('/'); // Redirigir al home
+                  }, 2000); // Retraso para que el usuario vea el mensaje
                 } catch (error) {
                   console.error('Error al realizar el checkout:', error);
                   alert('Hubo un problema con el checkout. Intenta nuevamente.');
@@ -197,10 +227,16 @@ const ShoppingCart = () => {
             >
               Checkout
             </button>
-
           </div>
         </div>
       </div>
+
+      {/* Mensaje de éxito */}
+      {successMessage && (
+        <div className="success-message">
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 };

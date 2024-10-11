@@ -4,38 +4,37 @@ import {
   createProduct,
   softDeleteProduct,
   updateProduct,
-  fetchTags, // Importa la función para traer las etiquetas (tags)
-} from '../api/Product'; // Asegúrate de que la ruta es correcta
-import { fetchCategories } from '../api/Category'; // Importa la función para traer las categorías
-import './styles/ProductsContentAdmin.css'; // Importa el CSS
-import { setAuthToken } from '../api/Product'; // O la ruta correcta donde está definida
+  fetchTags,
+} from '../api/Product';
+import { fetchCategories } from '../api/Category';
+import './styles/ProductsContentAdmin.css';
+import { setAuthToken } from '../api/Product';
 
 const ProductsContent = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // Estado para las categorías
-  const [tags, setTags] = useState([]); // Estado para los tags (etiquetas)
-  const [selectedTags, setSelectedTags] = useState([]); // Estado para las etiquetas seleccionadas
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [newProduct, setNewProduct] = useState({
     productName: '',
     price: 0,
     productDescription: '',
     stock: 0,
-    categoryId: '', // Esto ahora será un select
+    categoryId: '',
     discountPercentage: 0.0,
     tags: '',
-    imageBase64s: '', // Estado para almacenar la imagen en base64
+    imageBase64s: [], // Almacenamos múltiples imágenes
   });
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
 
-  // Obtener todas las categorías y etiquetas al cargar el componente
   useEffect(() => {
     const fetchAllData = async () => {
       try {
         const categoryData = await fetchCategories();
         const tagData = await fetchTags();
-        setCategories(categoryData); // Guarda las categorías en el estado
-        setTags(tagData); // Guarda los tags en el estado
+        setCategories(categoryData);
+        setTags(tagData);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }
@@ -43,7 +42,6 @@ const ProductsContent = () => {
     fetchAllData();
   }, []);
 
-  // Obtener todos los productos al cargar el componente
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -56,77 +54,84 @@ const ProductsContent = () => {
     fetchAllProducts();
   }, []);
 
-  // Manejar la carga de imágenes y convertirla a base64
+  // Manejar la carga de múltiples imágenes y convertirlas a base64
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setNewProduct({ ...newProduct, imageBase64s: [reader.result] }); // Actualiza el estado con la imagen en base64
-    };
-    if (file) {
-      reader.readAsDataURL(file); // Lee el archivo y lo convierte a base64
-    }
+    const files = e.target.files;
+    const promises = Array.from(files).map((file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(promises).then((base64Images) => {
+      setNewProduct((prevState) => ({
+        ...prevState,
+        imageBase64s: [...prevState.imageBase64s, ...base64Images], // Agregamos imágenes nuevas manteniendo el orden
+      }));
+    });
   };
 
-  // Añadir etiqueta seleccionada a la lista de etiquetas del producto
+  // Eliminar una imagen de la lista seleccionada
+  const handleRemoveImage = (index) => {
+    const updatedImages = newProduct.imageBase64s.filter((_, i) => i !== index);
+    setNewProduct({ ...newProduct, imageBase64s: updatedImages });
+  };
+
   const handleAddTag = (e) => {
     const selectedTag = e.target.value;
     if (selectedTag && !selectedTags.includes(selectedTag)) {
       const updatedTags = [...selectedTags, selectedTag];
       setSelectedTags(updatedTags);
-      setNewProduct({ ...newProduct, tags: updatedTags.join(', ') }); // Actualiza las tags en el estado de newProduct
+      setNewProduct({ ...newProduct, tags: updatedTags.join(', ') });
     }
   };
 
-  // Eliminar etiqueta seleccionada de la lista
   const handleRemoveTag = (tagToRemove) => {
     const updatedTags = selectedTags.filter((tag) => tag !== tagToRemove);
     setSelectedTags(updatedTags);
-    setNewProduct({ ...newProduct, tags: updatedTags.join(', ') }); // Actualiza las tags en el estado de newProduct
+    setNewProduct({ ...newProduct, tags: updatedTags.join(', ') });
   };
-  
-  // Crear un nuevo producto
+
   const handleCreateProduct = async () => {
     const token = localStorage.getItem('token');
-  
+
     if (!token) {
       console.error('No se encontró un token');
       return;
     }
-  
+
     setAuthToken(token);
-  
+
     const formData = new FormData();
     formData.append('productName', newProduct.productName);
     formData.append('productDescription', newProduct.productDescription);
     formData.append('price', parseFloat(newProduct.price).toString());
     formData.append('stock', parseInt(newProduct.stock, 10).toString());
     formData.append('categoryId', parseInt(newProduct.categoryId, 10).toString());
-  
-    // Agregar descuento, incluso si es 0
     formData.append('discountPercentage', parseFloat(newProduct.discountPercentage).toString());
-  
-    // Agregar imágenes, aunque no existan (se enviará null o vacío si no hay)
-    if (newProduct.imageBase64s) {
-      const blob = await fetch(newProduct.imageBase64s).then(res => res.blob());
-      formData.append('images', blob, 'image.jpg');
+
+    // Agregar múltiples imágenes al FormData
+    if (newProduct.imageBase64s.length > 0) {
+      for (let i = 0; i < newProduct.imageBase64s.length; i++) {
+        const blob = await fetch(newProduct.imageBase64s[i]).then((res) => res.blob());
+        formData.append('images', blob, `image${i}.jpg`);
+      }
     } else {
-      formData.append('images', null); // Agregar un valor vacío o null si no hay imagen
+      formData.append('images', null);
     }
-  
-    // Agregar tags como un array
-    const tagsArray = newProduct.tags.split(',').map(tag => tag.trim());
-    tagsArray.forEach(tag => formData.append('tags', tag));
-  
-    // Imprimir los datos que se envían
-    for (let [key, value] of formData.entries()) {
-      console.log(key + ': ' + value);
-    }
-  
+
+    const tagsArray = newProduct.tags.split(',').map((tag) => tag.trim());
+    tagsArray.forEach((tag) => formData.append('tags', tag));
+
     try {
       const createdProduct = await createProduct(formData);
       console.log('Producto creado:', createdProduct);
-  
+
       // Reiniciar formulario
       setNewProduct({
         productName: '',
@@ -136,15 +141,14 @@ const ProductsContent = () => {
         categoryId: '',
         discountPercentage: 0.0,
         tags: '',
-        imageBase64s: '',
+        imageBase64s: [],
       });
       setSelectedTags([]);
     } catch (error) {
       console.error('Error al crear el producto:', error);
     }
   };
-  
-  // Manejar la eliminación de un producto
+
   const handleDeleteProduct = async (productId) => {
     const token = localStorage.getItem('token');
 
@@ -156,17 +160,18 @@ const ProductsContent = () => {
     setAuthToken(token);
 
     try {
-      // Llamar a la función softDeleteProduct pasando el ID del producto
       await softDeleteProduct(productId);
       console.log(`Producto con ID ${productId} eliminado correctamente`);
 
       // Actualizar la lista de productos después de eliminar
-      setProducts((prevProducts) => prevProducts.filter(product => product.productId !== productId));
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.productId !== productId)
+      );
     } catch (error) {
       console.error('Error al eliminar el producto:', error);
     }
   };
-  
+
   return (
     <div className="products-contents-admin">
       <h2>Gestión de Productos</h2>
@@ -232,29 +237,35 @@ const ProductsContent = () => {
         </select>
 
         {/* Mostrar etiquetas seleccionadas */}
-<div className="selected-tags">
-  {selectedTags.length > 0 ? (
-    selectedTags.map((tag) => (
-      <div key={tag} className="tag">
-        {tag}
-        <span className="remove" onClick={() => handleRemoveTag(tag)}>
-          &times;
-        </span>
-      </div>
-    ))
-  ) : (
-    <div>No hay etiquetas seleccionadas.</div> // Mensaje si no hay etiquetas
-  )}
-</div>
+        <div className="selected-tags">
+          {selectedTags.length > 0 ? (
+            selectedTags.map((tag) => (
+              <div key={tag} className="tag">
+                {tag}
+                <span className="remove" onClick={() => handleRemoveTag(tag)}>
+                  &times;
+                </span>
+              </div>
+            ))
+          ) : (
+            <div>No hay etiquetas seleccionadas.</div>
+          )}
+        </div>
 
-
-        <label htmlFor="imageUpload">Subir imagen</label>
-        <input type="file" id="imageUpload" onChange={handleImageUpload} />
-        {newProduct.imageBase64s && (
-          <div className="image-preview">
-            <img src={newProduct.imageBase64s} alt="Preview" style={{ width: '100px' }} />
-          </div>
-        )}
+        <label htmlFor="imageUpload">Subir imágenes</label>
+        <input type="file" id="imageUpload" multiple onChange={handleImageUpload} />
+        <div className="image-preview">
+          {newProduct.imageBase64s.map((imageBase64, index) => (
+            <div key={index} className="image-container">
+              <img
+                src={imageBase64}
+                alt={`Imagen ${index + 1}`}
+                style={{ width: '100px' }}
+              />
+              <button onClick={() => handleRemoveImage(index)}>Eliminar</button>
+            </div>
+          ))}
+        </div>
         <button onClick={handleCreateProduct}>Crear Producto</button>
       </div>
 

@@ -144,4 +144,14 @@ export const filterProducts = async (minPrice, maxPrice, categoryId, tags) => {
     }
 };
 
+export const searchProductsByName = async (name) => {
+    try {
+      const response = await api.get('/search', {
+        params: { name },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error('Error fetching product suggestions');
+    }
+  };
 

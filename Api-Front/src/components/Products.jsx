@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../components/styles/Products.css';
 import { useNavigate } from 'react-router-dom';
 import ProductCarousel from './ProductCarousel';
@@ -26,6 +26,20 @@ const ProductsGrid = () => {
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Guarda la posición actual del scroll
+  const saveScrollPosition = () => {
+    sessionStorage.setItem('scrollPosition', window.scrollY);
+  };
+
+  // Restaura la posición del scroll
+  const restoreScrollPosition = () => {
+    const savedPosition = sessionStorage.getItem('scrollPosition');
+    if (savedPosition) {
+      window.scrollTo(0, parseInt(savedPosition, 10));
+    }
+  };
+
+  // Obtiene todos los productos, categorías y etiquetas al cargar el componente
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -66,11 +80,15 @@ const ProductsGrid = () => {
   }, []);
 
   const handleViewMore = (productId) => {
+    saveScrollPosition(); // Guarda la posición antes de cambiar de página
     navigate(`/product-details/${productId}`);
   };
 
   // Función para manejar el filtro por precio, categoría y etiquetas
   const handleFilter = async (categoryId = selectedCategory, tags = selectedTags) => {
+    // Guarda la posición del scroll
+    saveScrollPosition();
+
     setLoadingProducts(true);
     try {
       const filteredProducts = await filterProducts(minPrice, maxPrice, categoryId, tags);
@@ -79,29 +97,32 @@ const ProductsGrid = () => {
       setErrorProducts('Error al filtrar los productos');
     } finally {
       setLoadingProducts(false);
+      setTimeout(() => {
+        restoreScrollPosition(); // Restaurar la posición después del filtrado
+      }, 100); // Añadir un ligero retraso para asegurarse de que la página se haya renderizado
     }
   };
 
-// Función para manejar la selección de etiquetas
-const handleTagClick = (tag) => {
-  const newSelectedTags = new Set(selectedTags);
-  
-  if (newSelectedTags.has(tag)) {
-    newSelectedTags.delete(tag); // Deseleccionar si ya está
-  } else {
-    newSelectedTags.add(tag); // Seleccionar nueva etiqueta
-  }
-  
-  setSelectedTags(newSelectedTags); // Actualiza el estado de etiquetas seleccionadas
+  // Función para manejar la selección de etiquetas
+  const handleTagClick = (tag) => {
+    const newSelectedTags = new Set(selectedTags);
 
-  // Filtrar automáticamente con todas las etiquetas seleccionadas
-  handleFilter(selectedCategory, newSelectedTags); 
-};
+    if (newSelectedTags.has(tag)) {
+      newSelectedTags.delete(tag); // Deseleccionar si ya está
+    } else {
+      newSelectedTags.add(tag); // Seleccionar nueva etiqueta
+    }
+
+    setSelectedTags(newSelectedTags); // Actualiza el estado de etiquetas seleccionadas
+
+    // Filtrar automáticamente con todas las etiquetas seleccionadas
+    handleFilter(selectedCategory, newSelectedTags);
+  };
 
   // Función para manejar el click en categorías
   const handleCategoryClick = (categoryId) => {
     const newSelectedCategory = categoryId === selectedCategory ? null : categoryId; // Cambiar categoría
-    
+
     // Actualizar el estado de categoría
     setSelectedCategory(newSelectedCategory);
 
@@ -115,6 +136,10 @@ const handleTagClick = (tag) => {
 
   const toggleTags = () => {
     setIsTagsOpen(!isTagsOpen);
+  };
+
+  const calculateDiscountedPrice = (price, discountPercentage) => {
+    return price - price * discountPercentage;
   };
 
   if (loadingProducts || loadingCategories || loadingTags) return <p>Cargando...</p>;
@@ -205,20 +230,34 @@ const handleTagClick = (tag) => {
 
         <div className="products-content">
           <div className="products-grid">
-            {products.map((product) => (
-              <div key={product.productId} className="product-card1">
-                <img
-                  src={`data:image/jpeg;base64,${product.imageBase64s[0]}`}
-                  alt={product.productName}
-                  className="product-image"
-                />
-                <h3>{product.productName}</h3>
-                <p className="price">${product.price}</p>
-                <button className="view-more-btn" onClick={() => handleViewMore(product.productId)}>
-                  Ver más
-                </button>
-              </div>
-            ))}
+            {products.map((product) => {
+              const discountedPrice = calculateDiscountedPrice(product.price, product.discountPercentage);
+
+              return (
+                <div key={product.productId} className="product-card1">
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageBase64s[0]}`}
+                    alt={product.productName}
+                    className="product-image"
+                  />
+                  <h3>{product.productName}</h3>
+                  <p className="price">
+                    {product.discountPercentage > 0 ? (
+                      <>
+                        <span className="original-price">${product.price.toFixed(2)}</span>{' '}
+                        <span className="discounted-price">${discountedPrice.toFixed(2)}</span>{' '}
+                        <span className="discount-percentage">({product.discountPercentage * 100}% OFF)</span>
+                      </>
+                    ) : (
+                      <>${product.price.toFixed(2)}</>
+                    )}
+                  </p>
+                  <button className="view-more-btn" onClick={() => handleViewMore(product.productId)}>
+                    Ver más
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

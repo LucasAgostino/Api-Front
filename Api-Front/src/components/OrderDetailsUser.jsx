@@ -52,19 +52,35 @@ const OrderDetailsUser = () => {
               <tr>
                 <th>Cantidad</th>
                 <th>Producto</th>
+                <th>Precio Unitario</th>
                 <th>Precio Total</th>
+                <th>Descuento</th> 
               </tr>
             </thead>
             <tbody>
-              {order.orderProducts.map((product) => (
-                <tr key={product.orderId}>
-                  <td>{product.quantity}</td>
-                  <td>{product.productName}</td>
-                  <td>${product.totalPrice.toFixed(2)}</td>
-                </tr>
-              ))}
+              {order.orderProducts.map((product) => {
+                const originalPriceTotal = product.totalPrice ;
+                const discountPriceTotal = product.price * product.quantity; 
+                
+                // Calcular el porcentaje de descuento
+                const discountPercentage = originalPriceTotal > discountPriceTotal 
+                  ? ((originalPriceTotal - discountPriceTotal) / originalPriceTotal) * 100
+                  : 0;
+
+                return (
+                  <tr key={product.orderProductId}>
+                    <td>{product.quantity}</td>
+                    <td>{product.productName}</td>
+                    <td>${product.price.toFixed(2)}</td>
+                    <td>${discountPriceTotal.toFixed(2)}</td> 
+                    <td>{discountPercentage.toFixed(0)}%</td> {/* Mostrar el descuento calculado */}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
+
+
 
           <div className="total-section">
             <p>Total Orden: ${order.totalOrder.toFixed(2)}</p>

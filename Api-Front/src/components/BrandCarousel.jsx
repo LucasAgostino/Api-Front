@@ -8,8 +8,33 @@ const BrandCarousel = () => {
     const items = document.querySelectorAll('#c > li');
     const max = items.length;
 
+
+    const initCarousel = () => {
+      items.forEach(item => item.classList.remove('active')); 
+
+      setTimeout(() => {
+        items[i].classList.add('active');
+        items[i].style.left = '0';
+      }, 0);
+
+      setTimeout(() => {
+        items[i + 1].classList.add('active');
+        items[i + 1].style.left = '25%';
+      }, 250);
+
+      setTimeout(() => {
+        items[i + 2].classList.add('active');
+        items[i + 2].style.left = '50%';
+      }, 500);
+
+      setTimeout(() => {
+        items[i + 3].classList.add('active');
+        items[i + 3].style.left = '75%';
+      }, 750);
+    };
+
     const moveCarousel = () => {
-      items.forEach(item => item.classList.remove('active'));
+      items.forEach(item => item.classList.remove('active')); 
 
       items[i].style.transitionDelay = '0s';
       items[i + 1].style.transitionDelay = '0.25s';
@@ -32,9 +57,11 @@ const BrandCarousel = () => {
       items[i + 3].style.left = '75%';
     };
 
+    initCarousel();
+
     const intervalId = setInterval(moveCarousel, timer);
 
-    return () => clearInterval(intervalId); // Limpiar intervalo al desmontar el componente
+    return () => clearInterval(intervalId); 
   }, []);
 
   return (

@@ -10,37 +10,35 @@
     margin-top: 30px;
     position: relative;
     font-family: 'Noto Sans Display', sans-serif;
-  }
-  
-  /* Título del carrusel */
-  .carousel-title {
+}
+
+/* Título del carrusel */
+.carousel-title {
     font-size: 2rem;
     font-weight: bold;
     color: #333;
-    text-align: center; /* Asegura que el texto esté centrado */
+    text-align: center;
     margin-bottom: 20px;
     text-transform: uppercase;
     border-bottom: 2px solid #333;
-    width: 80%; /* Ajusta el ancho al 80% para coincidir con el carrusel */
-    margin-left: auto; /* Centra el título horizontalmente */
-    margin-right: auto; /* Centra el título horizontalmente */
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-
-  
-  /* Estilos del carrusel */
-  .carousel {
+/* Estilos del carrusel */
+.carousel {
     width: 80%;
     margin: 0 auto;
     display: flex;
     align-items: center;
     position: relative;
-    overflow: hidden; /* Ocultar productos fuera de vista */
+    overflow: hidden;
     justify-content: center;
-  }
-  
-  /* Botones del carrusel */
-  .carousel-btn {
+}
+
+/* Botones del carrusel */
+.carousel-btn {
     position: absolute;
     top: 50%;
     background-color: #f5f5f5;
@@ -51,61 +49,103 @@
     padding: 10px;
     z-index: 1;
     border-radius: 50%;
-  }
-  
-  .prev-btn {
+}
+
+.prev-btn {
     left: 10px;
-  }
-  
-  .next-btn {
+}
+
+.next-btn {
     right: 10px;
-  }
-  
-  /* Contenedor de los productos del carrusel */
-  .carousel-items {
+}
+
+/* Contenedor de los productos del carrusel */
+.carousel-items {
     display: flex;
     gap: 20px;
-    transition: transform 0.3s ease-in-out; /* Transición suave */
+    transition: transform 0.3s ease-in-out;
     justify-content: center;
-  }
-  
-  /* Estilos para los productos */
-  .carousel-item {
+}
+
+/* Estilos para los productos */
+.carousel-item {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 1px;
     padding: 20px;
     text-align: center;
-    min-width: 300px;
-    max-width: 300px;
+    width: 300px;
+    height: 300px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease; /* Transición para hover */
-  }
-  
-  .carousel-item:hover {
-    transform: translateY(-5px); /* Eleva el producto al hacer hover */
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más fuerte al hacer hover */
-  }
-  
-  /* Ajuste de tamaño fijo para las imágenes */
-  .carousel-image {
-    width: 150px; /* Ancho fijo para todas las imágenes */
-    height: 150px; /* Altura fija para todas las imágenes */
-    object-fit: contain; /* Asegura que la imagen mantenga sus proporciones sin distorsionarse */
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.carousel-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajuste de tamaño fijo para las imágenes */
+.carousel-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
     border-radius: 5px;
     margin-bottom: 10px;
-  }
-  
-  /* Información del producto */
-  .product-name {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Información del producto */
+.product-name {
     font-size: 1.2rem;
     margin: 10px 0;
     color: #333;
-  }
-  
-  .product-price {
+    height: 40px; /* Asigna una altura fija para mantener el mismo espacio */
+    display: block;
+    overflow: hidden; /* Ocultar el exceso de texto */
+    white-space: nowrap;
+    text-overflow: ellipsis; /* Agregar puntos suspensivos si el texto es muy largo */
+    text-align: center; /* Asegura que el nombre esté centrado */
+    line-height: 1.2;
+}
+
+/* Asegura que el precio esté siempre en el mismo lugar */
+.product-price {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #1e2a38; /* Naranja del precio */
-  }
-  
+    color: #1e2a38;
+    margin-top: auto;
+    align-self: center;
+}
+
+/* Precio original tachado */
+.original-price1 {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 10px;
+}
+
+/* Precio con descuento */
+.discounted-price1 {
+  color: #333; /* Rojo para destacar el precio con descuento */
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Porcentaje de descuento como texto */
+.discount-percentage1 {
+  color: #333;
+  font-size: 0.9rem;
+}
+
+/* Contenedor para alinear el precio original, el precio descontado y el porcentaje */
+.price-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px; /* Espaciado entre elementos */
+}
