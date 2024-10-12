@@ -52,12 +52,17 @@ export const softDeleteProduct = async (productId) => {
 // Función para actualizar un producto
 export const updateProduct = async (productId, updatedData) => {
     try {
-        const response = await api.put(`/update/${productId}`, updatedData);
+        const response = await api.put(`/update/${productId}`, updatedData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error) {
         throw new Error('Error updating product');
     }
 };
+
 
 // Función para obtener todos los productos
 export const fetchProductos = async () => {

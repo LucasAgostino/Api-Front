@@ -27,6 +27,7 @@ const ProductsContent = () => {
   });
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
+  const [productToEdit, setProductToEdit] = useState(null);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -99,14 +100,14 @@ const ProductsContent = () => {
 
   const handleCreateProduct = async () => {
     const token = localStorage.getItem('token');
-
+  
     if (!token) {
       console.error('No se encontró un token');
       return;
     }
-
+  
     setAuthToken(token);
-
+  
     const formData = new FormData();
     formData.append('productName', newProduct.productName);
     formData.append('productDescription', newProduct.productDescription);
@@ -114,7 +115,7 @@ const ProductsContent = () => {
     formData.append('stock', parseInt(newProduct.stock, 10).toString());
     formData.append('categoryId', parseInt(newProduct.categoryId, 10).toString());
     formData.append('discountPercentage', parseFloat(newProduct.discountPercentage).toString());
-
+  
     // Agregar múltiples imágenes al FormData
     if (newProduct.imageBase64s.length > 0) {
       for (let i = 0; i < newProduct.imageBase64s.length; i++) {
@@ -124,14 +125,17 @@ const ProductsContent = () => {
     } else {
       formData.append('images', null);
     }
-
+  
     const tagsArray = newProduct.tags.split(',').map((tag) => tag.trim());
     tagsArray.forEach((tag) => formData.append('tags', tag));
-
+  
     try {
       const createdProduct = await createProduct(formData);
       console.log('Producto creado:', createdProduct);
-
+  
+      // Actualizar la lista de productos instantáneamente
+      setProducts((prevProducts) => [...prevProducts, createdProduct]);
+  
       // Reiniciar formulario
       setNewProduct({
         productName: '',
@@ -147,7 +151,7 @@ const ProductsContent = () => {
     } catch (error) {
       console.error('Error al crear el producto:', error);
     }
-  };
+  };  
 
   const handleDeleteProduct = async (productId) => {
     const token = localStorage.getItem('token');
@@ -172,6 +176,89 @@ const ProductsContent = () => {
     }
   };
 
+  const handleEditProduct = (productId) => {
+    const productToEdit = products.find((product) => product.productId === productId);
+  
+    if (productToEdit) {
+      setEditProductData({
+        productName: productToEdit.productName,
+        price: productToEdit.price,
+        productDescription: productToEdit.productDescription,
+        stock: productToEdit.stock,
+        categoryName: productToEdit.categoryName,
+        discountPercentage: productToEdit.discountPercentage,
+        tags: productToEdit.tags.join(', '),
+        imageBase64s: productToEdit.imageBase64s,
+      });
+      setEditProductId(productId);
+    }
+};
+
+const handleSaveEditProduct = async () => {
+  const token = localStorage.getItem('token');
+  setAuthToken(token);
+  try {
+      const productToEdit = products.find(product => product.productId === editProductId);
+      if (!productToEdit) {
+          console.error('Producto no encontrado');
+          return;
+      }
+
+      const category = categories.find(c => c.categoryName === editProductData.categoryName);
+      if (!category) {
+          console.error('Categoría no encontrada');
+          return;
+      }
+
+      // Crea un FormData para enviar los datos
+      const formData = new FormData();
+
+      if (editProductData.productName && editProductData.productName !== productToEdit.productName) {
+          formData.append('productName', editProductData.productName);
+      }
+      if (editProductData.price && editProductData.price !== productToEdit.price) {
+          formData.append('price', parseFloat(editProductData.price));
+      }
+      if (editProductData.discountPercentage && editProductData.discountPercentage !== productToEdit.discountPercentage) {
+          formData.append('discountPercentage', parseFloat(editProductData.discountPercentage));
+      }
+      if (editProductData.stock && editProductData.stock !== productToEdit.stock) {
+          formData.append('stock', parseInt(editProductData.stock, 10));
+      }
+      if (editProductData.productDescription && editProductData.productDescription !== productToEdit.productDescription) {
+          formData.append('productDescription', editProductData.productDescription);
+      }
+      if (editProductData.tags && editProductData.tags !== productToEdit.tags.join(', ')) {
+          const tagsArray = editProductData.tags.split(',').map(tag => tag.trim());
+          formData.append('tags', JSON.stringify(tagsArray)); // Convierte a JSON string si el backend espera un JSON
+      }
+
+      // Agrega el categoryId al FormData
+      formData.append('categoryId', category.categoryId);
+
+      console.log("Campos modificados a enviar:", Object.fromEntries(formData.entries()));
+
+      // Realiza la llamada a la API para actualizar el producto
+      const response = await updateProduct(editProductId, formData);
+
+      console.log("Producto actualizado:", response);
+
+      setProducts((prevProducts) => 
+          prevProducts.map((product) => 
+              product.productId === editProductId ? { ...product, ...Object.fromEntries(formData.entries()) } : product
+          )
+      );
+
+      setEditProductId(null);
+      setEditProductData({});
+
+  } catch (error) {
+      console.error("Error actualizando producto:", error.message);
+  }
+};
+
+
+  
   return (
     <div className="products-contents-admin">
       <h2>Gestión de Productos</h2>
@@ -302,7 +389,7 @@ const ProductsContent = () => {
                   )}
                 </td>
                 <td>
-                  <button onClick={() => setEditProductId(product.productId)}>Editar</button>
+                  <button onClick={() => handleEditProduct(product.productId)}>Editar</button>
                   <button onClick={() => handleDeleteProduct(product.productId)}>Eliminar</button>
                 </td>
               </tr>
@@ -369,7 +456,7 @@ const ProductsContent = () => {
             value={editProductData.tags || ''}
             onChange={(e) => setEditProductData({ ...editProductData, tags: e.target.value })}
           />
-          <button onClick={() => handleEditProduct(editProductId)}>Guardar Cambios</button>
+          <button onClick={() => handleSaveEditProduct(editProductId)}>Guardar Cambios</button>
         </div>
       )}
     </div>
