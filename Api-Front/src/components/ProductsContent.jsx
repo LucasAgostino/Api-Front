@@ -230,7 +230,7 @@ const handleSaveEditProduct = async () => {
       }
       if (editProductData.tags && editProductData.tags !== productToEdit.tags.join(', ')) {
           const tagsArray = editProductData.tags.split(',').map(tag => tag.trim());
-          formData.append('tags', JSON.stringify(tagsArray)); // Convierte a JSON string si el backend espera un JSON
+          formData.append('tag', tagsArray);
       }
 
       // Agrega el categoryId al FormData
@@ -368,7 +368,6 @@ const handleSaveEditProduct = async () => {
               <th>Stock</th>
               <th>Categoría</th>
               <th>Descuento</th>
-              <th>Tags</th>
               <th>Imagen</th>
               <th>Acciones</th>
             </tr>
@@ -382,7 +381,6 @@ const handleSaveEditProduct = async () => {
                 <td>{product.stock}</td>
                 <td>{product.categoryName}</td>
                 <td>{product.discountPercentage}%</td>
-                <td>{product.tags.join(', ')}</td>
                 <td>
                   {product.imageBase64s && (
                     <img src={product.imageBase64s[0]} alt={product.productName} style={{ width: '50px' }} />
