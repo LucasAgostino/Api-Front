@@ -368,7 +368,6 @@ const handleSaveEditProduct = async () => {
               <th>Stock</th>
               <th>Categoría</th>
               <th>Descuento</th>
-              <th>Imagen</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -381,11 +380,6 @@ const handleSaveEditProduct = async () => {
                 <td>{product.stock}</td>
                 <td>{product.categoryName}</td>
                 <td>{product.discountPercentage}%</td>
-                <td>
-                  {product.imageBase64s && (
-                    <img src={product.imageBase64s[0]} alt={product.productName} style={{ width: '50px' }} />
-                  )}
-                </td>
                 <td>
                   <button onClick={() => handleEditProduct(product.productId)}>Editar</button>
                   <button onClick={() => handleDeleteProduct(product.productId)}>Eliminar</button>
