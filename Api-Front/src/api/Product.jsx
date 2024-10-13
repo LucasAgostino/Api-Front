@@ -30,7 +30,7 @@ export const addImagesToProduct = async (productId, images) => {
         images.forEach((image) => {
             formData.append('images', image);
         });
-        const response = await api.post(`/add-images`, formData, {
+        const response = await api.put(`/add-images`, formData, {
             params: { productId }
         });
         return response.data;

@@ -5,6 +5,7 @@ import {
   softDeleteProduct,
   updateProduct,
   fetchTags,
+  addImagesToProduct,
 } from '../api/Product';
 import { fetchCategories } from '../api/Category';
 import './styles/ProductsContentAdmin.css';
@@ -257,6 +258,56 @@ const handleSaveEditProduct = async () => {
   }
 };
 
+// Función para manejar la carga de imágenes en el modo de edición
+// Función para manejar la carga de imágenes en el modo de edición
+const handleEditImageUpload = (e) => {
+  const files = e.target.files;
+  const token = localStorage.getItem('token');
+  setAuthToken(token);
+
+  // Convertir archivos a base64
+  const promises = Array.from(files).map((file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve({ base64: reader.result, file }); // Guardamos tanto el base64 como el archivo original
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Manejar imágenes subidas
+  Promise.all(promises).then((images) => {
+    const base64Images = images.map((img) => img.base64);
+    const imageFiles = images.map((img) => img.file);
+
+    // Actualizamos el estado local con las imágenes en base64 para previsualización
+    setEditProductData((prevState) => ({
+      ...prevState,
+      imageBase64s: [...prevState.imageBase64s, ...base64Images], // Añadimos las nuevas imágenes en base64
+    }));
+
+    // Subimos las imágenes al servidor llamando a addImagesToProduct
+    const productId = editProductId; // Asegúrate de que esta variable tenga el ID del producto que estás editando
+    addImagesToProduct(productId, imageFiles)
+      .then((response) => {
+        console.log('Imágenes subidas con éxito:', response);
+        // Aquí puedes manejar el estado tras la subida exitosa
+      })
+      .catch((error) => {
+        console.error('Error al subir imágenes:', error);
+        // Manejar errores
+      });
+  });
+};
+
+
+// Función para eliminar una imagen específica en el modo de edición
+const handleRemoveEditImage = (index) => {
+  const updatedImages = editProductData.imageBase64s.filter((_, i) => i !== index);
+  setEditProductData({ ...editProductData, imageBase64s: updatedImages });
+};
 
   
   return (
@@ -392,65 +443,90 @@ const handleSaveEditProduct = async () => {
 
       {/* Edición de producto */}
       {editProductId && (
-        <div className="edit-product-form">
-          <h3>Editar Producto</h3>
-          <label htmlFor="editProductName">Nombre del producto</label>
-          <input
-            type="text"
-            id="editProductName"
-            value={editProductData.productName || ''}
-            onChange={(e) => setEditProductData({ ...editProductData, productName: e.target.value })}
-          />
-          <label htmlFor="editPrice">Precio del producto</label>
-          <input
-            type="number"
-            id="editPrice"
-            value={editProductData.price || 0}
-            onChange={(e) => setEditProductData({ ...editProductData, price: e.target.value })}
-          />
-          <label htmlFor="editProductDescription">Descripción del producto</label>
-          <textarea
-            id="editProductDescription"
-            value={editProductData.productDescription || ''}
-            onChange={(e) => setEditProductData({ ...editProductData, productDescription: e.target.value })}
-          ></textarea>
-          <label htmlFor="editStock">Stock</label>
-          <input
-            type="number"
-            id="editStock"
-            value={editProductData.stock || 0}
-            onChange={(e) => setEditProductData({ ...editProductData, stock: e.target.value })}
-          />
-          <label htmlFor="editCategoryName">Categoría</label>
-          <select
-            id="editCategoryName"
-            value={editProductData.categoryName}
-            onChange={(e) => setEditProductData({ ...editProductData, categoryName: e.target.value })}
+  <div className="edit-product-form">
+    <h3>Editar Producto</h3>
+    <label htmlFor="editProductName">Nombre del producto</label>
+    <input
+      type="text"
+      id="editProductName"
+      value={editProductData.productName || ''}
+      onChange={(e) => setEditProductData({ ...editProductData, productName: e.target.value })}
+    />
+    <label htmlFor="editPrice">Precio del producto</label>
+    <input
+      type="number"
+      id="editPrice"
+      value={editProductData.price || 0}
+      onChange={(e) => setEditProductData({ ...editProductData, price: e.target.value })}
+    />
+    <label htmlFor="editProductDescription">Descripción del producto</label>
+    <textarea
+      id="editProductDescription"
+      value={editProductData.productDescription || ''}
+      onChange={(e) => setEditProductData({ ...editProductData, productDescription: e.target.value })}
+    ></textarea>
+    <label htmlFor="editStock">Stock</label>
+    <input
+      type="number"
+      id="editStock"
+      value={editProductData.stock || 0}
+      onChange={(e) => setEditProductData({ ...editProductData, stock: e.target.value })}
+    />
+    <label htmlFor="editCategoryName">Categoría</label>
+    <select
+      id="editCategoryName"
+      value={editProductData.categoryName}
+      onChange={(e) => setEditProductData({ ...editProductData, categoryName: e.target.value })}
+    >
+      <option value="">Seleccione una categoría</option>
+      {categories.map((category) => (
+        <option key={category.categoryId} value={category.categoryName}>
+          {category.categoryName}
+        </option>
+      ))}
+    </select>
+    <label htmlFor="editDiscountPercentage">Porcentaje de descuento</label>
+    <input
+      type="number"
+      id="editDiscountPercentage"
+      value={editProductData.discountPercentage || 0}
+      onChange={(e) => setEditProductData({ ...editProductData, discountPercentage: e.target.value })}
+    />
+    <label htmlFor="editTags">Tags separados por coma</label>
+    <input
+      type="text"
+      id="editTags"
+      value={editProductData.tags || ''}
+      onChange={(e) => setEditProductData({ ...editProductData, tags: e.target.value })}
+    />
+
+    {/* Subir nuevas imágenes en la edición */}
+    <label htmlFor="editImageUpload">Subir nuevas imágenes</label>
+    <input
+      type="file"
+      id="editImageUpload"
+      multiple
+      onChange={handleEditImageUpload} // Nueva función
+    />
+    {/* Mostrar imágenes cargadas */}
+    <div className="image-preview">
+      {editProductData.imageBase64s?.map((imageBase64, index) => (
+        <div key={index} className="image-container">
+          <img src={imageBase64} alt={`Imagen ${index + 1}`} style={{ width: '100px' }} />
+          <button
+            onClick={() => handleRemoveEditImage(index)} // Nueva función para eliminar
           >
-            <option value="">Seleccione una categoría</option>
-            {categories.map((category) => (
-              <option key={category.categoryId} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
-          <label htmlFor="editDiscountPercentage">Porcentaje de descuento</label>
-          <input
-            type="number"
-            id="editDiscountPercentage"
-            value={editProductData.discountPercentage || 0}
-            onChange={(e) => setEditProductData({ ...editProductData, discountPercentage: e.target.value })}
-          />
-          <label htmlFor="editTags">Tags separados por coma</label>
-          <input
-            type="text"
-            id="editTags"
-            value={editProductData.tags || ''}
-            onChange={(e) => setEditProductData({ ...editProductData, tags: e.target.value })}
-          />
-          <button onClick={() => handleSaveEditProduct(editProductId)}>Guardar Cambios</button>
+            Eliminar
+          </button>
         </div>
-      )}
+      ))}
+    </div>
+
+    <button onClick={handleSaveEditProduct}>Guardar Cambios</button>
+  </div>
+)}
+
+
     </div>
   );
 };
