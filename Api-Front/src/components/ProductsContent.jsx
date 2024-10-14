@@ -6,6 +6,7 @@ import {
   updateProduct,
   fetchTags,
   addImagesToProduct,
+  removeImageFromProduct,
 } from '../api/Product';
 import { fetchCategories } from '../api/Category';
 import './styles/ProductsContentAdmin.css';
@@ -190,6 +191,7 @@ const ProductsContent = () => {
         discountPercentage: productToEdit.discountPercentage,
         tags: productToEdit.tags.join(', '),
         imageBase64s: productToEdit.imageBase64s,
+        imageIds: productToEdit.imageid,
       });
       setEditProductId(productId);
     }
@@ -303,11 +305,31 @@ const handleEditImageUpload = (e) => {
 };
 
 
-// Función para eliminar una imagen específica en el modo de edición
-const handleRemoveEditImage = (index) => {
-  const updatedImages = editProductData.imageBase64s.filter((_, i) => i !== index);
-  setEditProductData({ ...editProductData, imageBase64s: updatedImages });
+// Función para eliminar una imagen existente en el servidor
+const handleRemoveEditImage = async (index) => {
+  const token = localStorage.getItem('token');
+  setAuthToken(token);
+  const imageIdToDelete = editProductData.imageIds[index]; // Obtén el ID de la imagen a eliminar
+  console.log(editProductData.imageIds)
+  console.log(index)
+  try {
+    await removeImageFromProduct(editProductId, imageIdToDelete); // Llama a la API para eliminar la imagen
+    console.log(`Imagen con ID ${imageIdToDelete} eliminada correctamente`);
+
+    // Actualiza el estado local para eliminar la imagen de la vista
+    const updatedImagesBase64 = editProductData.imageBase64s.filter((_, i) => i !== index);
+    const updatedImageIds = editProductData.imageIds.filter((_, i) => i !== index);
+    
+    setEditProductData({ 
+      ...editProductData, 
+      imageBase64s: updatedImagesBase64, 
+      imageIds: updatedImageIds // Actualiza los IDs de las imágenes
+    });
+  } catch (error) {
+    console.error('Error al eliminar la imagen:', error);
+  }
 };
+
 
   
   return (
@@ -508,16 +530,12 @@ const handleRemoveEditImage = (index) => {
       multiple
       onChange={handleEditImageUpload} // Nueva función
     />
-    {/* Mostrar imágenes cargadas */}
+      {/* Mostrar imágenes cargadas */}
     <div className="image-preview">
       {editProductData.imageBase64s?.map((imageBase64, index) => (
-        <div key={index} className="image-container">
-          <img src={imageBase64} alt={`Imagen ${index + 1}`} style={{ width: '100px' }} />
-          <button
-            onClick={() => handleRemoveEditImage(index)} // Nueva función para eliminar
-          >
-            Eliminar
-          </button>
+        <div key={editProductData.imageIds[index]} className="image-container">
+          <img src={imageBase64} alt={`Imagen ${index}`} style={{ width: '100px' }} />
+          <button onClick={() => handleRemoveEditImage(index)}>Eliminar</button>
         </div>
       ))}
     </div>

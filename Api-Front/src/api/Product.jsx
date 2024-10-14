@@ -110,9 +110,8 @@ export const removeTagFromProduct = async (productId, tag) => {
 // Función para eliminar una imagen de un producto
 export const removeImageFromProduct = async (productId, imageId) => {
     try {
-        const response = await api.delete(`/${productId}/removeImage`, {
-            params: { imageId }
-        });
+        const response = await api.put(`/${productId}/removeImage/${imageId}`
+        );
         return response.data;
     } catch (error) {
         throw new Error('Error removing image from product');
