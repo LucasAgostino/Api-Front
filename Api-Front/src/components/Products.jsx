@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../components/styles/Products.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ProductCarousel from './ProductCarousel';
 import BrandCarousel from './BrandCarousel';
 import HeroCarousel from './HeroCarousel';
@@ -18,14 +18,21 @@ const ProductsGrid = () => {
   const [errorProducts, setErrorProducts] = useState(null);
   const [errorCategories, setErrorCategories] = useState(null);
   const [errorTags, setErrorTags] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); // Obtenemos la información de la navegación
+  const initialCategory = location.state?.category || null; // Capturamos la categoría del estado
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory); // Usamos la categoría inicial pasada
 
+  useEffect(() => {
+    if (initialCategory) {
+      handleFilter(initialCategory, selectedTags); // Aplicamos el filtro con la categoría inicial
+    }
+  }, [initialCategory]);
   // Guarda la posición actual del scroll
   const saveScrollPosition = () => {
     sessionStorage.setItem('scrollPosition', window.scrollY);
