@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchProductById } from '../api/Product';
-import { addProductToCart } from '../api/Cart'; // Importar la función de añadir al carrito
+import { addProductToCart } from '../api/Cart'; 
 import '../components/styles/ProductDetails.css';
 
 const ProductDetails = () => {
-  const { productId } = useParams(); // Obtener el ID del producto de la URL
-  const navigate = useNavigate(); // Para redirigir al login
-  const [product, setProduct] = useState(null); // Estado para el producto
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [error, setError] = useState(null); // Estado de error
-  const [quantity, setQuantity] = useState(1); // Estado para la cantidad del producto
-  const [currentImageIndex, setCurrentImageIndex] = useState(0); // Estado para la imagen actual
-  const [stockError, setStockError] = useState(''); // Estado para el mensaje de error de stock
-  const [notification, setNotification] = useState(null); // Estado para la notificación
+  const { productId } = useParams(); 
+  const navigate = useNavigate(); 
+  const [product, setProduct] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const [quantity, setQuantity] = useState(1); 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); 
+  const [stockError, setStockError] = useState(''); 
+  const [notification, setNotification] = useState(null); 
 
-  // Cargar los detalles del producto cuando se monta el componente
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const fetchedProduct = await fetchProductById(productId); // Llamada a la API para obtener el producto por ID
+        const fetchedProduct = await fetchProductById(productId); 
         setProduct(fetchedProduct);
       } catch (error) {
         setError('Error fetching product details.');
@@ -28,31 +27,32 @@ const ProductDetails = () => {
       }
     };
 
-    loadProduct(); // Ejecutamos la función para cargar el producto
+    loadProduct(); 
   }, [productId]);
 
-  // Función para manejar el cambio de cantidad
   const handleQuantityChange = (event) => {
     const newQuantity = parseInt(event.target.value);
     setQuantity(newQuantity);
 
-    // Comprobar si la cantidad supera el stock disponible
     if (newQuantity > product.stock) {
       setStockError('La cantidad seleccionada supera el stock disponible.');
     } else {
-      setStockError(''); // Borrar el mensaje de error si la cantidad es válida
+      setStockError(''); 
     }
   };
 
-  // Función para agregar el producto al carrito
   const handleAddToCart = async () => {
+    const role = localStorage.getItem('role');
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       return;
     }
+    if(role !== 'USER') {
+      navigate('/'); 
+      return;
+    }
 
-    // Comprobar si la cantidad seleccionada supera el stock antes de añadir al carrito
     if (quantity > product.stock) {
       setNotification({ message: 'La cantidad seleccionada supera el stock disponible.', type: 'error' });
       return;
@@ -62,7 +62,6 @@ const ProductDetails = () => {
       await addProductToCart(productId, quantity);
       setNotification({ message: 'Producto añadido al carrito', type: 'success' });
 
-      // Hacer que la notificación desaparezca después de 3 segundos
       setTimeout(() => {
         setNotification(null);
       }, 3000);
@@ -70,14 +69,12 @@ const ProductDetails = () => {
       setNotification({ message: 'Error al añadir el producto al carrito', type: 'error' });
       console.error(error);
 
-      // Hacer que la notificación desaparezca después de 3 segundos
       setTimeout(() => {
         setNotification(null);
       }, 3000);
     }
   };
 
-  // Función para cambiar la imagen actual (previa o siguiente)
   const handleImageChange = (direction) => {
     if (direction === 'next') {
       setCurrentImageIndex((prevIndex) =>
@@ -156,7 +153,7 @@ const ProductDetails = () => {
                 type="number"
                 min="1"
                 value={quantity}
-                onChange={handleQuantityChange} // Cambiar la cantidad
+                onChange={handleQuantityChange} 
               />
             </p>
             {/* Mostrar el mensaje de error si se supera el stock */}

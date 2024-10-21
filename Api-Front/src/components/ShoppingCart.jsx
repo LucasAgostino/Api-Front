@@ -13,6 +13,14 @@ const ShoppingCart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    
+      const role = localStorage.getItem('role'); // Obtiene el rol del usuario desde localStorage (o desde tu método preferido)
+      if (role === 'USER') {
+        setIsAdmin(true);
+      } else {
+        navigate('/'); 
+      };
+
     const token = localStorage.getItem('token'); // Obtén el token del localStorage
     if (!token) {
       navigate('/login');
