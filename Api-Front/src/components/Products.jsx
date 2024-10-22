@@ -42,6 +42,7 @@ const ProductsGrid = () => {
       try {
         const data = await fetchProductos();
         setProducts(data);
+        handleFilter(); // Aplicar el filtro inicial
       } catch (error) {
         setErrorProducts('Error al cargar los productos');
       } finally {

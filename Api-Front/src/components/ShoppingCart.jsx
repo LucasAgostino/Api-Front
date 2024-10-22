@@ -11,6 +11,7 @@ const ShoppingCart = () => {
   const [installments, setInstallments] = useState('1'); // Estado para las cuotas seleccionadas
   const [successMessage, setSuccessMessage] = useState(''); // Estado para el mensaje de éxito
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false); // Estado para verificar si el usuario es admin
 
   useEffect(() => {
     

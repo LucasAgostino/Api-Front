@@ -71,25 +71,6 @@ const CategoryContent = () => {
         <button onClick={handleCreateCategory}>Crear Categoría</button>
       </div>
 
-      {/* Buscar una categoría por ID */}
-      <div className="search-category">
-        <h3>Buscar Categoría por ID</h3>
-        <input
-          type="text"
-          value={selectedCategoryId}
-          onChange={(e) => setSelectedCategoryId(e.target.value)}
-          placeholder="ID de la categoría"
-        />
-        <button onClick={handleGetCategoryById}>Buscar Categoría</button>
-        {categoryDetails && (
-          <div className="category-details">
-            <h4>Detalles de la Categoría</h4>
-            <p><strong>ID:</strong> {categoryDetails.id}</p>
-            <p><strong>Nombre:</strong> {categoryDetails.name}</p>
-          </div>
-        )}
-      </div>
-
       {/* Lista de todas las categorías */}
       <div className="categories-list">
         <h3>Lista de Categorías</h3>
