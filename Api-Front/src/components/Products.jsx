@@ -28,16 +28,6 @@ const ProductsGrid = () => {
   const initialCategory = location.state?.category || null; // Capturamos la categoría del estado
   const [selectedCategory, setSelectedCategory] = useState(initialCategory); // Usamos la categoría inicial pasada
 
-  useEffect(() => {
-    if (initialCategory) {
-      handleFilter(initialCategory, selectedTags); // Aplicamos el filtro con la categoría inicial
-    }
-  }, [initialCategory]);
-  // Guarda la posición actual del scroll
-  const saveScrollPosition = () => {
-    sessionStorage.setItem('scrollPosition', window.scrollY);
-  };
-
   // Restaura la posición del scroll
   const restoreScrollPosition = () => {
     const savedPosition = sessionStorage.getItem('scrollPosition');
@@ -85,6 +75,15 @@ const ProductsGrid = () => {
     getCategories();
     getTags();
   }, []);
+  useEffect(() => {
+    if (initialCategory) {
+      handleFilter(initialCategory, selectedTags); // Aplicamos el filtro con la categoría inicial
+    }
+  }, [initialCategory]);
+  // Guarda la posición actual del scroll
+  const saveScrollPosition = () => {
+    sessionStorage.setItem('scrollPosition', window.scrollY);
+  };
 
   const handleViewMore = (productId) => {
     saveScrollPosition(); // Guarda la posición antes de cambiar de página
