@@ -1,33 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import '../styles/Login.css'; 
-import { authenticateUser } from '../../api/Auth'; // Importar la función de autenticación
+import { useDispatch, useSelector } from 'react-redux'; // Importa useDispatch y useSelector
+import { authenticateUserThunk } from '../../api/SliceUser'; // Importa el thunk
+import '../styles/Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Obtén la función dispatch
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const authData = { username, password };
-      const response = await authenticateUser(authData);
       
-      // Guardar el token y el rol en localStorage
-      localStorage.setItem('token', response.access_token); // Guardar el token JWT
-      localStorage.setItem('role', response.role); // Guardar el rol del usuario
+      // Utiliza dispatch para llamar al thunk de autenticación
+      const response = await dispatch(authenticateUserThunk(authData)).unwrap();
 
-      console.log('Autenticación exitosa:', response);
+      // Mostrar el token y el rol en la consola
+      console.log('Token:', response.access_token);
+      console.log('Rol:', response.role);
+      // Redirigir al usuario al home
+      navigate('/');
 
-          // Redirigir al usuario al home
-          navigate('/');
-
-          // Refresca toda la página después de redirigir
-          setTimeout(() => {
-            window.location.reload();
-          }, 100); // Añade un pequeño retraso antes de recargar la página
     } catch (error) {
       setErrorMessage('Error al iniciar sesión. Verifica tus credenciales.');
       console.error('Error en la autenticación:', error);
