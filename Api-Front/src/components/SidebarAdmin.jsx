@@ -25,11 +25,10 @@ const SidebarAdmin = () => {
   };
 
   const handleHomeClick = () => {
-    window.location.href = '/'; // Cambia esto si usas React Router (puedes usar <Link /> en lugar de esto)
+    navigate('/');
   };
 
   if (!isAdmin) {
-    // Renderiza un mensaje mientras redirige si no es admin
     return <p>Redirigiendo...</p>;
   }
 
@@ -59,7 +58,7 @@ const SidebarAdmin = () => {
         </div>
 
         {/* Botón para volver al home */}
-        <div className="home-button-container" onClick={handleHomeClick}>
+        <div href="#" className="home-button-container" onClick={handleHomeClick}>
           <i className="fa fa-home material-symbols-outlined">home</i>
           <span>Volver al Home</span>
         </div>

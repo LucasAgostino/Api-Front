@@ -15,6 +15,7 @@ export const authenticateUserThunk = createAsyncThunk(
     const { access_token, role } = data; // Asegúrate de que la respuesta incluya el rol
     dispatch(setToken(access_token));
     dispatch(setRole(role)); // Guarda el rol en el estado
+    dispatch(fetchCurrentUser()); // Despacha la acción para obtener los detalles del usuario
     return data;
   }
 );
@@ -43,6 +44,7 @@ const userSlice = createSlice({
     role: null,
     userInfo: null,
     users: [],
+    searchedUser: null,
     loading: false,
     error: null,
   },
@@ -50,21 +52,28 @@ const userSlice = createSlice({
     setToken: (state, action) => {
       state.token = action.payload;
     },
-    setRole: (state, action) => { // Reducer para establecer el rol
+    setRole: (state, action) => {
       state.role = action.payload;
     },
     clearToken: (state) => {
       state.token = null;
-      state.role = null; // También limpiar el rol
+      state.role = null;
+      state.searchedUser = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.userInfo = action.payload; // Actualiza el estado con los detalles del usuario actual
+      })
       .addCase(authenticateUserThunk.fulfilled, (state, action) => {
         state.userInfo = action.payload.userInfo;
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.users = action.payload;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.searchedUser = action.payload; // Actualiza el estado con el usuario buscado
       })
       .addMatcher(
         (action) => action.type.endsWith('/pending'),
