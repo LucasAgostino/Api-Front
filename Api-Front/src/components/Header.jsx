@@ -90,6 +90,14 @@ const Header = () => {
     navigate('/cart'); // Navega a la página del carrito
   };
 
+  const handleAdminClick = () => {
+    navigate('/admin'); // Navega a la página de administrador
+  };
+
+  const handleProfileClick = () => {
+    navigate('/profile'); // Navega a la página de perfil
+  };
+
   const suggestionsPortal = suggestions.length > 0 && (
     <div className="suggestions-portal">
       <div className="suggestions-dropdown">
@@ -134,7 +142,7 @@ const Header = () => {
         {isAuthenticated ? (
           <div className="auth-links">
             {userRole === 'ADMIN' ? (
-              <a href="/admin" className="admin-link">
+              <a href="#" onClick={handleAdminClick} className="admin-link">
                 ADMIN
               </a>
             ) : (
@@ -142,7 +150,7 @@ const Header = () => {
                 <img src="/icons/cart.png" className="cart-icon" alt="Cart" />
               </a>
             )}
-            <a href="/profile" className="profile-link">
+            <a href="#" onClick={handleProfileClick} className="profile-link">
               PERFIL
             </a>
           </div>
