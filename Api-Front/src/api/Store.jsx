@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './SliceUser'; // Asegúrate de importar el reducer del slice de usuario
+import userReducer from './SliceUser';
+import orderReducer from './SliceOrder';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer, // Añade tu slice aquí
+    user: userReducer,
+    order: orderReducer,
   },
 });
