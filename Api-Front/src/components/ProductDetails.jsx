@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchProductById } from '../api/Product';
-import { addProductToCart } from '../api/Cart'; 
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductById } from '../api/Product'; 
+import { addProduct } from '../api/SliceCart'; // Importa la acción desde el slice de Redux
 import '../components/styles/ProductDetails.css';
 
 const ProductDetails = () => {
-  const { productId } = useParams(); 
-  const navigate = useNavigate(); 
-  const [product, setProduct] = useState(null); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
-  const [quantity, setQuantity] = useState(1); 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0); 
-  const [stockError, setStockError] = useState(''); 
-  const [notification, setNotification] = useState(null); 
+  const { productId } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [stockError, setStockError] = useState('');
+  const [notification, setNotification] = useState(null);
+
+  // Acceder al carrito y usuario desde el estado de Redux
+  const { token, role } = useSelector((state) => state.user); // Accedemos al token y role desde Redux
 
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const fetchedProduct = await fetchProductById(productId); 
+        const fetchedProduct = await fetchProductById(productId);
         setProduct(fetchedProduct);
       } catch (error) {
         setError('Error fetching product details.');
@@ -27,7 +32,7 @@ const ProductDetails = () => {
       }
     };
 
-    loadProduct(); 
+    loadProduct();
   }, [productId]);
 
   const handleQuantityChange = (event) => {
@@ -37,19 +42,17 @@ const ProductDetails = () => {
     if (newQuantity > product.stock) {
       setStockError('La cantidad seleccionada supera el stock disponible.');
     } else {
-      setStockError(''); 
+      setStockError('');
     }
   };
 
-  const handleAddToCart = async () => {
-    const role = localStorage.getItem('role');
-    const token = localStorage.getItem('token');
+  const handleAddToCart = () => {
     if (!token) {
       navigate('/login');
       return;
     }
-    if(role !== 'USER') {
-      navigate('/'); 
+    if (role !== 'USER') {
+      navigate('/');
       return;
     }
 
@@ -58,21 +61,13 @@ const ProductDetails = () => {
       return;
     }
 
-    try {
-      await addProductToCart(productId, quantity);
-      setNotification({ message: 'Producto añadido al carrito', type: 'success' });
+    // Despachar la acción de agregar el producto al carrito
+    dispatch(addProduct({ productId, quantity }));
 
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-    } catch (error) {
-      setNotification({ message: 'Error al añadir el producto al carrito', type: 'error' });
-      console.error(error);
-
-      setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-    }
+    setNotification({ message: 'Producto añadido al carrito', type: 'success' });
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   };
 
   const handleImageChange = (direction) => {
@@ -85,6 +80,10 @@ const ProductDetails = () => {
         prevIndex === 0 ? product.imageBase64s.length - 1 : prevIndex - 1
       );
     }
+  };
+
+  const handlebackToProducts = () => {
+    navigate('/products');
   };
 
   if (loading) {
@@ -147,7 +146,7 @@ const ProductDetails = () => {
 
           <div className="product-details-quantity">
             <p className="quantity-controls">
-            Cantidad
+              Cantidad
               <input
                 className="quantity-input"
                 type="number"
@@ -169,11 +168,11 @@ const ProductDetails = () => {
             Añadir al Carrito
           </button>
 
-          <a className="back-to-products" href="/products">← Volver a productos</a>
+          <a className="back-to-products" href="#" onClick={handlebackToProducts}>← Volver a productos</a>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ProductDetails;

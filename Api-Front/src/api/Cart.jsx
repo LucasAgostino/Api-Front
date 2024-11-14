@@ -1,29 +1,9 @@
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'http://localhost:8080/cart',
-});
-
-// Función para establecer el token en las cabeceras de axios
-export const setAuthToken = (token) => {
-  if (token) {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common['Authorization'];
-  }
-};
+import api from './AxiosConfig'; // Importa la instancia de Axios configurada
 
 // Función para agregar un producto al carrito
 export const addProductToCart = async (productId, quantity) => {
     try {
-      const token = localStorage.getItem('token'); // Obtener el token desde localStorage
-      if (!token) {
-        throw new Error('No se encontró el token. El usuario no está autenticado.');
-      }
-      
-      setAuthToken(token); // Configurar el token en las cabeceras
-      
-      const response = await api.post('/add', null, {
+      const response = await api.post('/cart/add', null, {
         params: { productId, quantity }
       });
       return response.data; // Devuelve el mensaje de respuesta
@@ -35,7 +15,7 @@ export const addProductToCart = async (productId, quantity) => {
 // Función para actualizar un producto en el carrito
 export const updateProductInCart = async (productId, quantity) => {
     try {
-        const response = await api.put('/updateproduct', null, {
+        const response = await api.put('/cart/updateproduct', null, {
             params: { productId, quantity }
         });
         return response.data; // Devuelve el mensaje de respuesta
@@ -47,19 +27,7 @@ export const updateProductInCart = async (productId, quantity) => {
 // Función para obtener el carrito del usuario
 export const fetchCart = async () => {
     try {
-        const token = localStorage.getItem('token');
-        
-        if (!token) {
-            console.error('No se encontró el token en localStorage');
-            throw new Error('No token found');
-        }
-
-        // Asegúrate de que el token esté configurado en las cabeceras
-        setAuthToken(token); 
-        console.log('Token enviado en la solicitud:', api.defaults.headers.common['Authorization']);
-        
-        const response = await api.get('/get');
-        console.log('Respuesta del servidor:', response.data);
+        const response = await api.get('/cart/get');
         return response.data;
     } catch (error) {
         if (error.response) {
@@ -74,11 +42,10 @@ export const fetchCart = async () => {
     }
 };
 
-
 // Función para eliminar un producto del carrito
 export const removeProductFromCart = async (productId) => {
     try {
-        const response = await api.delete('/remove', {
+        const response = await api.delete('/cart/remove', {
             params: { productId }
         });
         return response.data; // Devuelve el mensaje de respuesta
@@ -90,7 +57,7 @@ export const removeProductFromCart = async (productId) => {
 // Función para disminuir la cantidad de un producto en el carrito
 export const decreaseProductInCart = async (productId, quantity) => {
     try {
-        const response = await api.put('/decrease', null, {
+        const response = await api.put('/cart/decrease', null, {
             params: { productId, quantity }
         });
         return response.data; // Devuelve el mensaje de respuesta
@@ -102,7 +69,7 @@ export const decreaseProductInCart = async (productId, quantity) => {
 // Función para realizar el checkout del carrito
 export const checkoutCart = async () => {
     try {
-        await api.post('/checkout'); // No devuelve datos, solo realiza la acción
+        await api.post('/cart/checkout'); // No devuelve datos, solo realiza la acción
     } catch (error) {
         throw new Error('Error checking out cart');
     }
