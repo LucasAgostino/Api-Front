@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import '../components/styles/Profile.css';
-import { fetchCurrentUser } from '../api/SliceUser'; // Importa las acciones de Redux para el usuario
-import { fetchUserOrders } from '../api/SliceOrder'; // Importa las acciones de Redux para órdenes
+import { fetchCurrentUser } from '../api/SliceUser';
+import { fetchUserOrders } from '../api/SliceOrder';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -18,14 +18,13 @@ const Profile = () => {
   const errorOrders = useSelector((state) => state.order.error);
 
   useEffect(() => {
-    dispatch(fetchCurrentUser()); // Despacha la acción para obtener los datos del usuario
-    dispatch(fetchUserOrders()); // Despacha la acción para obtener las órdenes del usuario autenticado
+    dispatch(fetchCurrentUser());
+    dispatch(fetchUserOrders());
   }, [dispatch]);
   useEffect(() => {
-    console.log('Usuario actual:', user); // Agrega este console log
+    console.log('Usuario actual:', user);
   }, [user]);
   const handleLogout = () => {
-    // Opcional: Limpiar el estado del usuario
     navigate('/');
     setTimeout(() => {
       window.location.reload();

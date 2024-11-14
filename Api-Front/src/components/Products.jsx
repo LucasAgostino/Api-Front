@@ -5,18 +5,16 @@ import ProductCarousel from './ProductCarousel';
 import BrandCarousel from './BrandCarousel';
 import HeroCarousel from './HeroCarousel';
 import { fetchProductos, filterProducts } from '../api/Product';
-import { fetchCategories } from '../api/Category';
 import { fetchTags } from '../api/Product';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCategories } from '../api/SliceCategory';
 
 const ProductsGrid = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingTags, setLoadingTags] = useState(true);
   const [errorProducts, setErrorProducts] = useState(null);
-  const [errorCategories, setErrorCategories] = useState(null);
   const [errorTags, setErrorTags] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
@@ -24,40 +22,25 @@ const ProductsGrid = () => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // Obtenemos la información de la navegación
-  const initialCategory = location.state?.category || null; // Capturamos la categoría del estado
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory); // Usamos la categoría inicial pasada
+  const location = useLocation();
+  const initialCategory = location.state?.category || null;
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
-  // Restaura la posición del scroll
-  const restoreScrollPosition = () => {
-    const savedPosition = sessionStorage.getItem('scrollPosition');
-    if (savedPosition) {
-      window.scrollTo(0, parseInt(savedPosition, 10));
-    }
-  };
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category.items);
+  const loadingCategories = useSelector((state) => state.category.loading);
+  const errorCategories = useSelector((state) => state.category.error);
 
-  // Obtiene todos los productos, categorías y etiquetas al cargar el componente
   useEffect(() => {
     const getProducts = async () => {
       try {
         const data = await fetchProductos();
         setProducts(data);
-        handleFilter(); // Aplicar el filtro inicial
+        handleFilter();
       } catch (error) {
         setErrorProducts('Error al cargar los productos');
       } finally {
         setLoadingProducts(false);
-      }
-    };
-
-    const getCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategories(data);
-      } catch (error) {
-        setErrorCategories('Error al cargar las categorías');
-      } finally {
-        setLoadingCategories(false);
       }
     };
 
@@ -73,29 +56,17 @@ const ProductsGrid = () => {
     };
 
     getProducts();
-    getCategories();
+    dispatch(loadCategories());
     getTags();
-  }, []);
+  }, [dispatch]);
+
   useEffect(() => {
     if (initialCategory) {
-      handleFilter(initialCategory, selectedTags); // Aplicamos el filtro con la categoría inicial
+      handleFilter(initialCategory, selectedTags);
     }
   }, [initialCategory]);
-  // Guarda la posición actual del scroll
-  const saveScrollPosition = () => {
-    sessionStorage.setItem('scrollPosition', window.scrollY);
-  };
 
-  const handleViewMore = (productId) => {
-    saveScrollPosition(); // Guarda la posición antes de cambiar de página
-    navigate(`/product-details/${productId}`);
-  };
-
-  // Función para manejar el filtro por precio, categoría y etiquetas
   const handleFilter = async (categoryId = selectedCategory, tags = selectedTags) => {
-    // Guarda la posición del scroll
-    saveScrollPosition();
-
     setLoadingProducts(true);
     try {
       const filteredProducts = await filterProducts(minPrice, maxPrice, categoryId, tags);
@@ -104,37 +75,28 @@ const ProductsGrid = () => {
       setErrorProducts('Error al filtrar los productos');
     } finally {
       setLoadingProducts(false);
-      setTimeout(() => {
-        restoreScrollPosition(); // Restaurar la posición después del filtrado
-      }, 100); // Añadir un ligero retraso para asegurarse de que la página se haya renderizado
     }
   };
-
-  // Función para manejar la selección de etiquetas
+  const calculateDiscountedPrice = (price, discountPercentage) => {
+    return price - price * discountPercentage;
+  };
   const handleTagClick = (tag) => {
     const newSelectedTags = new Set(selectedTags);
 
     if (newSelectedTags.has(tag)) {
-      newSelectedTags.delete(tag); // Deseleccionar si ya está
+      newSelectedTags.delete(tag);
     } else {
-      newSelectedTags.add(tag); // Seleccionar nueva etiqueta
+      newSelectedTags.add(tag);
     }
 
-    setSelectedTags(newSelectedTags); // Actualiza el estado de etiquetas seleccionadas
-
-    // Filtrar automáticamente con todas las etiquetas seleccionadas
+    setSelectedTags(newSelectedTags);
     handleFilter(selectedCategory, newSelectedTags);
   };
 
-  // Función para manejar el click en categorías
   const handleCategoryClick = (categoryId) => {
-    const newSelectedCategory = categoryId === selectedCategory ? null : categoryId; // Cambiar categoría
-
-    // Actualizar el estado de categoría
+    const newSelectedCategory = categoryId === selectedCategory ? null : categoryId;
     setSelectedCategory(newSelectedCategory);
-
-    // Filtrar automáticamente con la nueva categoría
-    handleFilter(newSelectedCategory, selectedTags); // Aplicar el filtro inmediatamente
+    handleFilter(newSelectedCategory, selectedTags);
   };
 
   const toggleCategories = () => {
@@ -145,8 +107,8 @@ const ProductsGrid = () => {
     setIsTagsOpen(!isTagsOpen);
   };
 
-  const calculateDiscountedPrice = (price, discountPercentage) => {
-    return price - price * discountPercentage;
+  const handleViewMore = (productId) => {
+    navigate(`/product-details/${productId}`);
   };
 
   if (loadingProducts || loadingCategories || loadingTags) return <p>Cargando...</p>;
@@ -170,7 +132,6 @@ const ProductsGrid = () => {
 
       <div className="content-wrapper">
         <aside className="sidebar">
-          {/* Filtro por precio */}
           <div className="price-filter">
             <h2>Filtrar por precio</h2>
             <div className="price-inputs">
@@ -198,7 +159,6 @@ const ProductsGrid = () => {
             </button>
           </div>
 
-          {/* Categorías */}
           <h2 onClick={toggleCategories} style={{ cursor: 'pointer', fontSize: '1.2rem' }}>
             Categorías <span style={{ fontSize: '0.8rem' }}>{isCategoriesOpen ? '▲' : '▼'}</span>
           </h2>
@@ -216,7 +176,6 @@ const ProductsGrid = () => {
             </div>
           )}
 
-          {/* Etiquetas */}
           <h2 onClick={toggleTags} style={{ cursor: 'pointer', fontSize: '1.2rem' }}>
             Etiquetas <span style={{ fontSize: '0.8rem' }}>{isTagsOpen ? '▲' : '▼'}</span>
           </h2>

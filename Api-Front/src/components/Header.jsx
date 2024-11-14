@@ -18,8 +18,7 @@ const Header = () => {
 
   // Verificación de autenticación y rol
   const isAuthenticated = !!token; // Verifica si hay un token
-  console.log('Token:', token); // Log para verificar el token
-  console.log('User Role:', userRole); // Log para verificar el rol
+
 
   const handleScroll = () => {
     setScrollTop(window.scrollY);

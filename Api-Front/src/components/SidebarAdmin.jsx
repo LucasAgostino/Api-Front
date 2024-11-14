@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Para redirigir si no es ADMIN
+import { useSelector } from 'react-redux'; // Para acceder al estado de Redux
 import './styles/SidebarAdmin.css'; // Archivo CSS actualizado importado
 import UsersContent from './UsersContent'; // Importa el nuevo componente para Usuarios
 import ProductsContent from './ProductsContent';
@@ -11,14 +12,17 @@ const SidebarAdmin = () => {
   const navigate = useNavigate(); // Hook para redirigir
   const [isAdmin, setIsAdmin] = useState(false); // Estado para verificar si el usuario es admin
 
+  // Obtén el rol desde el estado de Redux
+  const role = useSelector((state) => state.user.role);
+
   useEffect(() => {
-    const role = localStorage.getItem('role'); // Obtiene el rol del usuario desde localStorage (o desde tu método preferido)
+    // Verifica si el rol es 'ADMIN' y establece el estado correspondiente
     if (role === 'ADMIN') {
       setIsAdmin(true);
     } else {
       navigate('/'); // Redirigir si no es ADMIN
     }
-  }, [navigate]);
+  }, [navigate, role]);
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);

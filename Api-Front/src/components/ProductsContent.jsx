@@ -8,13 +8,13 @@ import {
   addImagesToProduct,
   removeImageFromProduct,
 } from '../api/Product';
-import { fetchCategories } from '../api/Category';
+import { loadCategories } from '../api/SliceCategory';
+import { useDispatch, useSelector } from 'react-redux';
 import './styles/ProductsContentAdmin.css';
 import { setAuthToken } from '../api/Product';
 
 const ProductsContent = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [newProduct, setNewProduct] = useState({
@@ -30,20 +30,20 @@ const ProductsContent = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
   const [productToEdit, setProductToEdit] = useState(null);
-
+  const dispatch = useDispatch(); // Define el dispatch
+  const categories = useSelector((state) => state.category.items);
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const categoryData = await fetchCategories();
+        dispatch(loadCategories());
         const tagData = await fetchTags();
-        setCategories(categoryData);
         setTags(tagData);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }
     };
     fetchAllData();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchAllProducts = async () => {
