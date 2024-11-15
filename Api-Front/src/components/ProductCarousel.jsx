@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import '../components/styles/ProductCarousel.css'; // Importamos el CSS del carrusel
-import { fetchProductos } from '../api/Product'; // Importar la función para obtener productos
+import { fetchProductsThunk } from '../api/ProductSlice'; // Importar el thunk de Redux
 
 const ProductCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [featuredProducts, setFeaturedProducts] = useState([]); // Estado para los productos destacados
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
 
-  // Cargar los productos destacados
+  // Obtener estado desde Redux
+  const { products: featuredProducts, loading, error } = useSelector((state) => state.product);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  // Cargar productos destacados al montar el componente
   useEffect(() => {
-    const getFeaturedProducts = async () => {
-      try {
-        const products = await fetchProductos(); // Obtener productos desde la API
-        setFeaturedProducts(products.slice(0, 6)); // Tomar los primeros 5 productos de la lista
-      } catch (error) {
-        setError('Error al cargar los productos destacados.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getFeaturedProducts();
-  }, []);
+    if (featuredProducts.length === 0) { // Evitar la llamada si los productos ya están cargados
+      console.log('Cargando productos destacados...');
+      dispatch(fetchProductsThunk());
+    }
+  }, [dispatch, featuredProducts.length]); // Dependencia sobre `featuredProducts.length`
+  
 
   const goToNext = () => {
     if (currentIndex >= featuredProducts.length - 4) {
@@ -46,7 +41,7 @@ const ProductCarousel = () => {
 
   // Función para calcular el precio con descuento
   const calculateDiscountedPrice = (price, discount) => {
-    return price - (price * discount);
+    return price - price * discount;
   };
 
   if (loading) return <p>Cargando productos destacados...</p>;

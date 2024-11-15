@@ -4,60 +4,39 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ProductCarousel from './ProductCarousel';
 import BrandCarousel from './BrandCarousel';
 import HeroCarousel from './HeroCarousel';
-import { fetchProductos, filterProducts } from '../api/Product';
-import { fetchTags } from '../api/Product';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductsThunk, fetchTagsThunk, filterProductsThunk } from '../api/ProductSlice';
 import { loadCategories } from '../api/SliceCategory';
 
 const ProductsGrid = () => {
-  const [products, setProducts] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  const [loadingTags, setLoadingTags] = useState(true);
-  const [errorProducts, setErrorProducts] = useState(null);
-  const [errorTags, setErrorTags] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000000);
   const [selectedTags, setSelectedTags] = useState(new Set());
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isTagsOpen, setIsTagsOpen] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
   const initialCategory = location.state?.category || null;
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
   const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.products);
+  const loadingProducts = useSelector((state) => state.product.loading);
+  const errorProducts = useSelector((state) => state.product.error);
+
   const categories = useSelector((state) => state.category.items);
   const loadingCategories = useSelector((state) => state.category.loading);
   const errorCategories = useSelector((state) => state.category.error);
 
+  const tags = useSelector((state) => state.product.tags);
+  const loadingTags = useSelector((state) => state.product.loading);
+  const errorTags = useSelector((state) => state.product.error);
+
   useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const data = await fetchProductos();
-        setProducts(data);
-        handleFilter();
-      } catch (error) {
-        setErrorProducts('Error al cargar los productos');
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
-
-    const getTags = async () => {
-      try {
-        const data = await fetchTags();
-        setTags(data);
-      } catch (error) {
-        setErrorTags('Error al cargar las etiquetas');
-      } finally {
-        setLoadingTags(false);
-      }
-    };
-
-    getProducts();
+    dispatch(fetchProductsThunk());
     dispatch(loadCategories());
-    getTags();
+    dispatch(fetchTagsThunk());
   }, [dispatch]);
 
   useEffect(() => {
@@ -67,19 +46,13 @@ const ProductsGrid = () => {
   }, [initialCategory]);
 
   const handleFilter = async (categoryId = selectedCategory, tags = selectedTags) => {
-    setLoadingProducts(true);
-    try {
-      const filteredProducts = await filterProducts(minPrice, maxPrice, categoryId, tags);
-      setProducts(filteredProducts);
-    } catch (error) {
-      setErrorProducts('Error al filtrar los productos');
-    } finally {
-      setLoadingProducts(false);
-    }
+    dispatch(filterProductsThunk({ minPrice, maxPrice, categoryId, tags: Array.from(tags) }));
   };
+
   const calculateDiscountedPrice = (price, discountPercentage) => {
     return price - price * discountPercentage;
   };
+
   const handleTagClick = (tag) => {
     const newSelectedTags = new Set(selectedTags);
 
