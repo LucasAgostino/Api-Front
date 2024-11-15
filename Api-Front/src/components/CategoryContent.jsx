@@ -1,57 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import {
-  fetchCategories, // Importamos la función fetchCategories
-  createCategory, // Importamos la función createCategory
-  fetchCategoryById, // Importamos la función fetchCategoryById
-  setAuthToken // Importamos la función setAuthToken para manejar el token
-} from '../api/Category'; // Asegúrate de que la ruta es correcta
-import './styles/CategoryContent.css'; // Importa el CSS
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCategories, addCategory, loadCategoryById } from '../api/SliceCategory';
+import './styles/CategoryContent.css';
 
 const CategoryContent = () => {
-  const [categories, setCategories] = useState([]);
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.category.items);
+  const categoryDetails = useSelector((state) => state.category.selectedCategory);
+  const loading = useSelector((state) => state.category.loading);
+  const error = useSelector((state) => state.category.error);  
+
   const [newCategory, setNewCategory] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
-  const [categoryDetails, setCategoryDetails] = useState(null);
 
   // Obtener todas las categorías al cargar el componente
   useEffect(() => {
-    const fetchAllCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategories(data);
-      } catch (error) {
-        console.error('Error al obtener las categorías:', error);
-      }
-    };
-    fetchAllCategories();
-  }, []);
+    dispatch(loadCategories());
+  }, [dispatch]);
 
   // Crear una nueva categoría
-  const handleCreateCategory = async () => {
-    if (!newCategory.trim()) return; // Verificar si el nombre de la categoría no está vacío
-
-    // Obtener el token desde localStorage
-    const token = localStorage.getItem('token');
-    setAuthToken(token); // Asignar el token a las cabeceras de las peticiones
-
-    try {
-      // Usar la función createCategory para crear la nueva categoría
-      const createdCategory = await createCategory({ categoryName: newCategory });
-      console.log('Categoría creada:', createdCategory); // Verifica si la categoría fue creada
-      setCategories([...categories, createdCategory]); // Actualizar la lista de categorías
+  const handleCreateCategory = () => {
+    if (newCategory.trim()) {
+      dispatch(addCategory({ categoryName: newCategory }));
       setNewCategory(''); // Reiniciar el campo de nueva categoría
-    } catch (error) {
-      console.error('Error al crear la categoría:', error);
     }
   };
 
   // Obtener una categoría por ID
-  const handleGetCategoryById = async () => {
-    try {
-      const data = await fetchCategoryById(selectedCategoryId);
-      setCategoryDetails(data);
-    } catch (error) {
-      console.error(`Error al obtener la categoría con ID ${selectedCategoryId}:`, error);
+  const handleGetCategoryById = () => {
+    if (selectedCategoryId) {
+      dispatch(loadCategoryById(selectedCategoryId));
     }
   };
 
@@ -74,22 +52,47 @@ const CategoryContent = () => {
       {/* Lista de todas las categorías */}
       <div className="categories-list">
         <h3>Lista de Categorías</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((category) => (
-              <tr key={category.categoryId}>
-                <td>{category.categoryId}</td>
-                <td>{category.categoryName}</td>
+        {loading ? (
+          <p>Cargando categorías...</p>
+        ) : error ? (
+          <p>Error al cargar categorías: {error}</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {categories.map((category) => (
+                <tr key={category.categoryId}>
+                  <td>{category.categoryId}</td>
+                  <td>{category.categoryName}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Obtener categoría por ID */}
+      <div className="category-details">
+        <h3>Obtener Categoría por ID</h3>
+        <input
+          type="text"
+          value={selectedCategoryId}
+          onChange={(e) => setSelectedCategoryId(e.target.value)}
+          placeholder="ID de la categoría"
+        />
+        <button onClick={handleGetCategoryById}>Obtener Categoría</button>
+        {categoryDetails && (
+          <div>
+            <h4>Detalles de la Categoría</h4>
+            <p><strong>ID:</strong> {categoryDetails.categoryId}</p>
+            <p><strong>Nombre:</strong> {categoryDetails.categoryName}</p>
+          </div>
+        )}
       </div>
     </div>
   );

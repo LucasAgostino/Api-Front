@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from '../../api/Auth'; // Importa la función de registro
+import { useDispatch } from 'react-redux'; // Importa useDispatch para gestionar el estado
+import { registerUserThunk } from '../../api/SliceUser'; // Importa el thunk de registro
 import '../styles/Login.css'; // Reutiliza el estilo de login
 
 const Register = () => {
@@ -9,38 +10,37 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para manejar errores
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Obtén la función dispatch
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     // Asegúrate de que las contraseñas coincidan
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
+      setErrorMessage("Las contraseñas no coinciden");
       return;
     }
 
     try {
-      // Llamar a la función de registro con todos los datos requeridos
-      const response = await registerUser({
+      // Llamar a la función de registro utilizando el thunk
+      const response = await dispatch(registerUserThunk({
         firstname,
         lastname,
         email,
-        password
-      });
-      const token = response.token; // Asumiendo que el token viene en la respuesta
+        password,
+      })).unwrap(); // Unwrap para manejar errores de la promesa
 
-      // Guardar el token y el rol en el localStorage
-      const role = 'USER'; // Establecer el rol como USER
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
+      // Guardar el token y el rol en el estado de Redux
+      const { token, role } = response; // Asumiendo que la respuesta incluye el token y el rol
 
       console.log('Registro exitoso:', response);
       // Si el registro es exitoso, redirigir al usuario
       navigate('/');
     } catch (error) {
       console.error('Error al registrarse:', error);
-      alert("Error al registrarse. Por favor, intenta nuevamente.");
+      setErrorMessage("Error al registrarse. Por favor, intenta nuevamente.");
     }
   };
 
@@ -99,8 +99,9 @@ const Register = () => {
           </div>
           <button type="submit">Registrarse</button>
         </form>
+        {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Muestra el mensaje de error */}
         <p className="login-prompt">
-          ¿Ya tenes cuenta? <Link to="/login">Inicia sesión</Link>
+          ¿Ya tenés cuenta? <Link to="/login">Inicia sesión</Link>
         </p>
       </div>
       <div className="no-footer"></div>

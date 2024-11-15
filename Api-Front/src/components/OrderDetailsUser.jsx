@@ -1,28 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getUserOrderById } from '../api/OrderService';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserOrderById } from '../api/SliceOrder'; // Asegúrate de que la ruta de importación sea correcta
 
 const OrderDetailsUser = () => {
   const { orderId } = useParams();
-  const [order, setOrder] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const orderData = await getUserOrderById(orderId);
-        setOrder(orderData);
-      } catch (error) {
-        setError('No tienes acceso a esta orden o la orden no existe.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const order = useSelector((state) => state.order.currentOrder);
+  const loading = useSelector((state) => state.order.loading);
+  const error = useSelector((state) => state.order.error);
 
-    fetchOrderDetails();
-  }, [orderId]);
+  useEffect(() => {
+    dispatch(fetchUserOrderById(orderId));
+  }, [dispatch, orderId]);
 
   // Formatear la fecha de la orden a dd/mm/yyyy hh:mm
   const formatOrderDateTime = (dateArray) => {
@@ -54,16 +46,16 @@ const OrderDetailsUser = () => {
                 <th>Producto</th>
                 <th>Precio Unitario</th>
                 <th>Precio Total</th>
-                <th>Descuento</th> 
+                <th>Descuento</th>
               </tr>
             </thead>
             <tbody>
               {order.orderProducts.map((product) => {
-                const originalPriceTotal = product.totalPrice ;
-                const discountPriceTotal = product.price * product.quantity; 
-                
+                const originalPriceTotal = product.totalPrice;
+                const discountPriceTotal = product.price * product.quantity;
+
                 // Calcular el porcentaje de descuento
-                const discountPercentage = originalPriceTotal > discountPriceTotal 
+                const discountPercentage = originalPriceTotal > discountPriceTotal
                   ? ((originalPriceTotal - discountPriceTotal) / originalPriceTotal) * 100
                   : 0;
 
@@ -72,15 +64,13 @@ const OrderDetailsUser = () => {
                     <td>{product.quantity}</td>
                     <td>{product.productName}</td>
                     <td>${product.price.toFixed(2)}</td>
-                    <td>${discountPriceTotal.toFixed(2)}</td> 
-                    <td>{discountPercentage.toFixed(0)}%</td> {/* Mostrar el descuento calculado */}
+                    <td>${discountPriceTotal.toFixed(2)}</td>
+                    <td>{discountPercentage.toFixed(0)}%</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
-
-
 
           <div className="total-section">
             <p>Total Orden: ${order.totalOrder.toFixed(2)}</p>

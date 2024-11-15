@@ -1,40 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { getAllUsers, getUserById } from '../api/User'; // Asegúrate de que la ruta es correcta
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllUsers, fetchUserById } from '../api/SliceUser'; // Importa las acciones del slice
 import './styles/UsersContent.css'; // Ajusta la ruta según la estructura de tu proyecto
 
 const UsersContent = () => {
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
-  const [searchId, setSearchId] = useState('');
-  const [userById, setUserById] = useState(null);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.user.users);
+  const error = useSelector((state) => state.user.error);
+  const loading = useSelector((state) => state.user.loading);
+  const [searchId, setSearchId] = React.useState('');
+  const userById = useSelector((state) => state.user.searchedUser); // Accede al usuario buscado
 
   // Obtener todos los usuarios al cargar el componente
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getAllUsers();
-        setUsers(data);
-      } catch (err) {
-        setError('Error al obtener los usuarios.');
-        console.error(err);
-      }
-    };
-    fetchUsers();
-  }, []);
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
 
-  const handleSearchById = async () => {
-    try {
-      const user = await getUserById(searchId);
-      setUserById(user);
-    } catch (err) {
-      setError(`Error al obtener el usuario con ID ${searchId}`);
-      console.error(err);
+  const handleSearchById = () => {
+    if (searchId) {
+      dispatch(fetchUserById(searchId));
     }
   };
 
   // Muestra un mensaje si hay error
   if (error) {
     return <div>{error}</div>;
+  }
+
+  if (loading) {
+    return <div>Cargando usuarios...</div>;
   }
 
   return (

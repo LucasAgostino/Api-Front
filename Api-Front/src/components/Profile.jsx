@@ -1,53 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { getCurrentUser } from '../api/User';
-import { getUserOrders } from '../api/OrderService';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import '../components/styles/Profile.css';
+import { fetchCurrentUser } from '../api/SliceUser';
+import { fetchUserOrders } from '../api/SliceOrder';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Accede al estado de Redux
+  const user = useSelector((state) => state.user.userInfo);
+  const orders = useSelector((state) => state.order.orders);
+  const loadingUser = useSelector((state) => state.user.loading);
+  const loadingOrders = useSelector((state) => state.order.loading);
+  const errorUser = useSelector((state) => state.user.error);
+  const errorOrders = useSelector((state) => state.order.error);
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userData = await getCurrentUser();
-        setUser(userData); 
-      } catch (error) {
-        setError('Error obteniendo los datos del usuario.');
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchUserOrders = async () => {
-      try {
-        const userOrders = await getUserOrders();
-        setOrders(userOrders);
-      } catch (error) {
-        setError('Error obteniendo las órdenes.');
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-    fetchUserOrders();
-  }, []);
-
+    dispatch(fetchCurrentUser());
+    dispatch(fetchUserOrders());
+  }, [dispatch]);
+  useEffect(() => {
+    console.log('Usuario actual:', user);
+  }, [user]);
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
     navigate('/');
-
     setTimeout(() => {
       window.location.reload();
-    }, 100); 
+    }, 100);
   };
 
   const formatOrderDate = (dateArray) => {
@@ -58,14 +39,13 @@ const Profile = () => {
       year: 'numeric',
     });
   };
-  
 
-  if (loading) {
+  if (loadingUser || loadingOrders) {
     return <p>Cargando perfil...</p>;
   }
 
-  if (error) {
-    return <p>{error}</p>;
+  if (errorUser || errorOrders) {
+    return <p>{errorUser || errorOrders}</p>;
   }
 
   return (
