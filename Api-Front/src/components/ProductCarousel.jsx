@@ -7,7 +7,8 @@ const ProductCarousel = () => {
   const dispatch = useDispatch();
 
   // Obtener estado desde Redux
-  const { products: featuredProducts, loading, error } = useSelector((state) => state.product);
+  const { products, loading, error } = useSelector((state) => state.product);
+  const featuredProducts = products.filter((product) => product.stock > 0);
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   // Cargar productos destacados al montar el componente

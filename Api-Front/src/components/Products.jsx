@@ -21,7 +21,8 @@ const ProductsGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.product.products);
+  const products1 = useSelector((state) => state.product.products);
+  const products = products1.filter((product) => product.stock > 0);
   const loadingProducts = useSelector((state) => state.product.loading);
   const errorProducts = useSelector((state) => state.product.error);
 
