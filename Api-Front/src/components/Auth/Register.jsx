@@ -37,7 +37,7 @@ const Register = () => {
 
       console.log('Registro exitoso:', response);
       // Si el registro es exitoso, redirigir al usuario
-      navigate('/');
+      navigate('/login');
     } catch (error) {
       console.error('Error al registrarse:', error);
       setErrorMessage("Error al registrarse. Por favor, intenta nuevamente.");

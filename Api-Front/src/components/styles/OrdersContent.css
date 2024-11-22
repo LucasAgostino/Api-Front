@@ -109,6 +109,7 @@
 .orders-list button, .user-orders button {
   padding: 8px 12px;
   color: white;
+  background-color: #1e2a38;
   border: none;
   border-radius: 4px;
   cursor: pointer;

@@ -9,37 +9,35 @@ const ShoppingCart = () => {
   const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart.cartItems);
-  console.log('Estado actual del carrito:', cart);
-  const loading = useSelector((state) => state.cart.loading); // Estado de carga desde la slice
-  const error = useSelector((state) => state.cart.error); // Estado de errores desde la slice
-  
-  const [paymentMethod, setPaymentMethod] = useState(''); // Método de pago seleccionado
-  const [installments, setInstallments] = useState('1'); // Cuotas seleccionadas
-  const [successMessage, setSuccessMessage] = useState(''); // Mensaje de éxito
+  const loading = useSelector((state) => state.cart.loading);
+  const error = useSelector((state) => state.cart.error);
+
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [installments, setInstallments] = useState('1');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    // Cargar el carrito solo una vez al montar el componente
     if (cart.length === 0) {
       dispatch(fetchCartItems());
     }
   }, [dispatch, cart.length]);
 
-  const updateQuantity = async (productId, quantity, action) => {
-    // Cambiar cantidad de productos
+  const updateQuantity = (productId, quantity, action) => {
     if (action === 'decrease' && quantity > 1) {
       dispatch(decreaseProduct({ productId, quantity: 1 }));
     } else if (action === 'increase') {
       dispatch(addProduct({ productId, quantity: 1 }));
-    } else if (quantity === 1 && action === 'decrease') {
-      console.warn("La cantidad no puede ser menor que 1.");
-      return;
     }
   };
 
   const calculateTotalCost = () => {
     if (!cart) return 0;
-    return cart.reduce((total, product) => total + product.discountPrice * product.quantity, 0);
+    return cart.reduce((total, product) => {
+      const price = product.discountPrice || product.totalPrice; // Usa el precio con descuento si está disponible
+      return total + price ; // Multiplica el precio por la cantidad
+    }, 0);
   };
+  
 
   const handleReturn = () => {
     navigate('/products');
@@ -54,8 +52,24 @@ const ShoppingCart = () => {
   }
 
   if (!cart || cart.length === 0) {
-    return <p>Tu carrito está vacío.</p>;
+    return (
+      <div className="empty-cart-container">
+        <div className="empty-cart-content">
+          <h2 className="empty-cart-title">Tu carrito está vacío</h2>
+          <p className="empty-cart-description">
+            Parece que todavía no añadiste productos a tu carrito. 
+          </p>
+          <button 
+            className="empty-cart-button" 
+            onClick={() => navigate('/products')}
+          >
+            Explorar productos
+          </button>
+        </div>
+      </div>
+    );
   }
+  
 
   return (
     <div className="shopping-cart-container">
@@ -96,14 +110,20 @@ const ShoppingCart = () => {
                 <div className="product-quantity-modify">
                   <button
                     className="quantity-decrease"
-                    onClick={() => updateQuantity(product.productId, product.quantity, "decrease")}
+                    onClick={(e) => {
+                      e.preventDefault(); // Previene el comportamiento por defecto
+                      updateQuantity(product.productId, product.quantity, 'decrease');
+                    }}
                   >
                     -
                   </button>
                   <input className="quantity-input" type="text" value={product.quantity} readOnly />
                   <button
                     className="quantity-increase"
-                    onClick={() => updateQuantity(product.productId, product.quantity, "increase")}
+                    onClick={(e) => {
+                      e.preventDefault(); // Previene el comportamiento por defecto
+                      updateQuantity(product.productId, product.quantity, 'increase');
+                    }}
                   >
                     +
                   </button>
@@ -112,8 +132,9 @@ const ShoppingCart = () => {
                   <a
                     href="#"
                     className="product-remove"
-                    onClick={() => {
-                      dispatch(removeProduct(product.productId)); // Eliminar producto del carrito
+                    onClick={(e) => {
+                      e.preventDefault(); // Previene el comportamiento por defecto
+                      dispatch(removeProduct(product.productId));
                     }}
                   >
                     Eliminar
@@ -133,7 +154,10 @@ const ShoppingCart = () => {
               </div>
             </div>
           ))}
-          <a href="#" className="shopping-cart-continue" onClick={handleReturn}>
+          <a href="#" className="shopping-cart-continue" onClick={(e) => {
+            e.preventDefault(); // Previene el comportamiento por defecto
+            handleReturn();
+          }}>
             ← Seguir Comprando
           </a>
         </div>
@@ -188,7 +212,8 @@ const ShoppingCart = () => {
             <button
               className="checkout-btn"
               disabled={!paymentMethod}
-              onClick={async () => {
+              onClick={(e) => {
+                e.preventDefault(); // Previene el comportamiento por defecto
                 if (!paymentMethod) {
                   alert('Por favor, selecciona un método de pago antes de proceder.');
                   return;

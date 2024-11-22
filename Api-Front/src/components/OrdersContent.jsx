@@ -60,7 +60,7 @@ const OrdersContent = () => {
                       <td>{searchedOrder.orderDate.join('-')}</td>
                       <td>${searchedOrder.totalOrder}</td>
                       <td>
-                        <button onClick={() => setOrderDetails(searchedOrder)}>
+                        <button className='ver_detalles_admin' onClick={() => setOrderDetails(searchedOrder)}>
                           Ver Detalles
                         </button>
                       </td>

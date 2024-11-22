@@ -7,7 +7,7 @@ const ProductCarousel = () => {
   const dispatch = useDispatch();
 
   // Obtener estado desde Redux
-  const { products, loading, error } = useSelector((state) => state.product);
+  const { featuredProducts:products, loading, error } = useSelector((state) => state.product);
   const featuredProducts = products.filter((product) => product.stock > 0);
   const [currentIndex, setCurrentIndex] = React.useState(0);
 

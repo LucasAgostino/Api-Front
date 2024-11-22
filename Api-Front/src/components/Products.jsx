@@ -38,7 +38,10 @@ const ProductsGrid = () => {
     dispatch(fetchProductsThunk());
     dispatch(loadCategories());
     dispatch(fetchTagsThunk());
-  }, [dispatch]);
+    if (initialCategory) {
+      handleFilter(initialCategory, selectedTags);
+    }
+  }, [dispatch, initialCategory]);
 
   useEffect(() => {
     if (initialCategory) {
@@ -151,7 +154,7 @@ const ProductsGrid = () => {
           )}
 
           <h2 onClick={toggleTags} style={{ cursor: 'pointer', fontSize: '1.2rem' }}>
-            Etiquetas <span style={{ fontSize: '0.8rem' }}>{isTagsOpen ? '▲' : '▼'}</span>
+            Características <span style={{ fontSize: '0.8rem' }}>{isTagsOpen ? '▲' : '▼'}</span>
           </h2>
           {isTagsOpen && (
             <div className="tags-container">

@@ -15,6 +15,7 @@ const ProductDetails = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [notification, setNotification] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     dispatch(fetchProductByIdThunk(productId));
@@ -47,6 +48,18 @@ const ProductDetails = () => {
     }, 3000);
   };
 
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === product.imageBase64s.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? product.imageBase64s.length - 1 : prevIndex - 1
+    );
+  };
+
   if (loading) {
     return <p>Cargando detalles del producto...</p>;
   }
@@ -68,21 +81,46 @@ const ProductDetails = () => {
       )}
 
       <div className="product-details-card">
+        <div className="product-image-container">
+          <button
+            className="image-nav-button prev"
+            onClick={handlePrevImage}
+          >
+            &lt;
+          </button>
+          <img
+            src={`data:image/jpeg;base64,${product.imageBase64s[currentImageIndex]}`}
+            alt={product.productName}
+            className="product-image"
+            style={{ width: '600px', height: '600px', objectFit: 'cover' }}
+          />
+          <button
+            className="image-nav-button next"
+            onClick={handleNextImage}
+          >
+            &gt;
+          </button>
+        </div>
         <div className="product-details-content-container">
-          <h1>{product.productName}</h1>
-          <p>{product.productDescription}</p>
-          <p>Precio: ${product.price}</p>
+          <h1 className="product-details-title">{product.productName}</h1>
+          <p className="product-details-description">{product.productDescription}</p>
+          <p className="product-details-price">Precio: ${product.price}</p>
           <p>Stock disponible: {product.stock}</p>
-          <div>
+          <div className="product-details-quantity">
             <input
               type="number"
               min="1"
               max={product.stock}
               value={quantity}
               onChange={handleQuantityChange}
+              className="quantity-input"
             />
           </div>
-          <button onClick={handleAddToCart} disabled={quantity > product.stock}>
+          <button
+            onClick={handleAddToCart}
+            disabled={quantity > product.stock}
+            className="add-to-cart-btn"
+          >
             Añadir al carrito
           </button>
         </div>

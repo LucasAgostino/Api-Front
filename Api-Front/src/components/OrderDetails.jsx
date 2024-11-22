@@ -27,8 +27,9 @@ const OrderDetails = ({ order, onBack }) => {
                 <th>Cantidad</th>
                 <th>Producto</th>
                 <th>Precio Unitario</th>
-                <th>Precio Total</th>
                 <th>Descuento</th> 
+                <th>Precio Total</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -45,9 +46,10 @@ const OrderDetails = ({ order, onBack }) => {
                   <tr key={product.orderProductId}>
                     <td>{product.quantity}</td>
                     <td>{product.productName}</td>
-                    <td>${product.price.toFixed(2)}</td>
+                    <td>${product.totalPrice.toFixed(2)}</td>
+                    <td>{discountPercentage.toFixed(0)}%</td> 
                     <td>${discountPriceTotal.toFixed(2)}</td> 
-                    <td>{discountPercentage.toFixed(0)}%</td> {/* Mostrar el descuento calculado */}
+                    
                   </tr>
                 );
               })}
