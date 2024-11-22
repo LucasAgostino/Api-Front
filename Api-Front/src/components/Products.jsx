@@ -25,7 +25,7 @@ const ProductsGrid = () => {
   const products = products1.filter((product) => product.stock > 0);
   const loadingProducts = useSelector((state) => state.product.loading);
   const errorProducts = useSelector((state) => state.product.error);
-
+  const allProducts = useSelector((state) => state.product.allProducts);
   const categories = useSelector((state) => state.category.items);
   const loadingCategories = useSelector((state) => state.category.loading);
   const errorCategories = useSelector((state) => state.category.error);
@@ -35,12 +35,15 @@ const ProductsGrid = () => {
   const errorTags = useSelector((state) => state.product.error);
 
   useEffect(() => {
-    dispatch(fetchProductsThunk());
-    dispatch(loadCategories());
-    dispatch(fetchTagsThunk());
     if (initialCategory) {
       handleFilter(initialCategory, selectedTags);
     }
+    else{
+      console.log("Fetching products");
+      dispatch(fetchProductsThunk());
+    }
+    dispatch(loadCategories());
+    dispatch(fetchTagsThunk());
   }, [dispatch, initialCategory]);
 
   useEffect(() => {
@@ -87,6 +90,10 @@ const ProductsGrid = () => {
   const handleViewMore = (productId) => {
     navigate(`/product-details/${productId}`);
   };
+  
+  const categoriesWithProducts = categories.filter((category) => 
+    allProducts.some((product) => product.categoryName === category.categoryName)
+  );
 
   if (loadingProducts || loadingCategories || loadingTags) return <p>Cargando...</p>;
   if (errorProducts) return <p>{errorProducts}</p>;
@@ -141,7 +148,7 @@ const ProductsGrid = () => {
           </h2>
           {isCategoriesOpen && (
             <div className="categories-container">
-              {categories.map((category) => (
+              {categoriesWithProducts.map((category) => (
                 <div
                   key={category.categoryId}
                   className={`category-item ${selectedCategory === category.categoryId ? 'selected' : ''}`}

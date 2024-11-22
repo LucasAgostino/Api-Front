@@ -162,6 +162,7 @@ export const removeImageFromProductThunk = createAsyncThunk(
 const productSlice = createSlice({
   name: 'products',
   initialState: {
+    allProducts: [],
     products: [],
     featuredProducts: [],
     tags: [],
@@ -183,6 +184,7 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsThunk.fulfilled, (state, action) => {
         state.loading = false;
+        state.allProducts = action.payload;
         state.products = action.payload;
         if (state.featuredProducts.length === 0) {
           state.featuredProducts = action.payload.slice(0, 4);
