@@ -43,10 +43,6 @@ const ShoppingCart = () => {
     navigate('/products');
   };
 
-  if (loading) {
-    return <p>Cargando carrito...</p>;
-  }
-
   if (error) {
     return <p>{error}</p>;
   }
