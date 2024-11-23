@@ -237,7 +237,7 @@ const productSlice = createSlice({
       .addCase(softDeleteProductsThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.products = state.products.filter(
-          (product) => product.id !== action.meta.arg
+          (product) => product.productId !== action.meta.arg
         );
       })
       .addCase(softDeleteProductsThunk.rejected, (state, action) => {
