@@ -47,6 +47,7 @@ export const updateProductsThunk = createAsyncThunk(
   async ({ productId, updatedData }, thunkAPI) => {
     try {
       const response = await updateProduct(productId, updatedData);
+      console.log(response)
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message || 'Error updating product');
@@ -187,7 +188,7 @@ const productSlice = createSlice({
         state.allProducts = action.payload;
         state.products = action.payload;
         if (state.featuredProducts.length === 0) {
-          state.featuredProducts = action.payload.slice(0, 4);
+          state.featuredProducts = action.payload.slice(0, 6);
         }
       })
       .addCase(fetchProductsThunk.rejected, (state, action) => {
@@ -217,7 +218,7 @@ const productSlice = createSlice({
       .addCase(updateProductsThunk.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.products.findIndex(
-          (product) => product.id === action.payload.id
+          (product) => product.productId === action.payload.productId
         );
         if (index !== -1) {
           state.products[index] = action.payload;

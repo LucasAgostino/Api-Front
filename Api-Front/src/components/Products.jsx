@@ -95,6 +95,14 @@ const ProductsGrid = () => {
     allProducts.some((product) => product.categoryName === category.categoryName)
   );
 
+  const productsWithStock = allProducts.filter((product) => product.stock > 0);
+
+  const tagsWithProducts = tags.filter((tag) =>
+    productsWithStock.some((product) => product.tags.includes(tag))
+  );
+
+
+
   if (loadingProducts || loadingCategories || loadingTags) return <p>Cargando...</p>;
   if (errorProducts) return <p>{errorProducts}</p>;
   if (errorCategories) return <p>{errorCategories}</p>;
@@ -165,7 +173,7 @@ const ProductsGrid = () => {
           </h2>
           {isTagsOpen && (
             <div className="tags-container">
-              {tags.map((tag) => (
+              {tagsWithProducts.map((tag) => (
                 <div
                   key={tag}
                   className={`tag-item ${selectedTags.has(tag) ? 'selected' : ''}`}

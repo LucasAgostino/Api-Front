@@ -104,7 +104,30 @@ const ProductDetails = () => {
         <div className="product-details-content-container">
           <h1 className="product-details-title">{product.productName}</h1>
           <p className="product-details-description">{product.productDescription}</p>
-          <p className="product-details-price">Precio: ${product.price}</p>
+          
+          <p 
+            className={`product-details-price ${
+              product.discountPercentage > 0 ? 'strikethrough' : ''
+            }`}
+          >
+            Precio: ${product.price.toFixed(2)}
+          </p>
+
+          {product.discountPercentage > 0 && (
+            <p className="product-details-discount">
+              Precio con Descuento del {(product.discountPercentage * 100).toFixed(2)}%: 
+              ${(product.price - (product.price * product.discountPercentage)).toFixed(2)}
+            </p>
+          )}
+
+          <p className="product-details-category">{product.categoryName}</p>
+
+          <div className="product-details-tags">
+            {product.tags?.map((tag, index) => (
+              <span key={index} className="product-details-tag">{tag}</span>
+            ))}
+          </div>
+
           <p>Stock disponible: {product.stock}</p>
           <div className="product-details-quantity">
             <input

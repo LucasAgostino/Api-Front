@@ -26,21 +26,19 @@ const ProductsContent = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
+  const [showCreateForm, setShowCreateForm] = useState(false); // Controlar visibilidad del formulario
 
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.product);
   const tags = useSelector((state) => state.product.tags);
   const categories = useSelector((state) => state.category.items);
-  const token = useSelector((state) => state.user.token); // Usamos el token desde Redux
 
-  // Obtener productos y etiquetas al cargar el componente
   useEffect(() => {
     dispatch(fetchProductsThunk());
     dispatch(fetchTagsThunk());
     dispatch(loadCategories());
   }, [dispatch]);
 
-  // Crear un producto
   const handleCreateProduct = () => {
     const formData = new FormData();
     formData.append('productName', newProduct.productName);
@@ -69,30 +67,41 @@ const ProductsContent = () => {
       imageBase64s: [],
     });
     setSelectedTags([]);
+    setShowCreateForm(false); // Ocultar el formulario tras crear el producto
   };
 
-  // Eliminar un producto
   const handleDeleteProduct = (productId) => {
     dispatch(softDeleteProductsThunk(productId));
   };
 
-  // Editar un producto
   const handleEditProduct = (productId) => {
-    const productToEdit = products.find((product) => product.id === productId);
+    const productToEdit = products.find((product) => product.productId === productId);
     setEditProductId(productId);
-    setEditProductData({ ...productToEdit });
+  
+    // Asegúrate de que todos los valores estén definidos
+    setEditProductData({
+      productName: productToEdit.productName || '',
+      price: productToEdit.price || 0,
+      productDescription: productToEdit.productDescription || '',
+      stock: productToEdit.stock || 0,
+      categoryName: productToEdit.categoryName || '',
+      discountPercentage: productToEdit.discountPercentage || 0,
+      tags: productToEdit.tags || '',
+      imageBase64s: productToEdit.imageBase64s || [],
+      imageIds: productToEdit.imageid || [],
+    });
   };
+  
 
   const handleSaveEditProduct = () => {
     const updatedData = { ...editProductData };
-    delete updatedData.id; // Eliminamos el ID antes de enviar
+    delete updatedData.id;
 
     dispatch(updateProductsThunk({ productId: editProductId, updatedData }));
     setEditProductId(null);
     setEditProductData({});
   };
 
-  // Subir imágenes para un producto
   const handleImageUpload = (e) => {
     const files = e.target.files;
     const fileArray = Array.from(files);
@@ -112,6 +121,7 @@ const ProductsContent = () => {
     const imageId = editProductData.imageIds[index];
     dispatch(removeImageFromProductThunk({ productId: editProductId, imageId }));
   };
+
   const handleAddTag = (e) => {
     const selectedTag = e.target.value;
     if (selectedTag && !selectedTags.includes(selectedTag)) {
@@ -126,87 +136,92 @@ const ProductsContent = () => {
     setSelectedTags(updatedTags);
     setNewProduct({ ...newProduct, tags: updatedTags.join(', ') });
   };
+
   return (
     <div className="products-contents-admin">
       <h2>Gestión de Productos</h2>
 
-      {/* Crear nuevo producto */}
-      <div className="create-product-form">
-        <h3>Crear Nuevo Producto</h3>
-        <input
-          type="text"
-          placeholder="Nombre del producto"
-          value={newProduct.productName}
-          onChange={(e) => setNewProduct({ ...newProduct, productName: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Precio"
-          value={newProduct.price}
-          onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-        />
-        <textarea
-          placeholder="Descripción"
-          value={newProduct.productDescription}
-          onChange={(e) => setNewProduct({ ...newProduct, productDescription: e.target.value })}
-        ></textarea>
-        <input
-          type="number"
-          placeholder="Stock"
-          value={newProduct.stock}
-          onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
-        />
-        <select
-          value={newProduct.categoryId}
-          onChange={(e) => setNewProduct({ ...newProduct, categoryId: e.target.value })}
-        >
-          <option value="">Selecciona una categoría</option>
-          {categories.map((category) => (
-            <option key={category.categoryId} value={category.categoryId}>
-              {category.categoryName}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="tags">Etiquetas</label>
-        <select id="tags" onChange={handleAddTag}>
-          <option value="">Seleccione una etiqueta</option>
-          {tags.map((tag) => (
-            <option key={tag} value={tag}>
-              {tag}
-            </option>
-          ))}
-        </select>
+      {/* Botón para mostrar/ocultar formulario */}
+      <button
+        onClick={() => setShowCreateForm(!showCreateForm)}
+        className="toggle-form-btn"
+      >
+        {showCreateForm ? 'Cerrar Formulario de Creación' : 'Crear Nuevo Producto'}
+      </button>
 
-        {/* Mostrar etiquetas seleccionadas */}
-        <div className="selected-tags">
-          {selectedTags.length > 0 ? (
-            selectedTags.map((tag) => (
-              <div key={tag} className="tag">
+      {/* Mostrar formulario de creación solo si showCreateForm es true */}
+      {showCreateForm && (
+        <div className="create-product-form">
+          <h3>Crear Nuevo Producto</h3>
+          <input
+            type="text"
+            placeholder="Nombre del producto"
+            value={newProduct.productName}
+            onChange={(e) => setNewProduct({ ...newProduct, productName: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="Precio"
+            value={newProduct.price}
+            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+          />
+          <textarea
+            placeholder="Descripción"
+            value={newProduct.productDescription}
+            onChange={(e) => setNewProduct({ ...newProduct, productDescription: e.target.value })}
+          ></textarea>
+          <input
+            type="number"
+            placeholder="Stock"
+            value={newProduct.stock}
+            onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+          />
+          <select
+            value={newProduct.categoryId}
+            onChange={(e) => setNewProduct({ ...newProduct, categoryId: e.target.value })}
+          >
+            <option value="">Selecciona una categoría</option>
+            {categories.map((category) => (
+              <option key={category.categoryId} value={category.categoryId}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="tags">Etiquetas</label>
+          <select id="tags" onChange={handleAddTag}>
+            <option value="">Seleccione una etiqueta</option>
+            {tags.map((tag) => (
+              <option key={tag} value={tag}>
                 {tag}
-                <span className="remove" onClick={() => handleRemoveTag(tag)}>
-                  &times;
-                </span>
-              </div>
-            ))
-          ) : (
-            <div>No hay etiquetas seleccionadas.</div>
-          )}
+              </option>
+            ))}
+          </select>
+          <div className="selected-tags">
+            {selectedTags.length > 0 ? (
+              selectedTags.map((tag) => (
+                <div key={tag} className="tag">
+                  {tag}
+                  <span className="remove" onClick={() => handleRemoveTag(tag)}>
+                    &times;
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div>No hay etiquetas seleccionadas.</div>
+            )}
+          </div>
+          <input
+            type="number"
+            placeholder="Descuento"
+            value={newProduct.discountPercentage}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, discountPercentage: e.target.value })
+            }
+          />
+          <input type="file" multiple onChange={handleImageUpload} />
+          <button onClick={handleCreateProduct}>Crear Producto</button>
         </div>
-        <input
-          type="number"
-          placeholder="Descuento"
-          value={newProduct.discountPercentage}
-          onChange={(e) =>
-            setNewProduct({ ...newProduct, discountPercentage: e.target.value })
-          }
-        />
-        <input
-          type="file"
-          multiple
-          onChange={handleImageUpload}
-        />
-        <button onClick={handleCreateProduct}>Crear Producto</button>
-      </div>
+      )}
 
       {/* Lista de productos */}
       <div className="products-list">
@@ -238,18 +253,88 @@ const ProductsContent = () => {
 
       {/* Formulario de edición */}
       {editProductId && (
-        <div>
-          <h3>Editar Producto</h3>
-          <input
-            type="text"
-            value={editProductData.productName || ''}
-            onChange={(e) =>
-              setEditProductData({ ...editProductData, productName: e.target.value })
-            }
-          />
-          <button onClick={handleSaveEditProduct}>Guardar</button>
+      <div className="edit-product-form">
+        <h3>Editar Producto</h3>
+        <label htmlFor="editProductName">Nombre del producto</label>
+        <input
+          type="text"
+          id="editProductName"
+          value={editProductData.productName}
+          onChange={(e) =>
+            setEditProductData({ ...editProductData, productName: e.target.value })
+          }
+        />
+        <label htmlFor="editPrice">Precio del producto</label>
+        <input
+          type="number"
+          id="editPrice"
+          value={editProductData.price}
+          onChange={(e) =>
+            setEditProductData({ ...editProductData, price: e.target.value })
+          }
+        />
+        <label htmlFor="editProductDescription">Descripción del producto</label>
+        <textarea
+          id="editProductDescription"
+          value={editProductData.productDescription}
+          onChange={(e) =>
+            setEditProductData({ ...editProductData, productDescription: e.target.value })
+          }
+        ></textarea>
+        <label htmlFor="editStock">Stock</label>
+        <input
+          type="number"
+          id="editStock"
+          value={editProductData.stock}
+          onChange={(e) =>
+            setEditProductData({ ...editProductData, stock: e.target.value })
+          }
+        />
+        <label htmlFor="editCategoryName">Categoría</label>
+        <select
+          id="editCategoryName"
+          value={editProductData.categoryName}
+          onChange={(e) =>
+            setEditProductData({ ...editProductData, categoryName: e.target.value })
+          }
+        >
+          <option value="">Seleccione una categoría</option>
+          {categories.map((category) => (
+            <option key={category.categoryId} value={category.categoryName}>
+              {category.categoryName}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="editDiscountPercentage">Porcentaje de descuento</label>
+        <input
+          type="number"
+          id="editDiscountPercentage"
+          value={editProductData.discountPercentage}
+          onChange={(e) =>
+            setEditProductData({ ...editProductData, discountPercentage: e.target.value })
+          }
+        />
+        <label htmlFor="editTags">Tags separados por coma</label>
+        <input
+          type="text"
+          id="editTags"
+          value={editProductData.tags}
+          onChange={(e) => setEditProductData({ ...editProductData, tags: e.target.value })}
+        />
+        <label htmlFor="editImageUpload">Subir nuevas imágenes</label>
+        <input type="file" id="editImageUpload" multiple onChange={handleEditImageUpload} />
+        <div className="image-preview">
+          {editProductData.imageBase64s?.map((imageBase64, index) => (
+            <div key={editProductData.imageIds[index]} className="image-container">
+              <img src={imageBase64} alt={`Imagen ${index}`} style={{ width: '100px' }} />
+              <button onClick={() => handleRemoveEditImage(index)}>Eliminar</button>
+            </div>
+          ))}
         </div>
-      )}
+        <button onClick={handleSaveEditProduct}>Guardar Cambios</button>
+      </div>
+    )}
+
     </div>
   );
 };
