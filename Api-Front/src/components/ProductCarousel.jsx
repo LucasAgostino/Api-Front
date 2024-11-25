@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import '../components/styles/ProductCarousel.css'; // Importamos el CSS del carrusel
 import { fetchProductsThunk } from '../api/ProductSlice'; // Importar el thunk de Redux
-
+import { useNavigate } from 'react-router-dom';
 const ProductCarousel = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Obtener estado desde Redux
@@ -37,7 +38,7 @@ const ProductCarousel = () => {
   };
 
   const goToProductDetails = (productId) => {
-    window.location.href = `/product-details/${productId}`; // Redirige a la página de detalles del producto
+    navigate(`/product-details/${productId}`); // Redirige a la página de detalles del producto
   };
 
   // Función para calcular el precio con descuento

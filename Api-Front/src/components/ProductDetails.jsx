@@ -39,6 +39,10 @@ const ProductDetails = () => {
       setNotification({ message: 'La cantidad seleccionada supera el stock disponible.', type: 'error' });
       return;
     }
+    if (quantity <= 0){
+      setNotification({ message: 'La cantidad seleccionada debe ser válida.', type: 'error' });
+      return;
+    }
 
     dispatch(addProduct({ productId, quantity }));
     setNotification({ message: 'Producto añadido al carrito', type: 'success' });

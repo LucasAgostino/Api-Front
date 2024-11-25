@@ -4,8 +4,14 @@ import FeaturedProducts from './FeaturedProducts';
 import LearnWithUs from './LearnWithUs';
 import BrandCarousel from './BrandCarousel';
 import Ubicacion from './Ubicacion';
-
+import { useNavigate } from 'react-router-dom';
 const Home = () => {
+  const navigate = useNavigate();
+  
+  const handleViewProducts = () => {
+    navigate('/products');
+  }
+
   return (
     <body>
       <div className="firstContainer">
@@ -14,7 +20,7 @@ const Home = () => {
             Equipate con el <span>mejor</span> hardware <span>&</span> gadgets.
           </h1>
           <p className="introText__link">
-                <a href="/products">
+                <a onClick={handleViewProducts}>
                   Mirá nuestros productos<i className="linkProductos"></i>
                 </a>
               </p>
