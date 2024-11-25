@@ -80,7 +80,7 @@
 .products-list button {
   margin-right: 10px;
   padding: 8px 12px;
-  background-color: #3498db;
+  background-color:#16a085;
   color: white;
   border: none;
   border-radius: 4px;
@@ -88,7 +88,7 @@
 }
 
 .products-list button:hover {
-  background-color: #2980b9;
+  background-color: #16a085;
 }
 
 /* Estilo para el contenedor de etiquetas seleccionadas */
@@ -100,7 +100,7 @@
 }
 
 .selected-tags .tag {
-  background-color: #3498db;
+  background-color: #16a085;
   color: white;
   padding: 5px 10px;
   border-radius: 4px;
@@ -143,4 +143,59 @@ select#tags {
   border-radius: 4px;
   border: 1px solid #ccc;
   width: 100px;
+}
+
+/* Contenedor del formulario de creación (desplegable) */
+.create-product-container {
+  margin: 20px 0;
+}
+
+/* El formulario está oculto por defecto */
+.create-product-form {
+  display: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Cuando el formulario debe mostrarse */
+.create-product-form.active {
+  display: flex;
+}
+
+/* Botón para alternar la visibilidad del formulario */
+.toggle-form-btn {
+  padding: 10px 20px;
+  background-color: #16a085;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-form-btn:hover {
+  background-color: #2980b9;
+}
+
+/* Estilo para el botón de cierre */
+.edit-product-form .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #16a085;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+}
+
+.edit-product-form .close-btn:hover {
+  color: black;
+}
+
+.edit-product-form {
+  position: relative;
 }

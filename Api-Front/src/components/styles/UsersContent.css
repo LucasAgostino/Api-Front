@@ -7,7 +7,7 @@
   }
   
   .users-content h2 {
-    color: #293949;
+    color: black;
     font-size: 24px;
     margin-bottom: 20px;
     text-align: center;
@@ -24,7 +24,7 @@
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: #aeb2b7; /* Color de texto para filas */
+    color: black; /* Color de texto para filas */
   }
   
   .users-content table th {
@@ -68,6 +68,6 @@
   }
   
   .users-content p {
-    color: #aeb2b7; /* Color de texto para el detalle del usuario encontrado */
+    color: black; /* Color de texto para el detalle del usuario encontrado */
   }
   
