@@ -6,25 +6,29 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.orders-content h2, .orders-content h3 {
+/* Títulos */
+.orders-content h2,
+.orders-content h3 {
   color: #293949;
   text-align: center;
+  margin-bottom: 15px;
 }
 
-.search-order, .orders-list, .user-orders {
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Búsqueda de orden */
+.search-order {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .search-order input {
+  flex: 1;
   padding: 10px;
-  width: 250px;
+  width: auto;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-right: 10px;
+  font-size: 14px;
 }
 
 .search-order button {
@@ -34,115 +38,119 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 .search-order button:hover {
   background-color: #16a085;
 }
 
-/* Ajuste visual para la búsqueda de orden por ID */
-.search-order-result {
+/* Resultado de la búsqueda */
+.searched-order {
   margin-top: 20px;
-  padding: 15px;
-  background-color: #e9f5f5;
+  background-color: #ffffff;
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.search-order-result table {
+.searched-order h4 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #293949;
+  font-weight: bold;
+}
+
+.searched-order table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.search-order-result th, .search-order-result td {
-  padding: 10px;
+.searched-order th,
+.searched-order td {
+  padding: 10px 15px;
   text-align: left;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
 }
 
-.search-order-result th {
-  background-color: #16a085; /* Un color diferente para distinguir */
+.searched-order th {
+  background-color: #293949;
   color: white;
+  text-transform: uppercase;
 }
 
-.search-order-result tr:nth-child(even) {
-  background-color: #f0f8f8; /* Fondo sutilmente diferente */
+.searched-order td {
+  background-color: #ffffff;
 }
 
-/* Ajuste de botones para búsqueda */
-.search-order-result button {
+.searched-order tr:nth-child(even) td {
+  background-color: #f9f9f9;
+}
+
+.ver_detalles_admin {
   padding: 8px 12px;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
-.search-order-result button:hover {
+.ver_detalles_admin:hover {
   background-color: #2980b9;
 }
 
 /* Tabla de todas las órdenes */
-.orders-list table, .user-orders table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.orders-list th, .user-orders th, .orders-list td, .user-orders td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ccc;
-}
-
-.orders-list th, .user-orders th {
-  background-color: #293949;
-  color: white;
-}
-
-.orders-list tr:nth-child(even), .user-orders tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-/* Botón de detalles de la tabla */
-.orders-list button, .user-orders button {
-  padding: 8px 12px;
-  color: white;
-  background-color: #1e2a38;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-/* Detalles de la orden */
-.order-details {
-  margin-top: 20px;
+.orders-list {
+  margin-top: 30px;
   padding: 20px;
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.order-details h4, .order-details h5 {
-  color: #293949;
-}
-
-.order-details p {
-  margin: 5px 0;
-}
-
-.order-products {
+.orders-list table {
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 10px;
 }
 
-.order-products .product {
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
+.orders-list th,
+.orders-list td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.orders-list th {
+  background-color: #293949;
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.orders-list tr:nth-child(even) td {
   background-color: #f9f9f9;
 }
 
-.order-products .product p {
-  margin: 5px 0;
+.orders-list button {
+  padding: 8px 12px;
+  background-color: #16a085;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.orders-list button:hover {
+  background-color: #13a67b;
 }

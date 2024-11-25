@@ -57,7 +57,7 @@ const OrdersContent = () => {
                     <tr>
                       <td>{searchedOrder.orderId}</td>
                       <td>{searchedOrder.userName}</td>
-                      <td>{searchedOrder.orderDate.join('-')}</td>
+                      <td>{searchedOrder.orderDate.slice(0, 3).join('/')}</td>
                       <td>${searchedOrder.totalOrder}</td>
                       <td>
                         <button className='ver_detalles_admin' onClick={() => setOrderDetails(searchedOrder)}>
@@ -88,7 +88,7 @@ const OrdersContent = () => {
                   <tr key={order.orderId}>
                     <td>{order.orderId}</td>
                     <td>{order.userName}</td>
-                    <td>{order.orderDate.join('-')}</td>
+                    <td>{order.orderDate.slice(0, 3).join('/')}</td>
                     <td>${order.totalOrder}</td>
                     <td>
                       <button onClick={() => setOrderDetails(order)}>

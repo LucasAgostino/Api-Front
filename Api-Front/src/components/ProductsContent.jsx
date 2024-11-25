@@ -151,7 +151,7 @@ const ProductsContent = () => {
 
       {/* Mostrar formulario de creación solo si showCreateForm es true */}
       {showCreateForm && (
-        <div className="create-product-form">
+        <div className={`create-product-form ${showCreateForm ? 'active' : ''}`}>
           <h3>Crear Nuevo Producto</h3>
           <input
             type="text"
@@ -250,10 +250,13 @@ const ProductsContent = () => {
           </tbody>
         </table>
       </div>
-
+      
       {/* Formulario de edición */}
       {editProductId && (
       <div className="edit-product-form">
+        <button className="close-btn" onClick={() => setEditProductId(null)}>
+        ✖
+        </button>
         <h3>Editar Producto</h3>
         <label htmlFor="editProductName">Nombre del producto</label>
         <input
