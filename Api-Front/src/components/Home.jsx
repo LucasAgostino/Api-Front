@@ -5,12 +5,16 @@ import LearnWithUs from './LearnWithUs';
 import BrandCarousel from './BrandCarousel';
 import Ubicacion from './Ubicacion';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { fetchProductsThunk } from '../api/ProductSlice';
 const Home = () => {
   const navigate = useNavigate();
   
   const handleViewProducts = () => {
     navigate('/products');
   }
+  const dispatch = useDispatch();
+  dispatch(fetchProductsThunk());
 
   return (
     <body>
