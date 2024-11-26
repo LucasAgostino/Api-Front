@@ -90,7 +90,18 @@ const ProductsGrid = () => {
   const handleViewMore = (productId) => {
     navigate(`/product-details/${productId}`);
   };
-  
+
+  const resetFilters = () => {
+    // Restablecer todos los filtros a sus valores iniciales
+    setMinPrice(0);
+    setMaxPrice(10000000);
+    setSelectedTags(new Set());
+    setSelectedCategory(initialCategory);
+    
+    // Llamar a handleFilter con los valores predeterminados
+    handleFilter(initialCategory, new Set());
+  };
+
   const categoriesWithProducts = categories.filter((category) => 
     allProducts.some((product) => product.categoryName === category.categoryName)
   );
@@ -100,8 +111,6 @@ const ProductsGrid = () => {
   const tagsWithProducts = tags.filter((tag) =>
     productsWithStock.some((product) => product.tags.includes(tag))
   );
-
-
 
   if (loadingProducts || loadingCategories || loadingTags) return <p>Cargando...</p>;
   if (errorProducts) return <p>{errorProducts}</p>;
@@ -148,6 +157,9 @@ const ProductsGrid = () => {
             </div>
             <button onClick={() => handleFilter()} className="filter-btn">
               Filtrar
+            </button>
+            <button onClick={resetFilters} className="filter-btn">
+              Reiniciar Filtros
             </button>
           </div>
 
