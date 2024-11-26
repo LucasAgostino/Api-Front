@@ -104,6 +104,10 @@ const ProductsContent = () => {
     // Convertir discountPercentage entre 0 y 1 antes de enviarlo
     updatedData.discountPercentage = updatedData.discountPercentage / 100;
   
+    if (updatedData.tags === '') {
+      updatedData.tags = updatedData.tags.split(',').map(tag => tag.trim()); // divide por coma y elimina espacios
+    }
+
     // Eliminar propiedades no necesarias si es necesario
     delete updatedData.id;
   

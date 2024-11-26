@@ -54,8 +54,6 @@ const CategoryContent = () => {
         <h3>Lista de Categorías</h3>
         {loading ? (
           <p>Cargando categorías...</p>
-        ) : error ? (
-          <p>Error al cargar categorías: {error}</p>
         ) : (
           <table>
             <thead>
