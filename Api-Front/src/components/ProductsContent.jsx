@@ -353,13 +353,18 @@ const ProductsContent = () => {
         <label htmlFor="editImageUpload">Subir nuevas imágenes</label>
         <input type="file" id="editImageUpload" multiple onChange={handleEditImageUpload} />
         <div className="image-preview">
-          {editProductData.imageBase64s?.map((imageBase64, index) => (
-            <div key={editProductData.imageIds[index]} className="image-container">
-              <img src={imageBase64} alt={`Imagen ${index}`} style={{ width: '100px' }} />
-              <button onClick={() => handleRemoveEditImage(index)}>Eliminar</button>
-            </div>
-          ))}
-        </div>
+            {editProductData.imageBase64s?.map((imageBase64, index) => (
+              <div key={editProductData.imageIds[index]} className="image-container">
+                <img
+                  src={imageBase64.startsWith('data:image') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`}
+                  alt={`Imagen ${index}`}
+                  style={{ width: '100px' }}
+                />
+                <button onClick={() => handleRemoveEditImage(index)}>Eliminar</button>
+              </div>
+            ))}
+          </div>
+
         <button onClick={handleSaveEditProduct}>Guardar Cambios</button>
       </div>
     )}
