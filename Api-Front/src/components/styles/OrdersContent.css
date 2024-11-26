@@ -107,7 +107,7 @@
 }
 
 /* Tabla de todas las órdenes */
-.orders-list {
+.orders-list1 {
   margin-top: 30px;
   padding: 20px;
   background-color: #ffffff;
@@ -115,31 +115,31 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.orders-list table {
+.orders-list1 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 }
 
-.orders-list th,
-.orders-list td {
+.orders-list1 th,
+.orders-list1 td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.orders-list th {
+.orders-list1 th {
   background-color: #293949;
   color: white;
   font-size: 14px;
   text-transform: uppercase;
 }
 
-.orders-list tr:nth-child(even) td {
+.orders-list1 tr:nth-child(even) td {
   background-color: #f9f9f9;
 }
 
-.orders-list button {
+.orders-list1 button {
   padding: 8px 12px;
   background-color: #16a085;
   color: white;
@@ -151,6 +151,6 @@
   transition: background-color 0.3s ease;
 }
 
-.orders-list button:hover {
+.orders-list1 button:hover {
   background-color: #13a67b;
 }

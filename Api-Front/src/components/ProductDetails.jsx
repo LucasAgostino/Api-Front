@@ -52,6 +52,10 @@ const ProductDetails = () => {
     }, 3000);
   };
 
+  const handleVolver = () => {
+      navigate("/products")
+  }
+
   const handleNextImage = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === product.imageBase64s.length - 1 ? 0 : prevIndex + 1
@@ -119,7 +123,7 @@ const ProductDetails = () => {
 
           {product.discountPercentage > 0 && (
             <p className="product-details-discount">
-              Precio con Descuento del {(product.discountPercentage * 100).toFixed(2)}%: 
+              Precio con Descuento del {(product.discountPercentage * 100)}%: 
               ${(product.price - (product.price * product.discountPercentage)).toFixed(2)}
             </p>
           )}
@@ -150,6 +154,8 @@ const ProductDetails = () => {
           >
             Añadir al carrito
           </button>
+
+          <a className="back-to-products" href="#" onClick={handleVolver}>← Volver a productos</a>
         </div>
       </div>
     </div>

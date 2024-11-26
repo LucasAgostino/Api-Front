@@ -1,73 +1,96 @@
 .users-content {
-    padding: 20px;
-    background-color: #f5f5f5; /* Color de fondo similar al sidebar */
-    color: #293949; /* Color de texto similar */
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .users-content h2 {
-    color: black;
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .users-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  .users-content table th,
-  .users-content table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: black; /* Color de texto para filas */
-  }
-  
-  .users-content table th {
-    background-color: #293949; /* Encabezado de tabla con color del sidebar */
-    color: #fff;
-  }
-  
-  .users-content table tr:nth-child(even) {
-    background-color: #f2f2f2; /* Fila alterna */
-  }
-  
-  .users-content input {
-    padding: 10px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-  }
-  
-  .users-content button {
-    padding: 10px 20px;
-    background-color: #1abc9c; /* Color similar al hover del sidebar */
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .users-content button:hover {
-    background-color: #16a085;
-  }
-  
-  .users-content h3 {
-    color: #293949;
-    margin-top: 30px;
-  }
-  
-  .users-content h4 {
-    color: #293949;
-    margin-top: 10px;
-  }
-  
-  .users-content p {
-    color: black; /* Color de texto para el detalle del usuario encontrado */
-  }
-  
+  padding: 20px;
+  background-color: #f5f5f5; /* Color de fondo similar al sidebar */
+  color: #293949; /* Color de texto similar */
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.users-content h2 {
+  color: black;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.users-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.users-content table th,
+.users-content table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: black; /* Color de texto para filas */
+}
+
+.users-content table th {
+  background-color: #293949; /* Encabezado de tabla con color del sidebar */
+  color: #fff;
+}
+
+.users-content table tr:nth-child(even) {
+  background-color: #f2f2f2; /* Fila alterna */
+}
+
+.users-content input {
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.users-content button {
+  padding: 10px 20px;
+  background-color: #1abc9c; /* Color similar al hover del sidebar */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.users-content button:hover {
+  background-color: #16a085;
+}
+
+.users-content h3 {
+  color: #293949;
+  margin-top: 30px;
+}
+
+.users-content h4 {
+  color: #293949;
+  margin-top: 10px;
+}
+
+.users-content p {
+  color: black; 
+}
+
+
+.users-content .user-found {
+padding: 15px;
+margin-top: 20px;
+background-color: #ffffff; 
+border: 1px solid #ccc; 
+border-radius: 8px; 
+box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+
+.users-content .user-found h4 {
+margin: 0;
+color: black; 
+font-weight: bold;
+}
+
+/* Estilo para los detalles del usuario */
+.users-content .user-found p {
+margin: 5px 0;
+color: #293949; /* Texto oscuro para contraste */
+font-size: 14px;
+}

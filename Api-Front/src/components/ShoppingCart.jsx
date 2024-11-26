@@ -12,9 +12,11 @@ const ShoppingCart = () => {
   const loading = useSelector((state) => state.cart.loading);
   const error = useSelector((state) => state.cart.error);
 
+
   const [paymentMethod, setPaymentMethod] = useState('');
   const [installments, setInstallments] = useState('1');
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -61,8 +63,14 @@ const ShoppingCart = () => {
           >
             Explorar productos
           </button>
+          {successMessage && (
+        <div className="success-message">
+          {successMessage}
+        </div>
+      )}
         </div>
       </div>
+      
     );
   }
   
@@ -207,37 +215,44 @@ const ShoppingCart = () => {
             </div>
             <button
               className="checkout-btn"
-              disabled={!paymentMethod}
               onClick={(e) => {
-                e.preventDefault(); // Previene el comportamiento por defecto
+                e.preventDefault();
+
+                // Verificar si no se seleccionó un método de pago
                 if (!paymentMethod) {
-                  alert('Por favor, selecciona un método de pago antes de proceder.');
+                  setErrorMessage('Por favor, selecciona un método de pago antes de proceder.');
                   return;
                 }
 
                 try {
                   dispatch(checkout());
                   setSuccessMessage('Orden exitosa. Gracias por tu compra!');
+                  setErrorMessage('');
                   setTimeout(() => {
                     navigate('/');
                   }, 2000);
                 } catch (error) {
                   console.error('Error al realizar el checkout:', error);
-                  alert('Hubo un problema con el checkout. Intenta nuevamente.');
+                  setErrorMessage('Hubo un problema con el checkout. Intenta nuevamente.');
                 }
               }}
             >
               Checkout
             </button>
+
+            {errorMessage && (
+              <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>
+                {errorMessage}
+              </div>
+            )}
+
+            
           </div>
         </div>
       </div>
+      
 
-      {successMessage && (
-        <div className="success-message">
-          {successMessage}
-        </div>
-      )}
+
     </div>
   );
 };

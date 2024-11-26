@@ -17,6 +17,11 @@ const Profile = () => {
   const errorUser = useSelector((state) => state.user.error);
   const errorOrders = useSelector((state) => state.order.error);
 
+  const token = useSelector((state) => state.user.token);
+  if (!token) {
+    navigate('/login');
+  }
+
   useEffect(() => {
     dispatch(fetchCurrentUser());
     dispatch(fetchUserOrders());

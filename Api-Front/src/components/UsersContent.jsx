@@ -64,8 +64,9 @@ const UsersContent = () => {
         />
         <button onClick={handleSearchById}>Buscar</button>
 
+        
         {userById && (
-          <div>
+          <div className="user-found">
             <h4>Usuario encontrado:</h4>
             <p>ID: {userById.id}</p>
             <p>Nombre: {userById.firstName} {userById.secondName}</p>

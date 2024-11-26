@@ -65,22 +65,28 @@
 .products-list th, .products-list td {
   padding: 12px;
   border-bottom: 1px solid #ccc;
-  text-align: left;
+  text-align: center; /* Centra todo el contenido */
 }
 
 .products-list th {
   background-color: #293949;
   color: white;
+  font-weight: bold;
+  text-align: center; /* Centra el texto de los encabezados */
+}
+
+.products-list td {
+  text-align: center; /* Centra el texto de las celdas */
 }
 
 .products-list tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f9f9f9; /* Alterna colores en las filas */
 }
 
 .products-list button {
-  margin-right: 10px;
+  margin: 0 5px; /* Ajusta el espacio entre botones */
   padding: 8px 12px;
-  background-color:#16a085;
+  background-color: #16a085;
   color: white;
   border: none;
   border-radius: 4px;
@@ -88,8 +94,10 @@
 }
 
 .products-list button:hover {
-  background-color: #16a085;
+  background-color: #2980b9; /* Cambia el color del botón al pasar el mouse */
 }
+
+
 
 /* Estilo para el contenedor de etiquetas seleccionadas */
 .selected-tags {
@@ -97,6 +105,13 @@
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+}
+
+.selected-tags div {
+  color: #293949; /* Asegúrate de que el texto sea visible */
+  font-size: 14px;
+  margin: 5px 0;
+  visibility: visible; /* Asegúrate de que sea visible */
 }
 
 .selected-tags .tag {
@@ -122,17 +137,6 @@
 
 .selected-tags .tag .remove:hover {
   color: #c0392b;
-}
-
-/* Estilo para el select de etiquetas */
-select#tags {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  background-color: #ffffff;
 }
 
 .image-preview {
@@ -199,3 +203,63 @@ select#tags {
 .edit-product-form {
   position: relative;
 }
+
+/* Etiquetas generales (como "Etiquetas") */
+.create-product-form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #293949; /* Asegúrate de que siempre sea visible */
+}
+
+/* Input de tipo archivo */
+.create-product-form input[type="file"] {
+  color: #293949; /* Asegura que el texto sea visible */
+  font-size: 14px;
+  background-color: transparent; /* Fondo transparente para consistencia */
+  border: none; /* Elimina el borde para mantener el diseño */
+  padding: 0; /* Ajusta el padding si es necesario */
+  margin-top: 10px; /* Espacio adicional */
+}
+
+/* Texto "Ningún archivo seleccionado" */
+.create-product-form input[type="file"]::-webkit-file-upload-button {
+  color: #ffffff;
+  background-color: #16a085;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.create-product-form input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: #2980b9;
+}
+
+/* Input de tipo archivo - estilo general */
+.create-product-form input[type="file"],
+.edit-product-form input[type="file"] {
+  color: #293949; /* Texto visible */
+  font-size: 14px;
+  background-color: transparent; /* Fondo transparente */
+  border: none; /* Sin bordes */
+  padding: 0; /* Ajusta el padding */
+  margin-top: 10px; /* Espaciado superior */
+}
+
+.create-product-form input[type="file"]::-webkit-file-upload-button,
+.edit-product-form input[type="file"]::-webkit-file-upload-button {
+  color: #ffffff; 
+  background-color: #16a085; 
+  padding: 10px;
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer;
+  font-weight: bold; 
+}
+
+
+.create-product-form input[type="file"]::-webkit-file-upload-button:hover,
+.edit-product-form input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: #2980b9; 
+}
+

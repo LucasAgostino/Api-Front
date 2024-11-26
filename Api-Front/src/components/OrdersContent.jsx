@@ -71,7 +71,7 @@ const OrdersContent = () => {
             )}
           </div>
 
-          <div className="orders-list">
+          <div className="orders-list1">
             <h3>Todas las Órdenes</h3>
             <table>
               <thead>

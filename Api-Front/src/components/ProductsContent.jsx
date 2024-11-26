@@ -46,7 +46,9 @@ const ProductsContent = () => {
     formData.append('price', newProduct.price);
     formData.append('stock', newProduct.stock);
     formData.append('categoryId', newProduct.categoryId);
-    formData.append('discountPercentage', newProduct.discountPercentage);
+    const discountValue = newProduct.discountPercentage / 100;
+    formData.append('discountPercentage', discountValue);
+    
 
     newProduct.imageBase64s.forEach((image, index) => {
       formData.append('images', image, `image${index}.jpg`);
@@ -85,7 +87,7 @@ const ProductsContent = () => {
       productDescription: productToEdit.productDescription || '',
       stock: productToEdit.stock || 0,
       categoryName: productToEdit.categoryName || '',
-      discountPercentage: productToEdit.discountPercentage || 0,
+      discountPercentage: productToEdit.discountPercentage*100 || 0,
       tags: productToEdit.tags || '',
       imageBase64s: productToEdit.imageBase64s || [],
       imageIds: productToEdit.imageid || [],
@@ -94,10 +96,19 @@ const ProductsContent = () => {
   
 
   const handleSaveEditProduct = () => {
+    // Crear una copia de los datos editados
     const updatedData = { ...editProductData };
+  
+    // Convertir discountPercentage entre 0 y 1 antes de enviarlo
+    updatedData.discountPercentage = updatedData.discountPercentage / 100;
+  
+    // Eliminar propiedades no necesarias si es necesario
     delete updatedData.id;
-
+  
+    // Despachar la acción de actualización del producto
     dispatch(updateProductsThunk({ productId: editProductId, updatedData }));
+  
+    // Limpiar el estado después de guardar los cambios
     setEditProductId(null);
     setEditProductData({});
   };
@@ -211,13 +222,18 @@ const ProductsContent = () => {
             )}
           </div>
           <input
-            type="number"
-            placeholder="Descuento"
-            value={newProduct.discountPercentage}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, discountPercentage: e.target.value })
+          type="number"
+          placeholder="Descuento"
+          value={newProduct.discountPercentage}
+          onChange={(e) => {
+            const value = e.target.value;
+            
+            // Validar si el valor está entre 0 y 100
+            if (value === '' || (value >= 0 && value <= 100)) {
+              setNewProduct({ ...newProduct, discountPercentage: value });
             }
-          />
+          }}
+        />
           <input type="file" multiple onChange={handleImageUpload} />
           <button onClick={handleCreateProduct}>Crear Producto</button>
         </div>
@@ -225,31 +241,35 @@ const ProductsContent = () => {
 
       {/* Lista de productos */}
       <div className="products-list">
-        <h3>Lista de Productos</h3>
-        {loading && <p>Cargando...</p>}
-        {error && <p>Error: {error}</p>}
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Precio</th>
-              <th>Acciones</th>
+      <h3>Lista de Productos</h3>
+      {loading && <p>Cargando...</p>}
+      {error && <p>Error: {error}</p>}
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th> {/* Nueva columna */}
+            <th>Descuento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product) => (
+            <tr key={product.id}>
+              <td>{product.productName}</td>
+              <td>${product.price}</td>
+              <td>{product.stock}</td> {/* Agregar stock aquÃ */}
+              <td>{(product.discountPercentage * 100).toFixed(1)}%</td>
+              <td>
+                <button onClick={() => handleEditProduct(product.productId)}>Editar</button>
+                <button onClick={() => handleDeleteProduct(product.productId)}>Eliminar</button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.productName}</td>
-                <td>{product.price}</td>
-                <td>
-                  <button onClick={() => handleEditProduct(product.productId)}>Editar</button>
-                  <button onClick={() => handleDeleteProduct(product.productId)}>Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
+    </div>
       
       {/* Formulario de edición */}
       {editProductId && (
@@ -310,13 +330,19 @@ const ProductsContent = () => {
         </select>
         <label htmlFor="editDiscountPercentage">Porcentaje de descuento</label>
         <input
-          type="number"
-          id="editDiscountPercentage"
-          value={editProductData.discountPercentage}
-          onChange={(e) =>
-            setEditProductData({ ...editProductData, discountPercentage: e.target.value })
+        type="number"
+        id="editDiscountPercentage"
+        value={editProductData.discountPercentage}
+        onChange={(e) => {
+          const value = e.target.value;
+
+          // Validar si el valor está entre 0 y 100
+          if (value === '' || (value >= 0 && value <= 100)) {
+            setEditProductData({ ...editProductData, discountPercentage: value });
           }
-        />
+        }}
+      />
+
         <label htmlFor="editTags">Tags separados por coma</label>
         <input
           type="text"

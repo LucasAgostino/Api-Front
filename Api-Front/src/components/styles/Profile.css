@@ -70,7 +70,7 @@
     color: #555;
   }
   
-  .order-details-btn {
+  .orders-list button {
     background-color: #1e2a38;
     color: white;
     border: none;
@@ -80,7 +80,7 @@
     transition: background-color 0.2s ease;
   }
   
-  .order-details-btn:hover {
+  .orders-list button:hover {
     background-color: #16222b;
   }
   
