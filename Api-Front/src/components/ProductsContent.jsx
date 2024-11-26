@@ -28,6 +28,7 @@ const ProductsContent = () => {
   const [editProductData, setEditProductData] = useState({});
   const [showCreateForm, setShowCreateForm] = useState(false); // Controlar visibilidad del formulario
 
+  const [newProductPreviewImages, setNewProductPreviewImages] = useState([]);
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.product);
   const tags = useSelector((state) => state.product.tags);
@@ -69,6 +70,7 @@ const ProductsContent = () => {
       imageBase64s: [],
     });
     setSelectedTags([]);
+    setNewProductPreviewImages([]); // Limpiar las previsualizaciones
     setShowCreateForm(false); // Ocultar el formulario tras crear el producto
   };
 
@@ -111,28 +113,53 @@ const ProductsContent = () => {
     // Limpiar el estado después de guardar los cambios
     setEditProductId(null);
     setEditProductData({});
+    setEditProductPreviewImages([]); // Limpiar previsualizaciones al guardar
   };
 
   const handleImageUpload = (e) => {
     const files = e.target.files;
     const fileArray = Array.from(files);
+  
+    // Crear las URLs para previsualización
+    const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
+    setNewProductPreviewImages((prev) => [...prev, ...previewUrls]);
+  
     setNewProduct((prevState) => ({
       ...prevState,
       imageBase64s: [...prevState.imageBase64s, ...fileArray],
     }));
   };
 
+  const handleRemoveUploadedImage = (index) => {
+    // Eliminar la imagen seleccionada de las previsualizaciones y del estado de imágenes
+    setNewProductPreviewImages((prev) => prev.filter((_, i) => i !== index));
+    setNewProduct((prevState) => ({
+      ...prevState,
+      imageBase64s: prevState.imageBase64s.filter((_, i) => i !== index),
+    }));
+  };
+  
+
+  const [editProductPreviewImages, setEditProductPreviewImages] = useState([]);
+
   const handleEditImageUpload = (e) => {
     const files = e.target.files;
     const fileArray = Array.from(files);
+
+    // Crear las URLs para previsualización
+    const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
+    setEditProductPreviewImages((prev) => [...prev, ...previewUrls]);
+
     dispatch(addImagesToProductThunk({ productId: editProductId, images: fileArray }));
   };
+
 
   const handleRemoveEditImage = (index) => {
     const imageId = editProductData.imageIds[index];
     dispatch(removeImageFromProductThunk({ productId: editProductId, imageId }));
   };
 
+  
   const handleAddTag = (e) => {
     const selectedTag = e.target.value;
     if (selectedTag && !selectedTags.includes(selectedTag)) {
@@ -235,6 +262,16 @@ const ProductsContent = () => {
           }}
         />
           <input type="file" multiple onChange={handleImageUpload} />
+          <div className="image-preview">
+            {newProductPreviewImages.map((previewUrl, index) => (
+              <div key={index} className="image-container">
+                <img src={previewUrl} alt={`Imagen ${index}`} style={{ width: '100px' }} />
+                <button onClick={() => handleRemoveUploadedImage(index)}>Eliminar</button>
+              </div>
+            ))}
+          </div>
+
+
           <button onClick={handleCreateProduct}>Crear Producto</button>
         </div>
       )}
@@ -353,17 +390,26 @@ const ProductsContent = () => {
         <label htmlFor="editImageUpload">Subir nuevas imágenes</label>
         <input type="file" id="editImageUpload" multiple onChange={handleEditImageUpload} />
         <div className="image-preview">
-            {editProductData.imageBase64s?.map((imageBase64, index) => (
-              <div key={editProductData.imageIds[index]} className="image-container">
-                <img
-                  src={imageBase64.startsWith('data:image') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`}
-                  alt={`Imagen ${index}`}
-                  style={{ width: '100px' }}
-                />
-                <button onClick={() => handleRemoveEditImage(index)}>Eliminar</button>
-              </div>
-            ))}
-          </div>
+          {/* Imágenes existentes */}
+          {editProductData.imageBase64s?.map((imageBase64, index) => (
+            <div key={editProductData.imageIds[index]} className="image-container">
+              <img
+                src={imageBase64.startsWith('data:image') ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`}
+                alt={`Imagen ${index}`}
+                style={{ width: '100px' }}
+              />
+              <button onClick={() => handleRemoveEditImage(index)}>Eliminar</button>
+            </div>
+          ))}
+
+          {/* Imágenes nuevas subidas */}
+          {editProductPreviewImages.map((previewUrl, index) => (
+            <div key={`new-${index}`} className="image-container">
+              <img src={previewUrl} alt={`Nueva Imagen ${index}`} style={{ width: '100px' }} />
+            </div>
+          ))}
+        </div>
+
 
         <button onClick={handleSaveEditProduct}>Guardar Cambios</button>
       </div>
