@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para redirigir si no es ADMIN
+import { useNavigate } from 'react-router-dom'; // Para redirigir
 import { useSelector } from 'react-redux'; // Para acceder al estado de Redux
-import './styles/SidebarAdmin.css'; // Archivo CSS actualizado importado
-import UsersContent from './UsersContent'; // Importa el nuevo componente para Usuarios
+import './styles/SidebarAdmin.css'; // Archivo CSS
+import UsersContent from './UsersContent';
 import ProductsContent from './ProductsContent';
 import OrdersContent from './OrdersContent';
 import CategoryContent from './CategoryContent';
+import AdminWelcome from './AdminWelcome'; // Importa AdminWelcome si no está importado
 
 const SidebarAdmin = () => {
   const [selectedOption, setSelectedOption] = useState('dashboard');
-  const navigate = useNavigate(); // Hook para redirigir
-  const [isAdmin, setIsAdmin] = useState(false); // Estado para verificar si el usuario es admin
+  const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // Obtén el rol desde el estado de Redux
   const role = useSelector((state) => state.user.role);
 
   useEffect(() => {
-    // Verifica si el rol es 'ADMIN' y establece el estado correspondiente
     if (role === 'ADMIN') {
       setIsAdmin(true);
     } else {
-      navigate('/'); // Redirigir si no es ADMIN
+      navigate('/');
     }
   }, [navigate, role]);
 
@@ -32,6 +31,10 @@ const SidebarAdmin = () => {
     navigate('/');
   };
 
+  const handleLogoClick = () => {
+    setSelectedOption('dashboard'); // Cambiar a la página de bienvenida
+  };
+
   if (!isAdmin) {
     return <p>Redirigiendo...</p>;
   }
@@ -39,11 +42,12 @@ const SidebarAdmin = () => {
   return (
     <div className="sidebaradmin">
       <nav id="leftside-navigation-admin">
-        {/* Logo del proyecto en la parte superior */}
-        <div className="logo-container">
+        {/* Logo del proyecto */}
+        <div className="logo-container" onClick={handleLogoClick}>
           <img src="/logo.png" alt="Logo del proyecto" className="logo" />
         </div>
 
+        {/* Opciones del menú */}
         <div onClick={() => handleOptionClick('users')}>
           <i className="fa fa-dashboard material-symbols-outlined">switch_account</i>
           <span>Usuarios</span>
@@ -68,8 +72,9 @@ const SidebarAdmin = () => {
         </div>
       </nav>
 
-      {/* Sección del contenido que se muestra al hacer clic en las opciones */}
+      {/* Contenido principal */}
       <main>
+        {selectedOption === 'dashboard' && <AdminWelcome />}
         {selectedOption === 'users' && <UsersContent />}
         {selectedOption === 'orders' && <OrdersContent />}
         {selectedOption === 'products' && <ProductsContent />}

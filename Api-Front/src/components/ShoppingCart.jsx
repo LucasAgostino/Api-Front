@@ -11,7 +11,7 @@ const ShoppingCart = () => {
   const cart = useSelector((state) => state.cart.cartItems);
   const loading = useSelector((state) => state.cart.loading);
   const error = useSelector((state) => state.cart.error);
-
+  const allProducts = useSelector((state) => state.product.allProducts); // Trae todos los productos
 
   const [paymentMethod, setPaymentMethod] = useState('');
   const [installments, setInstallments] = useState('1');
@@ -36,13 +36,23 @@ const ShoppingCart = () => {
     if (!cart) return 0;
     return cart.reduce((total, product) => {
       const price = product.discountPrice || product.totalPrice; // Usa el precio con descuento si está disponible
-      return total + price ; // Multiplica el precio por la cantidad
+      return total + price; // Multiplica el precio por la cantidad
     }, 0);
   };
-  
 
   const handleReturn = () => {
     navigate('/products');
+  };
+
+  const checkStock = () => {
+    for (const cartItem of cart) {
+      const product = allProducts.find((p) => p.productId === cartItem.productId);
+      if (product && product.stock < cartItem.quantity) {
+        setErrorMessage(`El producto "${cartItem.productName}" no tiene stock suficiente. Stock disponible: ${product.stock}.`);
+        return false;
+      }
+    }
+    return true;
   };
 
   if (error) {
@@ -64,16 +74,14 @@ const ShoppingCart = () => {
             Explorar productos
           </button>
           {successMessage && (
-        <div className="success-message">
-          {successMessage}
-        </div>
-      )}
+            <div className="success-message">
+              {successMessage}
+            </div>
+          )}
         </div>
       </div>
-      
     );
   }
-  
 
   return (
     <div className="shopping-cart-container">
@@ -224,6 +232,11 @@ const ShoppingCart = () => {
                   return;
                 }
 
+                // Verificar stock antes de proceder
+                if (!checkStock()) {
+                  return;
+                }
+
                 try {
                   dispatch(checkout());
                   setSuccessMessage('Orden exitosa. Gracias por tu compra!');
@@ -246,13 +259,9 @@ const ShoppingCart = () => {
               </div>
             )}
 
-            
           </div>
         </div>
       </div>
-      
-
-
     </div>
   );
 };
